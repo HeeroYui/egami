@@ -32,12 +32,12 @@ bool egami::Load(egami::Image& _output, const etk::UString& _fileName, const ive
 		}
 	} else if (true == tmpName.EndWith(".svg") ) {
 		if (false == egami::LoadSVG(_fileName, _output, _size)) {
-			EGAMI_ERROR("Error To load BMP file " << tmpName );
+			EGAMI_ERROR("Error To load SVG file " << tmpName );
 			return false;
 		}
 	} else if (true == tmpName.EndWith(".png") ) {
 		if (false == egami::LoadPNG(_fileName, _output)) {
-			EGAMI_ERROR("Error To load BMP file " << tmpName );
+			EGAMI_ERROR("Error To load PNG file " << tmpName );
 			return false;
 		}
 	} else {
