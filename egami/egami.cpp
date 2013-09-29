@@ -27,21 +27,43 @@ bool egami::Load(egami::Image& _output, const etk::UString& _fileName, const ive
 	// select the corect Loader :
 	if (true == tmpName.EndWith(".bmp") ) {
 		if (false == egami::LoadBMP(_fileName, _output)) {
-			EGAMI_ERROR("Error To load BMP file " << tmpName );
+			EGAMI_ERROR("Error To load BMP file '" << _fileName << "'");
 			return false;
 		}
 	} else if (true == tmpName.EndWith(".svg") ) {
 		if (false == egami::LoadSVG(_fileName, _output, _size)) {
-			EGAMI_ERROR("Error To load SVG file " << tmpName );
+			EGAMI_ERROR("Error To load SVG file '" << _fileName << "'");
 			return false;
 		}
 	} else if (true == tmpName.EndWith(".png") ) {
 		if (false == egami::LoadPNG(_fileName, _output)) {
-			EGAMI_ERROR("Error To load PNG file " << tmpName );
+			EGAMI_ERROR("Error To load PNG file '" << _fileName << "'");
 			return false;
 		}
 	} else {
-		EGAMI_ERROR("Extention not managed " << tmpName << " Sopported extention : .bmp / .svg / .png");
+		EGAMI_ERROR("Extention not managed '" << _fileName << "' Sopported extention : .bmp / .svg / .png");
+		return false;
+	}
+	return true;
+}
+
+bool egami::Store(const egami::Image& _input, const etk::UString& _fileName)
+{
+	etk::UString tmpName = _fileName.ToLower();
+	// select the corect Loader :
+	if (true == tmpName.EndWith(".bmp") ) {
+		if (false == egami::StoreBMP(_fileName, _input)) {
+			EGAMI_ERROR("Error To load BMP file '" << _fileName << "'");
+			return false;
+		}
+	} else if (true == tmpName.EndWith(".svg") ) {
+		EGAMI_ERROR("Can not store in SVG file '" << _fileName << "'");
+		return false;
+	} else if (true == tmpName.EndWith(".png") ) {
+		EGAMI_ERROR("Can not store in PNG file '" << _fileName << "'");
+		return false;
+	} else {
+		EGAMI_ERROR("Extention not managed '" << _fileName << "' Sopported extention : .bmp / .svg / .png");
 		return false;
 	}
 	return true;

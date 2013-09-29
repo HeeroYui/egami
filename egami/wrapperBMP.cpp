@@ -226,6 +226,66 @@ bool egami::LoadBMP(const etk::UString& _inputFile, egami::Image& _ouputImage)
 	}
 	return true;
 }
+
+bool egami::StoreBMP(const etk::UString& _fileName, const egami::Image& _inputImage)
+{
+	bitmapFileHeader_ts m_FileHeader;
+	bitmapInfoHeader_ts m_InfoHeader;
+	
+	m_FileHeader.bfType = 0x4D42;
+	m_FileHeader.bfSize = sizeof(bitmapFileHeader_ts);
+	m_FileHeader.bfReserved = 0;
+	m_FileHeader.bfOffBits = 40;
+	
+	m_InfoHeader.biSize = sizeof(bitmapInfoHeader_ts);
+	m_InfoHeader.biWidth = _inputImage.GetSize().x();
+	m_InfoHeader.biHeight = _inputImage.GetSize().y();
+	m_InfoHeader.biPlanes = 1;
+	m_InfoHeader.biBitCount = 32;
+	m_InfoHeader.biCompression = 0;
+	m_InfoHeader.biSizeImage = _inputImage.GetSize().x()*_inputImage.GetSize().y()*4;
+	m_InfoHeader.biXPelsPerMeter = 75;
+	m_InfoHeader.biYPelsPerMeter = 75;
+	m_InfoHeader.biClrUsed = 0;
+	m_InfoHeader.biClrImportant = 0;
+	
+	etk::FSNode fileName(_fileName);
+	if(false == fileName.FileOpenWrite() ) {
+		EGAMI_ERROR("Can not find the file name=\"" << fileName << "\"");
+		return false;
+	}
+	// get the data : 
+	if (fileName.FileWrite(&m_FileHeader,sizeof(bitmapFileHeader_ts),1) != 1) {
+		EGAMI_ERROR("error loading file header");
+		fileName.FileClose();
+		return false;
+	}
+	if (fileName.FileWrite(&m_InfoHeader,sizeof(bitmapInfoHeader_ts),1) != 1) {
+		EGAMI_ERROR("error loading file header");
+		fileName.FileClose();
+		return false;
+	}
+	if(false == fileName.FileSeek(m_FileHeader.bfOffBits, etk::FSN_SEEK_START)) {
+		EGAMI_ERROR("error with the 'bfOffBits' in the file named=\"" << fileName << "\"");
+		fileName.FileClose();
+		return false;
+	}
+	uint8_t data[16];
+	for(int32_t yyy=0; yyy<_inputImage.GetSize().y(); yyy++) {
+		for(int32_t xxx=0; xxx<_inputImage.GetSize().x(); xxx++) {
+			const etk::Color<>& tmpColor = _inputImage.Get(ivec2(xxx,yyy));
+			uint8_t* pointer = data;
+			*pointer++ = tmpColor.r();
+			*pointer++ = tmpColor.g();
+			*pointer++ = tmpColor.b();
+			*pointer++ = tmpColor.a();
+			fileName.FileWrite(data,4,1);
+		}
+	}
+	fileName.FileClose();
+	return true;
+}
+
 /*
 void ewol::texture::TextureBMP::Display(void)
 {

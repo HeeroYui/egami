@@ -13,6 +13,13 @@
 
 namespace egami
 {
+	/**
+	 * @breif Load a svg file in the image.
+	 * @param[in] _fileName Name of the file.
+	 * @param[out] _ouputImage Read data.
+	 * @param[in] _size Size of the output image.
+	 * @return true if all is done correctly, false otherwise.
+	 */
 	bool LoadSVG(const etk::UString& _fileName, egami::Image& _ouputImage, const ivec2& _size=ivec2(-1,-1));
 };
 
