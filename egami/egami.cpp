@@ -23,21 +23,21 @@ bool egami::Scalable(const etk::UString& _fileName)
 
 bool egami::Load(egami::Image& _output, const etk::UString& _fileName, const ivec2& _size)
 {
-	etk::UString tmpName = _fileName.ToLower();
+	etk::UString tmpName = _fileName.toLower();
 	// select the corect Loader :
 	if (true == tmpName.EndWith(".bmp") ) {
 		if (false == egami::LoadBMP(_fileName, _output)) {
-			EGAMI_ERROR("Error To load BMP file '" << _fileName << "'");
+			EGAMI_ERROR("Error to load BMP file '" << _fileName << "'");
 			return false;
 		}
 	} else if (true == tmpName.EndWith(".svg") ) {
 		if (false == egami::LoadSVG(_fileName, _output, _size)) {
-			EGAMI_ERROR("Error To load SVG file '" << _fileName << "'");
+			EGAMI_ERROR("Error to load SVG file '" << _fileName << "'");
 			return false;
 		}
 	} else if (true == tmpName.EndWith(".png") ) {
 		if (false == egami::LoadPNG(_fileName, _output)) {
-			EGAMI_ERROR("Error To load PNG file '" << _fileName << "'");
+			EGAMI_ERROR("Error to load PNG file '" << _fileName << "'");
 			return false;
 		}
 	} else {
@@ -49,11 +49,11 @@ bool egami::Load(egami::Image& _output, const etk::UString& _fileName, const ive
 
 bool egami::Store(const egami::Image& _input, const etk::UString& _fileName)
 {
-	etk::UString tmpName = _fileName.ToLower();
+	etk::UString tmpName = _fileName.toLower();
 	// select the corect Loader :
 	if (true == tmpName.EndWith(".bmp") ) {
 		if (false == egami::StoreBMP(_fileName, _input)) {
-			EGAMI_ERROR("Error To load BMP file '" << _fileName << "'");
+			EGAMI_ERROR("Error to load BMP file '" << _fileName << "'");
 			return false;
 		}
 	} else if (true == tmpName.EndWith(".svg") ) {

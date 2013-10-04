@@ -11,32 +11,29 @@
 #include <egami/Image.h>
 #include <egami/wrapperBMP.h>
 #include <etk/os/FSNode.h>
-
-#pragma pack(push,1)
-typedef struct
-{
-	int16_t bfType;
-	int32_t bfSize;
-	int32_t bfReserved;
-	int32_t bfOffBits;
-} bitmapFileHeader_ts;
-
-typedef struct
-{
-	int32_t biSize;
-	int32_t biWidth;
-	int32_t biHeight;
-	int16_t biPlanes;
-	int16_t biBitCount;
-	int32_t biCompression;
-	int32_t biSizeImage;
-	int32_t biXPelsPerMeter;
-	int32_t biYPelsPerMeter;
-	int32_t biClrUsed;
-	int32_t biClrImportant;
-} bitmapInfoHeader_ts;
-#pragma pack(pop)
-
+extern "C" {
+	#pragma pack(push,1)
+	struct bitmapFileHeader {
+		int16_t bfType;
+		int32_t bfSize;
+		int32_t bfReserved;
+		int32_t bfOffBits;
+	};
+	struct bitmapFileHeader {
+		int32_t biSize;
+		int32_t biWidth;
+		int32_t biHeight;
+		int16_t biPlanes;
+		int16_t biBitCount;
+		int32_t biCompression;
+		int32_t biSizeImage;
+		int32_t biXPelsPerMeter;
+		int32_t biYPelsPerMeter;
+		int32_t biClrUsed;
+		int32_t biClrImportant;
+	};
+	#pragma pack(pop)
+}
 typedef enum {
 	BITS_16_R5G6B5,
 	BITS_16_X1R5G5B5,
@@ -45,57 +42,55 @@ typedef enum {
 	BITS_32_A8R8G8B8
 } modeBitmap_te;
 
-
 #undef __class__
-#define __class__	"wrapperBMP"
+#define __class__ "wrapperBMP"
 
-bool egami::LoadBMP(const etk::UString& _inputFile, egami::Image& _ouputImage)
-{
+bool egami::loadBMP(const etk::UString& _inputFile, egami::Image& _ouputImage) {
 	modeBitmap_te       m_dataMode = BITS_16_R5G6B5;
 	int32_t             m_width = 0;
 	int32_t             m_height = 0;
-	bitmapFileHeader_ts m_FileHeader;
-	bitmapInfoHeader_ts m_InfoHeader;
+	struct bitmapFileHeader m_FileHeader;
+	struct bitmapFileHeader m_InfoHeader;
 
 	etk::FSNode fileName(_inputFile);
-	// Get the fileSize ...
-	/*if (fileName.Size() < (int32_t)(sizeof(bitmapFileHeader_ts) + sizeof(bitmapInfoHeader_ts) ) ) {
+	// get the fileSize ...
+	/*if (fileName.size() < (int32_t)(sizeof(struct bitmapFileHeader) + sizeof(struct bitmapFileHeader) ) ) {
 		EWOL_ERROR("not enought data in the file named=\"" << fileName << "\"");
 		return;
 	}*/
-	if (false==fileName.Exist()) {
+	if (false == fileName.exist()) {
 		EGAMI_ERROR("File does not existed=\"" << fileName << "\"");
 		return false;
 	}
-	if(false == fileName.FileOpenRead() ) {
+	if(false == fileName.fileOpenRead() ) {
 		EGAMI_ERROR("Can not find the file name=\"" << fileName << "\"");
 		return false;
 	}
 	// get the data : 
-	if (fileName.FileRead(&m_FileHeader,sizeof(bitmapFileHeader_ts),1) != 1) {
+	if (fileName.fileRead(&m_FileHeader,sizeof(struct bitmapFileHeader),1) != 1) {
 		EGAMI_ERROR("error loading file header");
-		fileName.FileClose();
+		fileName.fileClose();
 		return false;
 	}
-	if (fileName.FileRead(&m_InfoHeader,sizeof(bitmapInfoHeader_ts),1) != 1) {
+	if (fileName.fileRead(&m_InfoHeader,sizeof(struct bitmapFileHeader),1) != 1) {
 		EGAMI_ERROR("error loading file header");
-		fileName.FileClose();
+		fileName.fileClose();
 		return false;
 	}
-	if(false == fileName.FileSeek(m_FileHeader.bfOffBits, etk::FSN_SEEK_START)) {
+	if(false == fileName.fileSeek(m_FileHeader.bfOffBits, etk::FSN_SEEK_START)) {
 		EGAMI_ERROR("error with the 'bfOffBits' in the file named=\"" << fileName << "\"");
-		fileName.FileClose();
+		fileName.fileClose();
 		return false;
 	}
-	// Check the header error : 
+	// check the header error : 
 	if (m_FileHeader.bfType != 0x4D42) {
 		EGAMI_ERROR("the file=\"" << fileName << "\" is not a bitmap file ...");
-		fileName.FileClose();
+		fileName.fileClose();
 		return false;
 	}
 	if (m_FileHeader.bfReserved != 0x00000000) {
-		EGAMI_ERROR("the bfReserved feald is not at 0 ==> not supported format ...");
-		fileName.FileClose();
+		EGAMI_ERROR("the bfReserved feald is not at 0  == > not supported format ...");
+		fileName.fileClose();
 		return false;
 	}
 	if(    m_InfoHeader.biBitCount == 16
@@ -119,24 +114,24 @@ bool egami::LoadBMP(const etk::UString& _inputFile, egami::Image& _ouputImage)
 	{
 		m_dataMode = BITS_32_A8R8G8B8;
 	} else {
-		EGAMI_ERROR("the biBitCount & biCompression fealds are unknow ==> not supported format ...");
-		fileName.FileClose();;
+		EGAMI_ERROR("the biBitCount & biCompression fealds are unknow  == > not supported format ...");
+		fileName.fileClose();;
 		return false;
 	}
 	m_width = m_InfoHeader.biWidth;
 	m_height = m_InfoHeader.biHeight;
 	// reallocate the image 
-	_ouputImage.Resize(ivec2(m_width,m_height));
+	_ouputImage.resize(ivec2(m_width,m_height));
 	
 	uint8_t* m_data = NULL;
 	if(0 != m_InfoHeader.biSizeImage)
 	{
 		m_data=new uint8_t[m_InfoHeader.biSizeImage];
-		if (fileName.FileRead(m_data,m_InfoHeader.biSizeImage,1) != 1){
+		if (fileName.fileRead(m_data,m_InfoHeader.biSizeImage,1) != 1){
 			EGAMI_CRITICAL("Can not read the file with the good size...");
 		}
 	}
-	fileName.FileClose();
+	fileName.fileClose();
 	
 	etk::Color<> tmpColor(0,0,0,0);
 	
@@ -148,11 +143,11 @@ bool egami::LoadBMP(const etk::UString& _inputFile, egami::Image& _ouputImage)
 				uint16_t * pointer = (uint16_t*)m_data;
 				for(int32_t yyy=0; yyy<m_height; yyy++) {
 					for(int32_t xxx=0; xxx<m_width; xxx++) {
-						tmpColor.SetR((uint8_t)((*pointer & 0xF800) >> 8));
-						tmpColor.SetG((uint8_t)((*pointer & 0x07E0) >> 3));
-						tmpColor.SetB((uint8_t)(*pointer << 3));
-						tmpColor.SetA(0xFF);
-						_ouputImage.Set(ivec2(xxx,yyy), tmpColor);
+						tmpColor.setR((uint8_t)((*pointer & 0xF800) >> 8));
+						tmpColor.setG((uint8_t)((*pointer & 0x07E0) >> 3));
+						tmpColor.setB((uint8_t)(*pointer << 3));
+						tmpColor.setA(0xFF);
+						_ouputImage.set(ivec2(xxx,yyy), tmpColor);
 						pointer++;
 					}
 				}
@@ -163,11 +158,11 @@ bool egami::LoadBMP(const etk::UString& _inputFile, egami::Image& _ouputImage)
 				uint16_t * pointer = (uint16_t*)m_data;
 				for(int32_t yyy=0; yyy<m_height; yyy++) {
 					for(int32_t xxx=0; xxx<m_width; xxx++) {
-						tmpColor.SetR((int8_t)((*pointer & 0x7C00) >> 7));
-						tmpColor.SetG((int8_t)((*pointer & 0x03E0) >> 2));
-						tmpColor.SetB((int8_t)(*pointer << 3));
-						tmpColor.SetA(0xFF);
-						_ouputImage.Set(ivec2(xxx,yyy), tmpColor);
+						tmpColor.setR((int8_t)((*pointer & 0x7C00) >> 7));
+						tmpColor.setG((int8_t)((*pointer & 0x03E0) >> 2));
+						tmpColor.setB((int8_t)(*pointer << 3));
+						tmpColor.setA(0xFF);
+						_ouputImage.set(ivec2(xxx,yyy), tmpColor);
 						pointer++;
 					}
 				}
@@ -178,11 +173,11 @@ bool egami::LoadBMP(const etk::UString& _inputFile, egami::Image& _ouputImage)
 				uint8_t * pointer = m_data;
 				for(int32_t yyy=0; yyy<m_height; yyy++) {
 					for(int32_t xxx=0; xxx<m_width; xxx++) {
-						tmpColor.SetR(*pointer++);
-						tmpColor.SetG(*pointer++);
-						tmpColor.SetB(*pointer++);
-						tmpColor.SetA(0xFF);
-						_ouputImage.Set(ivec2(xxx,yyy), tmpColor);
+						tmpColor.setR(*pointer++);
+						tmpColor.setG(*pointer++);
+						tmpColor.setB(*pointer++);
+						tmpColor.setA(0xFF);
+						_ouputImage.set(ivec2(xxx,yyy), tmpColor);
 					}
 				}
 			}
@@ -193,11 +188,11 @@ bool egami::LoadBMP(const etk::UString& _inputFile, egami::Image& _ouputImage)
 				for(int32_t yyy=0; yyy<m_height; yyy++) {
 					for(int32_t xxx=0; xxx<m_width; xxx++) {
 						pointer++;
-						tmpColor.SetR(*pointer++);
-						tmpColor.SetG(*pointer++);
-						tmpColor.SetB(*pointer++);
-						tmpColor.SetA(0xFF);
-						_ouputImage.Set(ivec2(xxx,yyy), tmpColor);
+						tmpColor.setR(*pointer++);
+						tmpColor.setG(*pointer++);
+						tmpColor.setB(*pointer++);
+						tmpColor.setA(0xFF);
+						_ouputImage.set(ivec2(xxx,yyy), tmpColor);
 					}
 				}
 			}
@@ -207,11 +202,11 @@ bool egami::LoadBMP(const etk::UString& _inputFile, egami::Image& _ouputImage)
 				uint8_t * pointer = m_data;
 				for(int32_t yyy=0; yyy<m_height; yyy++) {
 					for(int32_t xxx=0; xxx<m_width; xxx++) {
-						tmpColor.SetR(*pointer++);
-						tmpColor.SetG(*pointer++);
-						tmpColor.SetB(*pointer++);
-						tmpColor.SetA(*pointer++);
-						_ouputImage.Set(ivec2(xxx,yyy), tmpColor);
+						tmpColor.setR(*pointer++);
+						tmpColor.setG(*pointer++);
+						tmpColor.setB(*pointer++);
+						tmpColor.setA(*pointer++);
+						_ouputImage.set(ivec2(xxx,yyy), tmpColor);
 					}
 				}
 			}
@@ -227,67 +222,66 @@ bool egami::LoadBMP(const etk::UString& _inputFile, egami::Image& _ouputImage)
 	return true;
 }
 
-bool egami::StoreBMP(const etk::UString& _fileName, const egami::Image& _inputImage)
-{
-	bitmapFileHeader_ts m_FileHeader;
-	bitmapInfoHeader_ts m_InfoHeader;
+bool egami::storeBMP(const etk::UString& _fileName, const egami::Image& _inputImage) {
+	struct bitmapFileHeader m_FileHeader;
+	struct bitmapFileHeader m_InfoHeader;
 	
 	m_FileHeader.bfType = 0x4D42;
-	m_FileHeader.bfSize = sizeof(bitmapFileHeader_ts);
+	m_FileHeader.bfSize = sizeof(struct bitmapFileHeader);
 	m_FileHeader.bfReserved = 0;
 	m_FileHeader.bfOffBits = 40;
 	
-	m_InfoHeader.biSize = sizeof(bitmapInfoHeader_ts);
-	m_InfoHeader.biWidth = _inputImage.GetSize().x();
-	m_InfoHeader.biHeight = _inputImage.GetSize().y();
+	m_InfoHeader.biSize = sizeof(struct bitmapFileHeader);
+	m_InfoHeader.biWidth = _inputImage.getSize().x();
+	m_InfoHeader.biHeight = _inputImage.getSize().y();
 	m_InfoHeader.biPlanes = 1;
 	m_InfoHeader.biBitCount = 32;
 	m_InfoHeader.biCompression = 0;
-	m_InfoHeader.biSizeImage = _inputImage.GetSize().x()*_inputImage.GetSize().y()*4;
+	m_InfoHeader.biSizeImage = _inputImage.getSize().x()*_inputImage.getSize().y()*4;
 	m_InfoHeader.biXPelsPerMeter = 75;
 	m_InfoHeader.biYPelsPerMeter = 75;
 	m_InfoHeader.biClrUsed = 0;
 	m_InfoHeader.biClrImportant = 0;
 	
 	etk::FSNode fileName(_fileName);
-	if(false == fileName.FileOpenWrite() ) {
+	if(false == fileName.fileOpenWrite() ) {
 		EGAMI_ERROR("Can not find the file name=\"" << fileName << "\"");
 		return false;
 	}
 	// get the data : 
-	if (fileName.FileWrite(&m_FileHeader,sizeof(bitmapFileHeader_ts),1) != 1) {
+	if (fileName.fileWrite(&m_FileHeader,sizeof(struct bitmapFileHeader),1) != 1) {
 		EGAMI_ERROR("error loading file header");
-		fileName.FileClose();
+		fileName.fileClose();
 		return false;
 	}
-	if (fileName.FileWrite(&m_InfoHeader,sizeof(bitmapInfoHeader_ts),1) != 1) {
+	if (fileName.fileWrite(&m_InfoHeader,sizeof(struct bitmapFileHeader),1) != 1) {
 		EGAMI_ERROR("error loading file header");
-		fileName.FileClose();
+		fileName.fileClose();
 		return false;
 	}
-	if(false == fileName.FileSeek(m_FileHeader.bfOffBits, etk::FSN_SEEK_START)) {
+	if(false == fileName.fileSeek(m_FileHeader.bfOffBits, etk::FSN_SEEK_START)) {
 		EGAMI_ERROR("error with the 'bfOffBits' in the file named=\"" << fileName << "\"");
-		fileName.FileClose();
+		fileName.fileClose();
 		return false;
 	}
 	uint8_t data[16];
-	for(int32_t yyy=0; yyy<_inputImage.GetSize().y(); yyy++) {
-		for(int32_t xxx=0; xxx<_inputImage.GetSize().x(); xxx++) {
-			const etk::Color<>& tmpColor = _inputImage.Get(ivec2(xxx,yyy));
+	for(int32_t yyy=0; yyy<_inputImage.getSize().y(); yyy++) {
+		for(int32_t xxx=0; xxx<_inputImage.getSize().x(); xxx++) {
+			const etk::Color<>& tmpColor = _inputImage.get(ivec2(xxx,yyy));
 			uint8_t* pointer = data;
 			*pointer++ = tmpColor.r();
 			*pointer++ = tmpColor.g();
 			*pointer++ = tmpColor.b();
 			*pointer++ = tmpColor.a();
-			fileName.FileWrite(data,4,1);
+			fileName.fileWrite(data,4,1);
 		}
 	}
-	fileName.FileClose();
+	fileName.fileClose();
 	return true;
 }
 
 /*
-void ewol::texture::TextureBMP::Display(void)
+void ewol::texture::TextureBMP::display(void)
 {
 	if (NULL == m_data) {
 		EWOL_ERROR("Might loading error of this Bitmap ...");

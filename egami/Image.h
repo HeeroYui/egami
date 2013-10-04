@@ -14,8 +14,7 @@
 #include <etk/math/Vector2D.h>
 #include <etk/Color.h>
 
-namespace egami
-{
+namespace egami {
 	class Image {
 		private:
 			ivec2 m_size;
@@ -27,20 +26,20 @@ namespace egami
 			~Image(void) { };
 		// EWOL internal API for Texture system :
 		public:
-			void* GetTextureDataPointer(void) { return &m_data[0]; };
+			void* getTextureDataPointer(void) { return &m_data[0]; };
 		// -----------------------------------------------
 		// -- basic tools :
 		// -----------------------------------------------
 		public :
-			void Resize(const ivec2& _size, const ivec2& _startPos=ivec2(0,0));
-			void Resize(const ivec2& _size, const etk::Color<>& _color);
+			void resize(const ivec2& _size, const ivec2& _startPos=ivec2(0,0));
+			void resize(const ivec2& _size, const etk::Color<>& _color);
 			
-			const ivec2& GetSize(void) const { return m_size; };
-			int32_t GetWidth(void) const { return m_size.x(); };
-			int32_t GetHeight(void) const { return m_size.y(); };
-			void Clear(etk::Color<> _fill);
-			const etk::Color<>& Get(const ivec2& _pos) const;
-			void Set(const ivec2& _pos, const etk::Color<>& _newColor);
+			const ivec2& getSize(void) const { return m_size; };
+			int32_t getWidth(void) const { return m_size.x(); };
+			int32_t getHeight(void) const { return m_size.y(); };
+			void clear(etk::Color<> _fill);
+			const etk::Color<>& get(const ivec2& _pos) const;
+			void set(const ivec2& _pos, const etk::Color<>& _newColor);
 	};
 	
 };

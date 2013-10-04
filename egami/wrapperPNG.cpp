@@ -22,7 +22,7 @@ static void local_ReadData(png_structp png_ptr, png_bytep data, png_size_t lengt
 {
 	etk::FSNode* fileNode = static_cast<etk::FSNode*>(png_get_io_ptr(png_ptr));
 	if (NULL!=fileNode) {
-		fileNode->FileRead(data, 1, length);
+		fileNode->fileRead(data, 1, length);
 	}
 }
 /*
@@ -43,15 +43,15 @@ static void localFlushData(png_structp png_ptr)
 }
 */
 
-bool egami::LoadPNG(const etk::UString& _inputFile, egami::Image& _ouputImage)
+bool egami::loadPNG(const etk::UString& _inputFile, egami::Image& _ouputImage)
 {
 	etk::FSNode fileName(_inputFile);
 	
-	if (false==fileName.Exist()) {
+	if (false == fileName.exist()) {
 		EGAMI_ERROR("File does not existed=\"" << fileName << "\"");
 		return false;
 	}
-	if(false == fileName.FileOpenRead() ) {
+	if(false == fileName.fileOpenRead() ) {
 		EGAMI_ERROR("Can not find the file name=\"" << fileName << "\"");
 		return false;
 	}
@@ -64,9 +64,9 @@ bool egami::LoadPNG(const etk::UString& _inputFile, egami::Image& _ouputImage)
 	png_structp png_ptr;
 	png_bytep * row_pointers;
 	
-	if (fileName.FileRead(header,1,8) != 8) {
+	if (fileName.fileRead(header,1,8) != 8) {
 		EGAMI_ERROR("error loading file header");
-		fileName.FileClose();
+		fileName.fileClose();
 		return false;
 	}
 	if (png_sig_cmp(header, 0, 8))
@@ -99,7 +99,7 @@ bool egami::LoadPNG(const etk::UString& _inputFile, egami::Image& _ouputImage)
 	int32_t height = png_get_image_height(png_ptr, info_ptr);
 	// reallocate the image 
 	EGAMI_DEBUG("Load PNG image : (" << width << "," << height << ")" );
-	_ouputImage.Resize(ivec2(width,height));
+	_ouputImage.resize(ivec2(width,height));
 	
 	int32_t bit_depth = png_get_bit_depth(png_ptr, info_ptr);
 	png_read_update_info(png_ptr, info_ptr);
@@ -127,8 +127,8 @@ bool egami::LoadPNG(const etk::UString& _inputFile, egami::Image& _ouputImage)
 				for (x = 0; x < width; x++)
 				{
 					png_byte* ptr = &(row[x*4]);
-					tmpColor.Set(ptr[0], ptr[1],ptr[2],ptr[3]);
-					_ouputImage.Set(ivec2(x,y), tmpColor);
+					tmpColor.set(ptr[0], ptr[1],ptr[2],ptr[3]);
+					_ouputImage.set(ivec2(x,y), tmpColor);
 				}
 				delete row_pointers[y];
 			}
@@ -141,8 +141,8 @@ bool egami::LoadPNG(const etk::UString& _inputFile, egami::Image& _ouputImage)
 				for (x = 0; x < width; x++)
 				{
 					png_byte* ptr = &(row[x*3]);
-					tmpColor.Set(ptr[0], ptr[1],ptr[2]);
-					_ouputImage.Set(ivec2(x,y), tmpColor);
+					tmpColor.set(ptr[0], ptr[1],ptr[2]);
+					_ouputImage.set(ivec2(x,y), tmpColor);
 				}
 				delete row_pointers[y];
 			}
@@ -152,7 +152,7 @@ bool egami::LoadPNG(const etk::UString& _inputFile, egami::Image& _ouputImage)
 			return false;
 	}
 
-	fileName.FileClose();
+	fileName.fileClose();
 	return true;
 }
 

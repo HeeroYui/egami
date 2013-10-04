@@ -19,14 +19,14 @@ namespace egami
 	 * @param[out] _ouputImage Read data.
 	 * @return true if all is done correctly, false otherwise.
 	 */
-	bool LoadBMP(const etk::UString& _fileName, egami::Image& _ouputImage);
+	bool loadBMP(const etk::UString& _fileName, egami::Image& _ouputImage);
 	/**
 	 * @breif Store a bmp file in the image.
 	 * @param[in] _fileName Name of the file.
 	 * @param[in] _inputImage write data.
 	 * @return true if all is done correctly, false otherwise.
 	 */
-	bool StoreBMP(const etk::UString& _fileName, const egami::Image& _inputImage);
+	bool storeBMP(const etk::UString& _fileName, const egami::Image& _inputImage);
 };
 
 #endif
