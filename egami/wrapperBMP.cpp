@@ -19,7 +19,7 @@ extern "C" {
 		int32_t bfReserved;
 		int32_t bfOffBits;
 	};
-	struct bitmapFileHeader {
+	struct bitmapInfoHeader {
 		int32_t biSize;
 		int32_t biWidth;
 		int32_t biHeight;
@@ -46,11 +46,11 @@ typedef enum {
 #define __class__ "wrapperBMP"
 
 bool egami::loadBMP(const etk::UString& _inputFile, egami::Image& _ouputImage) {
-	modeBitmap_te       m_dataMode = BITS_16_R5G6B5;
-	int32_t             m_width = 0;
-	int32_t             m_height = 0;
+	modeBitmap_te m_dataMode = BITS_16_R5G6B5;
+	int32_t m_width = 0;
+	int32_t m_height = 0;
 	struct bitmapFileHeader m_FileHeader;
-	struct bitmapFileHeader m_InfoHeader;
+	struct bitmapInfoHeader m_InfoHeader;
 
 	etk::FSNode fileName(_inputFile);
 	// get the fileSize ...
@@ -72,7 +72,7 @@ bool egami::loadBMP(const etk::UString& _inputFile, egami::Image& _ouputImage) {
 		fileName.fileClose();
 		return false;
 	}
-	if (fileName.fileRead(&m_InfoHeader,sizeof(struct bitmapFileHeader),1) != 1) {
+	if (fileName.fileRead(&m_InfoHeader,sizeof(struct bitmapInfoHeader),1) != 1) {
 		EGAMI_ERROR("error loading file header");
 		fileName.fileClose();
 		return false;
@@ -124,8 +124,7 @@ bool egami::loadBMP(const etk::UString& _inputFile, egami::Image& _ouputImage) {
 	_ouputImage.resize(ivec2(m_width,m_height));
 	
 	uint8_t* m_data = NULL;
-	if(0 != m_InfoHeader.biSizeImage)
-	{
+	if(0 != m_InfoHeader.biSizeImage) {
 		m_data=new uint8_t[m_InfoHeader.biSizeImage];
 		if (fileName.fileRead(m_data,m_InfoHeader.biSizeImage,1) != 1){
 			EGAMI_CRITICAL("Can not read the file with the good size...");
@@ -136,10 +135,8 @@ bool egami::loadBMP(const etk::UString& _inputFile, egami::Image& _ouputImage) {
 	etk::Color<> tmpColor(0,0,0,0);
 	
 	// need now to generate RGBA data ...
-	switch(m_dataMode)
-	{
-		case BITS_16_R5G6B5:
-			{
+	switch(m_dataMode) {
+		case BITS_16_R5G6B5: {
 				uint16_t * pointer = (uint16_t*)m_data;
 				for(int32_t yyy=0; yyy<m_height; yyy++) {
 					for(int32_t xxx=0; xxx<m_width; xxx++) {
@@ -153,8 +150,7 @@ bool egami::loadBMP(const etk::UString& _inputFile, egami::Image& _ouputImage) {
 				}
 			}
 			break;
-		case BITS_16_X1R5G5B5:
-			{
+		case BITS_16_X1R5G5B5: {
 				uint16_t * pointer = (uint16_t*)m_data;
 				for(int32_t yyy=0; yyy<m_height; yyy++) {
 					for(int32_t xxx=0; xxx<m_width; xxx++) {
@@ -168,8 +164,7 @@ bool egami::loadBMP(const etk::UString& _inputFile, egami::Image& _ouputImage) {
 				}
 			}
 			break;
-		case BITS_24_R8G8B8:
-			{
+		case BITS_24_R8G8B8: {
 				uint8_t * pointer = m_data;
 				for(int32_t yyy=0; yyy<m_height; yyy++) {
 					for(int32_t xxx=0; xxx<m_width; xxx++) {
@@ -182,8 +177,7 @@ bool egami::loadBMP(const etk::UString& _inputFile, egami::Image& _ouputImage) {
 				}
 			}
 			break;
-		case BITS_32_X8R8G8B8:
-			{
+		case BITS_32_X8R8G8B8: {
 				uint8_t * pointer = m_data;
 				for(int32_t yyy=0; yyy<m_height; yyy++) {
 					for(int32_t xxx=0; xxx<m_width; xxx++) {
@@ -197,8 +191,7 @@ bool egami::loadBMP(const etk::UString& _inputFile, egami::Image& _ouputImage) {
 				}
 			}
 			break;
-		case BITS_32_A8R8G8B8:
-			{
+		case BITS_32_A8R8G8B8: {
 				uint8_t * pointer = m_data;
 				for(int32_t yyy=0; yyy<m_height; yyy++) {
 					for(int32_t xxx=0; xxx<m_width; xxx++) {
@@ -224,14 +217,14 @@ bool egami::loadBMP(const etk::UString& _inputFile, egami::Image& _ouputImage) {
 
 bool egami::storeBMP(const etk::UString& _fileName, const egami::Image& _inputImage) {
 	struct bitmapFileHeader m_FileHeader;
-	struct bitmapFileHeader m_InfoHeader;
+	struct bitmapInfoHeader m_InfoHeader;
 	
 	m_FileHeader.bfType = 0x4D42;
 	m_FileHeader.bfSize = sizeof(struct bitmapFileHeader);
 	m_FileHeader.bfReserved = 0;
 	m_FileHeader.bfOffBits = 40;
 	
-	m_InfoHeader.biSize = sizeof(struct bitmapFileHeader);
+	m_InfoHeader.biSize = sizeof(struct bitmapInfoHeader);
 	m_InfoHeader.biWidth = _inputImage.getSize().x();
 	m_InfoHeader.biHeight = _inputImage.getSize().y();
 	m_InfoHeader.biPlanes = 1;
@@ -254,7 +247,7 @@ bool egami::storeBMP(const etk::UString& _fileName, const egami::Image& _inputIm
 		fileName.fileClose();
 		return false;
 	}
-	if (fileName.fileWrite(&m_InfoHeader,sizeof(struct bitmapFileHeader),1) != 1) {
+	if (fileName.fileWrite(&m_InfoHeader,sizeof(struct bitmapInfoHeader),1) != 1) {
 		EGAMI_ERROR("error loading file header");
 		fileName.fileClose();
 		return false;

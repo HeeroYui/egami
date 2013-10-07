@@ -18,8 +18,7 @@
 #define __class__	"wrapperPNG"
 
 // we must change the access of the IO of the png lib :
-static void local_ReadData(png_structp png_ptr, png_bytep data, png_size_t length)
-{
+static void local_ReadData(png_structp png_ptr, png_bytep data, png_size_t length) {
 	etk::FSNode* fileNode = static_cast<etk::FSNode*>(png_get_io_ptr(png_ptr));
 	if (NULL!=fileNode) {
 		fileNode->fileRead(data, 1, length);
@@ -43,8 +42,7 @@ static void localFlushData(png_structp png_ptr)
 }
 */
 
-bool egami::loadPNG(const etk::UString& _inputFile, egami::Image& _ouputImage)
-{
+bool egami::loadPNG(const etk::UString& _inputFile, egami::Image& _ouputImage) {
 	etk::FSNode fileName(_inputFile);
 	
 	if (false == fileName.exist()) {
@@ -69,8 +67,7 @@ bool egami::loadPNG(const etk::UString& _inputFile, egami::Image& _ouputImage)
 		fileName.fileClose();
 		return false;
 	}
-	if (png_sig_cmp(header, 0, 8))
-	{
+	if (png_sig_cmp(header, 0, 8)) {
 		EGAMI_ERROR("Invalid file :" << fileName);
 		return false;
 	}
@@ -108,8 +105,7 @@ bool egami::loadPNG(const etk::UString& _inputFile, egami::Image& _ouputImage)
 	rowbytes = width * ((bit_depth == 16) ? 8 : 4);
 
 	// File read
-	for (y = 0; y < height; y++)
-	{
+	for (y = 0; y < height; y++) {
 		row_pointers[y] = (png_byte*) malloc(rowbytes);
 	}
 	png_read_image(png_ptr, row_pointers);
@@ -117,15 +113,12 @@ bool egami::loadPNG(const etk::UString& _inputFile, egami::Image& _ouputImage)
 	png_set_strip_16(png_ptr);
 	
 	etk::Color<> tmpColor(0,0,0,0);
-	switch (png_get_color_type(png_ptr, info_ptr) )
-	{
+	switch (png_get_color_type(png_ptr, info_ptr) ) {
 		case PNG_COLOR_TYPE_RGBA:
 			// Conversion to OpenGL texture
-			for (y = 0; y < height; y++)
-			{
+			for (y = 0; y < height; y++) {
 				png_byte* row = row_pointers[y];
-				for (x = 0; x < width; x++)
-				{
+				for (x = 0; x < width; x++) {
 					png_byte* ptr = &(row[x*4]);
 					tmpColor.set(ptr[0], ptr[1],ptr[2],ptr[3]);
 					_ouputImage.set(ivec2(x,y), tmpColor);
@@ -135,11 +128,9 @@ bool egami::loadPNG(const etk::UString& _inputFile, egami::Image& _ouputImage)
 			break;
 		case PNG_COLOR_TYPE_RGB:
 			// Conversion to OpenGL texture
-			for (y = 0; y < height; y++)
-			{
+			for (y = 0; y < height; y++) {
 				png_byte* row = row_pointers[y];
-				for (x = 0; x < width; x++)
-				{
+				for (x = 0; x < width; x++) {
 					png_byte* ptr = &(row[x*3]);
 					tmpColor.set(ptr[0], ptr[1],ptr[2]);
 					_ouputImage.set(ivec2(x,y), tmpColor);
@@ -151,7 +142,6 @@ bool egami::loadPNG(const etk::UString& _inputFile, egami::Image& _ouputImage)
 			EGAMI_ERROR("Must be RGBA/RGB");
 			return false;
 	}
-
 	fileName.fileClose();
 	return true;
 }

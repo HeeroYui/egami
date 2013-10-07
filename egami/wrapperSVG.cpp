@@ -18,8 +18,7 @@
 #define __class__	"wrapperSVG"
 
 
-bool egami::loadSVG(const etk::UString& _fileName, egami::Image& _ouputImage, const ivec2& _size)
-{
+bool egami::loadSVG(const etk::UString& _fileName, egami::Image& _ouputImage, const ivec2& _size) {
 	esvg::Document m_element(_fileName);
 	if (false == m_element.isLoadOk()) {
 		EGAMI_ERROR("Error to load SVG file " << _fileName );

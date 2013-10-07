@@ -25,8 +25,7 @@ void egami::Image::resize(const ivec2& _size, const etk::Color<>& _color) {
 	m_data.reSize(m_size.x()*m_size.y(), _color);
 }
 
-void egami::Image::resize(const ivec2& _size, const ivec2& _startPos)
-{
+void egami::Image::resize(const ivec2& _size, const ivec2& _startPos) {
 	if (_size == m_size) {
 		// same size  == > nothing to do ...
 		return;
