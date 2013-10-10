@@ -95,7 +95,7 @@ bool egami::loadPNG(const etk::UString& _inputFile, egami::Image& _ouputImage) {
 	int32_t width = png_get_image_width(png_ptr, info_ptr);
 	int32_t height = png_get_image_height(png_ptr, info_ptr);
 	// reallocate the image 
-	EGAMI_DEBUG("Load PNG image : (" << width << "," << height << ")" );
+	EGAMI_VERBOSE("Load PNG image : (" << width << "," << height << ")" );
 	_ouputImage.resize(ivec2(width,height));
 	
 	int32_t bit_depth = png_get_bit_depth(png_ptr, info_ptr);
