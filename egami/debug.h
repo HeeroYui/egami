@@ -10,7 +10,7 @@
 #define __EGAMI_DEBUG_H__
 
 #include <etk/types.h>
-#include <etk/Debug.h>
+#include <etk/debugGeneric.h>
 
 extern const char * egamiLibName;
 
