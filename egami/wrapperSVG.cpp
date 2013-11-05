@@ -34,7 +34,7 @@ bool egami::loadSVG(const etk::UString& _fileName, egami::Image& _ouputImage, co
 	// generate the output image in the corect format:
 	_ouputImage.resize(tmpImage.getSize(), etk::color::white);
 	for (int32_t jjj=0; jjj<tmpImage.getSize().y(); jjj++) {
-		for (int32_t iii=0; iii<tmpImage.getSize().y(); iii++) {
+		for (int32_t iii=0; iii<tmpImage.getSize().x(); iii++) {
 			ivec2 tmppos(iii,jjj);
 			draw::Color tmpColor = tmpImage.get(tmppos);
 			_ouputImage.set(tmppos, etk::Color<>(tmpColor.r, tmpColor.g, tmpColor.b, tmpColor.a) );
