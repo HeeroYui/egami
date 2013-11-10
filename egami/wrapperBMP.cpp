@@ -34,19 +34,19 @@ extern "C" {
 	};
 	#pragma pack(pop)
 }
-typedef enum {
+enum modeBitmap {
 	BITS_16_R5G6B5,
 	BITS_16_X1R5G5B5,
 	BITS_24_R8G8B8,
 	BITS_32_X8R8G8B8,
 	BITS_32_A8R8G8B8
-} modeBitmap_te;
+};
 
 #undef __class__
 #define __class__ "wrapperBMP"
 
 bool egami::loadBMP(const etk::UString& _inputFile, egami::Image& _ouputImage) {
-	modeBitmap_te m_dataMode = BITS_16_R5G6B5;
+	enum modeBitmap m_dataMode = BITS_16_R5G6B5;
 	int32_t m_width = 0;
 	int32_t m_height = 0;
 	struct bitmapFileHeader m_FileHeader;
