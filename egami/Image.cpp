@@ -13,7 +13,7 @@ egami::Image::Image(const ivec2& _size) :
 	// basic element :
 	etk::Color<> tmpBg(0,0,0,0);
 	// preallocate data with a basic bg elements :
-	m_data.reSize(m_size.x()*m_size.y(), tmpBg);
+	m_data.resize(m_size.x()*m_size.y(), tmpBg);
 	if ((uint32_t)m_size.x()*m_size.y() > m_data.size()) {
 		TK_ERROR("Allocation of data buffer in error");
 		return;
@@ -22,7 +22,7 @@ egami::Image::Image(const ivec2& _size) :
 
 void egami::Image::resize(const ivec2& _size, const etk::Color<>& _color) {
 	m_size=_size;
-	m_data.reSize(m_size.x()*m_size.y(), _color);
+	m_data.resize(m_size.x()*m_size.y(), _color);
 }
 
 void egami::Image::resize(const ivec2& _size, const ivec2& _startPos) {
@@ -34,7 +34,7 @@ void egami::Image::resize(const ivec2& _size, const ivec2& _startPos) {
 	egami::Image tmpImage(*this);
 	m_size=_size;
 	etk::Color<> tmpBg(0,0,0,0);
-	m_data.reSize(m_size.x()*m_size.y(), tmpBg);
+	m_data.resize(m_size.x()*m_size.y(), tmpBg);
 	for (int32_t jjj=0; jjj<m_size.y(); jjj++) {
 		for (int32_t iii=0; iii<m_size.y(); iii++) {
 			ivec2 tmppos(iii,jjj);

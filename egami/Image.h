@@ -10,7 +10,7 @@
 #define __EGAMI_IMAGE_H__
 
 #include <etk/types.h>
-#include <etk/Vector.h>
+#include <vector>
 #include <etk/math/Vector2D.h>
 #include <etk/Color.h>
 
@@ -18,7 +18,7 @@ namespace egami {
 	class Image {
 		private:
 			ivec2 m_size;
-			etk::Vector<etk::Color<> > m_data;
+			std::vector<etk::Color<> > m_data;
 		public:
 			// constructor :
 			Image(const ivec2& _size=ivec2(32,32));

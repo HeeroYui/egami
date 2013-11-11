@@ -42,7 +42,7 @@ static void localFlushData(png_structp png_ptr)
 }
 */
 
-bool egami::loadPNG(const etk::UString& _inputFile, egami::Image& _ouputImage) {
+bool egami::loadPNG(const std::string& _inputFile, egami::Image& _ouputImage) {
 	etk::FSNode fileName(_inputFile);
 	
 	if (false == fileName.exist()) {

@@ -20,7 +20,7 @@ namespace egami
 	 * @param[in] _size size of the output image.
 	 * @return true if all is done correctly, false otherwise.
 	 */
-	bool loadSVG(const etk::UString& _fileName, egami::Image& _ouputImage, const ivec2& _size=ivec2(-1,-1));
+	bool loadSVG(const std::string& _fileName, egami::Image& _ouputImage, const ivec2& _size=ivec2(-1,-1));
 };
 
 #endif

@@ -45,7 +45,7 @@ enum modeBitmap {
 #undef __class__
 #define __class__ "wrapperBMP"
 
-bool egami::loadBMP(const etk::UString& _inputFile, egami::Image& _ouputImage) {
+bool egami::loadBMP(const std::string& _inputFile, egami::Image& _ouputImage) {
 	enum modeBitmap m_dataMode = BITS_16_R5G6B5;
 	int32_t m_width = 0;
 	int32_t m_height = 0;
@@ -215,7 +215,7 @@ bool egami::loadBMP(const etk::UString& _inputFile, egami::Image& _ouputImage) {
 	return true;
 }
 
-bool egami::storeBMP(const etk::UString& _fileName, const egami::Image& _inputImage) {
+bool egami::storeBMP(const std::string& _fileName, const egami::Image& _inputImage) {
 	struct bitmapFileHeader m_FileHeader;
 	struct bitmapInfoHeader m_InfoHeader;
 	

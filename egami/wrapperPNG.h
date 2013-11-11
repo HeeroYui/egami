@@ -19,7 +19,7 @@ namespace egami
 	 * @param[out] _ouputImage Read data.
 	 * @return true if all is done correctly, false otherwise.
 	 */
-	bool loadPNG(const etk::UString& _fileName, egami::Image& _ouputImage);
+	bool loadPNG(const std::string& _fileName, egami::Image& _ouputImage);
 };
 
 #endif

@@ -13,15 +13,15 @@
 #include <egami/wrapperPNG.h>
 #include <egami/wrapperBMP.h>
 
-bool egami::scalable(const etk::UString& _fileName) {
+bool egami::scalable(const std::string& _fileName) {
 	if (true == _fileName.endWith(".svg") ) {
 		return true;
 	}
 	return false;
 }
 
-bool egami::load(egami::Image& _output, const etk::UString& _fileName, const ivec2& _size) {
-	etk::UString tmpName = _fileName.toLower();
+bool egami::load(egami::Image& _output, const std::string& _fileName, const ivec2& _size) {
+	std::string tmpName = _fileName.toLower();
 	// select the corect Loader :
 	if (true == tmpName.endWith(".bmp") ) {
 		if (false == egami::loadBMP(_fileName, _output)) {
@@ -45,8 +45,8 @@ bool egami::load(egami::Image& _output, const etk::UString& _fileName, const ive
 	return true;
 }
 
-bool egami::store(const egami::Image& _input, const etk::UString& _fileName) {
-	etk::UString tmpName = _fileName.toLower();
+bool egami::store(const egami::Image& _input, const std::string& _fileName) {
+	std::string tmpName = _fileName.toLower();
 	// select the corect Loader :
 	if (true == tmpName.endWith(".bmp") ) {
 		if (false == egami::storeBMP(_fileName, _input)) {
