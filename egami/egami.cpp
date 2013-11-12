@@ -14,26 +14,26 @@
 #include <egami/wrapperBMP.h>
 
 bool egami::scalable(const std::string& _fileName) {
-	if (true == _fileName.endWith(".svg") ) {
+	if (true ==  end_with(_fileName, ".svg") ) {
 		return true;
 	}
 	return false;
 }
 
 bool egami::load(egami::Image& _output, const std::string& _fileName, const ivec2& _size) {
-	std::string tmpName = _fileName.toLower();
+	std::string tmpName = to_lower(_fileName);
 	// select the corect Loader :
-	if (true == tmpName.endWith(".bmp") ) {
+	if (true == end_with(tmpName, ".bmp") ) {
 		if (false == egami::loadBMP(_fileName, _output)) {
 			EGAMI_ERROR("Error to load BMP file '" << _fileName << "'");
 			return false;
 		}
-	} else if (true == tmpName.endWith(".svg") ) {
+	} else if (true == end_with(tmpName, ".svg") ) {
 		if (false == egami::loadSVG(_fileName, _output, _size)) {
 			EGAMI_ERROR("Error to load SVG file '" << _fileName << "'");
 			return false;
 		}
-	} else if (true == tmpName.endWith(".png") ) {
+	} else if (true == end_with(tmpName, ".png") ) {
 		if (false == egami::loadPNG(_fileName, _output)) {
 			EGAMI_ERROR("Error to load PNG file '" << _fileName << "'");
 			return false;
@@ -46,17 +46,17 @@ bool egami::load(egami::Image& _output, const std::string& _fileName, const ivec
 }
 
 bool egami::store(const egami::Image& _input, const std::string& _fileName) {
-	std::string tmpName = _fileName.toLower();
+	std::string tmpName = to_lower(_fileName);
 	// select the corect Loader :
-	if (true == tmpName.endWith(".bmp") ) {
+	if (true == end_with(tmpName, ".bmp") ) {
 		if (false == egami::storeBMP(_fileName, _input)) {
 			EGAMI_ERROR("Error to load BMP file '" << _fileName << "'");
 			return false;
 		}
-	} else if (true == tmpName.endWith(".svg") ) {
+	} else if (true == end_with(tmpName, ".svg") ) {
 		EGAMI_ERROR("Can not store in SVG file '" << _fileName << "'");
 		return false;
-	} else if (true == tmpName.endWith(".png") ) {
+	} else if (true == end_with(tmpName, ".png") ) {
 		EGAMI_ERROR("Can not store in PNG file '" << _fileName << "'");
 		return false;
 	} else {
