@@ -6,6 +6,8 @@ def Create(target):
 	# module name is 'edn' and type binary.
 	myModule = lutinModule.module(__file__, 'egami', 'LIBRARY')
 	
+	# add extra compilation flags :
+	myModule.add_extra_compile_flags()
 	# add the file to compile:
 	myModule.AddSrcFile([
 		'egami/Image.cpp',
