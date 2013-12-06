@@ -7,6 +7,9 @@ def Create(target):
 	myModule = lutinModule.module(__file__, 'egami', 'LIBRARY')
 	# enable doculentation :
 	myModule.doc_enable()
+	myModule.documentation.set_website("http://HeeroYui.github.io/egami/doc/doc/")
+	myModule.documentation.set_path(lutinTools.GetCurrentPath(__file__) + "/egami/")
+	myModule.documentation.set_external_link(['etk', 'png', 'esvg'])
 	
 	# add extra compilation flags :
 	myModule.add_extra_compile_flags()
