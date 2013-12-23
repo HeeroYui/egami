@@ -1,20 +1,19 @@
 #!/usr/bin/python
-import lutinModule
+import lutinModule as module
+import lutinTools as tools
 import lutinTools
 
-def Create(target):
+def get_desc():
+	return "e-gami library (image generator from multiple image type)"
+
+def create(target):
 	# module name is 'edn' and type binary.
-	myModule = lutinModule.module(__file__, 'egami', 'LIBRARY')
-	# enable doculentation :
-	myModule.doc_enable()
-	myModule.documentation.set_website("http://HeeroYui.github.io/egami/")
-	myModule.documentation.set_path(lutinTools.GetCurrentPath(__file__) + "/egami/")
-	myModule.documentation.set_external_link(['etk', 'png', 'esvg'])
+	myModule = module.Module(__file__, 'egami', 'LIBRARY')
 	
 	# add extra compilation flags :
 	myModule.add_extra_compile_flags()
 	# add the file to compile:
-	myModule.AddSrcFile([
+	myModule.add_src_file([
 		'egami/Image.cpp',
 		'egami/egami.cpp',
 		'egami/debug.cpp',
@@ -23,13 +22,13 @@ def Create(target):
 		'egami/wrapperBMP.cpp'])
 	
 	# name of the dependency
-	myModule.AddModuleDepend(['etk', 'png', 'esvg'])
+	myModule.add_module_depend(['etk', 'png', 'esvg'])
 	
-	myModule.CompileFlags_CC([
+	myModule.compile_flags_CC([
 		'-Wno-write-strings',
 		'-Wall'])
 	
-	myModule.AddExportPath(lutinTools.GetCurrentPath(__file__))
+	myModule.add_export_path(tools.get_current_path(__file__))
 	
 	
 	# add the currrent module at the 
