@@ -21,7 +21,7 @@ bool egami::scalable(const std::string& _fileName) {
 }
 
 bool egami::load(egami::Image& _output, const std::string& _fileName, const ivec2& _size) {
-	std::string tmpName = to_lower(_fileName);
+	std::string tmpName = std::tolower(_fileName);
 	// select the corect Loader :
 	if (true == end_with(tmpName, ".bmp") ) {
 		if (false == egami::loadBMP(_fileName, _output)) {
@@ -46,7 +46,7 @@ bool egami::load(egami::Image& _output, const std::string& _fileName, const ivec
 }
 
 bool egami::store(const egami::Image& _input, const std::string& _fileName) {
-	std::string tmpName = to_lower(_fileName);
+	std::string tmpName = std::tolower(_fileName);
 	// select the corect Loader :
 	if (true == end_with(tmpName, ".bmp") ) {
 		if (false == egami::storeBMP(_fileName, _input)) {
