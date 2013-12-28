@@ -12,6 +12,7 @@ def create():
 	myModule = module.Module(__file__, 'egami', 'LIBRARY')
 	# enable doculentation :
 	myModule.set_website("http://heeroyui.github.io/egami/")
+	myModule.set_website_sources("http://github.com/heeroyui/egami/")
 	myModule.set_path(tools.get_current_path(__file__) + "/egami/")
 	
 	# add the currrent module at the 
