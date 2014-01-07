@@ -6,12 +6,12 @@
  * @license BSD v3 (see license file)
  */
 
-#include <egami/Image.h>
+#include <egami/ImageMono.h>
 
-egami::Image::Image(const ivec2& _size) :
-    m_size(_size) {
+egami::ImageMono::ImageMono(const ivec2& _size) :
+  m_size(_size) {
 	// basic element :
-	etk::Color<> tmpBg(0,0,0,0);
+	uint8_t tmpBg(0);
 	// preallocate data with a basic bg elements :
 	m_data.resize(m_size.x()*m_size.y(), tmpBg);
 	if ((uint32_t)m_size.x()*m_size.y() > m_data.size()) {
@@ -20,20 +20,20 @@ egami::Image::Image(const ivec2& _size) :
 	}
 }
 
-void egami::Image::resize(const ivec2& _size, const etk::Color<>& _color) {
+void egami::ImageMono::resize(const ivec2& _size, const uint8_t& _color) {
 	m_size=_size;
 	m_data.resize(m_size.x()*m_size.y(), _color);
 }
 
-void egami::Image::resize(const ivec2& _size, const ivec2& _startPos) {
+void egami::ImageMono::resize(const ivec2& _size, const ivec2& _startPos) {
 	if (_size == m_size) {
 		// same size  == > nothing to do ...
 		return;
 	}
 	// grow size :
-	egami::Image tmpImage(*this);
+	egami::ImageMono tmpImage(*this);
 	m_size=_size;
-	etk::Color<> tmpBg(0,0,0,0);
+	uint8_t tmpBg(0);
 	m_data.resize(m_size.x()*m_size.y(), tmpBg);
 	for (int32_t jjj=0; jjj<m_size.y(); jjj++) {
 		for (int32_t iii=0; iii<m_size.y(); iii++) {
@@ -44,13 +44,13 @@ void egami::Image::resize(const ivec2& _size, const ivec2& _startPos) {
 }
 
 
-void egami::Image::clear(etk::Color<> _fill) {
+void egami::ImageMono::clear(uint8_t _fill) {
 	for (int32_t iii=0; iii<m_size.x()*m_size.y(); iii++) {
 		m_data[iii] = _fill;
 	}
 }
-const etk::Color<>& egami::Image::get(const ivec2& _pos) const {
-	static const etk::Color<> errorColor(0x00000000);
+const uint8_t& egami::ImageMono::get(const ivec2& _pos) const {
+	static const uint8_t errorColor(0x00000000);
 	if(    _pos.x()>0 && _pos.x()<m_size.x()
 	    && _pos.y()>0 && _pos.y()<m_size.y()) {
 		return m_data[_pos.x()+_pos.y()*m_size.x()];
@@ -58,17 +58,9 @@ const etk::Color<>& egami::Image::get(const ivec2& _pos) const {
 	return errorColor;
 }
 
-void egami::Image::set(const ivec2& _pos, const etk::Color<>& _newColor) {
+void egami::ImageMono::set(const ivec2& _pos, const uint8_t& _newColor) {
 	if(    _pos.x()>=0 && _pos.x()<m_size.x()
 	    && _pos.y()>=0 && _pos.y()<m_size.y()) {
 		m_data[_pos.x()+_pos.y()*m_size.x()] = _newColor;
-	}
-}
-
-void egami::Image::insert(const ivec2& _pos, const egami::Image& _input) {
-	for(int32_t yyy = 0; yyy < _input.getSize().y() && _pos.y() + yyy < m_size.y(); ++yyy) {
-		for(int32_t xxx = 0; xxx < _input.getSize().x() && _pos.x() + xxx < m_size.x(); ++xxx) {
-			set(ivec2(_pos.x()+xxx, _pos.y()+yyy), _input.get(ivec2(xxx, yyy)) );
-		}
 	}
 }

@@ -15,6 +15,7 @@ def create(target):
 	# add the file to compile:
 	myModule.add_src_file([
 		'egami/Image.cpp',
+		'egami/ImageMono.cpp',
 		'egami/egami.cpp',
 		'egami/debug.cpp',
 		'egami/wrapperPNG.cpp',

@@ -14,6 +14,7 @@
 #include <etk/math/Vector2D.h>
 #include <etk/Color.h>
 #include <egami/Image.h>
+#include <egami/ImageMono.h>
 
 namespace egami
 {

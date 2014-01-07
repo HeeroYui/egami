@@ -6,8 +6,8 @@
  * @license BSD v3 (see license file)
  */
 
-#ifndef __EGAMI_IMAGE_H__
-#define __EGAMI_IMAGE_H__
+#ifndef __EGAMI_IMAGE_MONO_H__
+#define __EGAMI_IMAGE_MONO_H__
 
 #include <etk/types.h>
 #include <vector>
@@ -15,15 +15,15 @@
 #include <etk/Color.h>
 
 namespace egami {
-	class Image {
+	class ImageMono {
 		private:
 			ivec2 m_size;
-			std::vector<etk::Color<> > m_data;
+			std::vector<uint8_t> m_data;
 		public:
 			// constructor :
-			Image(const ivec2& _size=ivec2(32,32));
+			ImageMono(const ivec2& _size=ivec2(32,32));
 			// destructor
-			~Image(void) { };
+			~ImageMono(void) { };
 		// EWOL internal API for Texture system :
 		public:
 			void* getTextureDataPointer(void) {
@@ -34,7 +34,7 @@ namespace egami {
 		// -----------------------------------------------
 		public :
 			void resize(const ivec2& _size, const ivec2& _startPos=ivec2(0,0));
-			void resize(const ivec2& _size, const etk::Color<>& _color);
+			void resize(const ivec2& _size, const uint8_t& _color);
 			
 			const ivec2& getSize(void) const {
 				return m_size;
@@ -45,10 +45,9 @@ namespace egami {
 			int32_t getHeight(void) const {
 				return m_size.y();
 			};
-			void clear(etk::Color<> _fill);
-			const etk::Color<>& get(const ivec2& _pos) const;
-			void set(const ivec2& _pos, const etk::Color<>& _newColor);
-			void insert(const ivec2& _pos, const egami::Image& _input);
+			void clear(uint8_t _fill);
+			const uint8_t& get(const ivec2& _pos) const;
+			void set(const ivec2& _pos, const uint8_t& _newColor);
 	};
 	
 };
