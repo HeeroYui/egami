@@ -39,6 +39,14 @@ namespace egami
 	 * @return true if the format is scalable.
 	 */
 	bool scalable(const std::string& _fileName);
+	/**
+	 * @brief Generate a distance field output file from an input file;
+	 * @param[in] _input Input file name
+	 * @param[in] _output Output file name
+	 * @return true All done corectly.
+	 * @return false An error occured.
+	 */
+	bool generateDistanceFieldFile(const std::string& _input, const std::string& _output);
 };
 
 #endif

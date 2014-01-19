@@ -7,6 +7,7 @@
  */
 
 #include <egami/Image.h>
+#include <egami/debug.h>
 
 egami::Image::Image(const ivec2& _size) :
     m_size(_size) {
@@ -41,6 +42,21 @@ void egami::Image::resize(const ivec2& _size, const ivec2& _startPos) {
 			set(tmppos, tmpImage.get(tmppos));
 		}
 	}
+}
+
+void egami::Image::scale(const ivec2& _size) {
+	// TODO : Add capabilities ...
+	int32_t stepX = m_size.x() / _size.x();
+	int32_t stepY = m_size.y() / _size.y();
+	stepX = etk_max(1, stepX);
+	stepY = etk_max(1, stepY);
+	EGAMI_VERBOSE("move : " << stepX << " , " << stepY << " from : " << m_size << " ==> " << _size);
+	for (int32_t yyy = 0; yyy < _size.y(); ++yyy) {
+		for (int32_t xxx = 0; xxx < _size.x(); ++xxx) {
+			set(ivec2(xxx, yyy), get(ivec2(xxx*stepX, yyy*stepY)));
+		}
+	}
+	resize(_size);
 }
 
 

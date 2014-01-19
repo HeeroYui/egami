@@ -20,10 +20,11 @@ def create(target):
 		'egami/debug.cpp',
 		'egami/wrapperPNG.cpp',
 		'egami/wrapperSVG.cpp',
-		'egami/wrapperBMP.cpp'])
+		'egami/wrapperBMP.cpp',
+		'egami/wrapperEDF.cpp'])
 	
 	# name of the dependency
-	myModule.add_module_depend(['etk', 'png', 'esvg'])
+	myModule.add_module_depend(['etk', 'png', 'esvg', 'edtaa3'])
 	
 	myModule.compile_flags_CC([
 		'-Wno-write-strings',

@@ -49,6 +49,12 @@ namespace egami {
 			const etk::Color<>& get(const ivec2& _pos) const;
 			void set(const ivec2& _pos, const etk::Color<>& _newColor);
 			void insert(const ivec2& _pos, const egami::Image& _input);
+			/**
+			 * @brief Scale an image in an other dimention.
+			 * @param[in] _size Destination size of the image.
+			 * @TODO Set this function more capacity like not a multiple ratio...
+			 */
+			void scale(const ivec2& _size);
 	};
 	
 };
