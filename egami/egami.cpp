@@ -40,7 +40,7 @@ bool egami::load(egami::Image& _output, const std::string& _fileName, const ivec
 			EGAMI_ERROR("Error to load SVG file '" << _fileName << "'");
 			return false;
 		}
-		egami::storeEDF(_fileName + ".edf", _output);
+		//egami::storeEDF(_fileName + ".edf", _output);
 	} else if (true == end_with(tmpName, ".png") ) {
 		if (false == egami::loadPNG(_fileName, _output)) {
 			EGAMI_ERROR("Error to load PNG file '" << _fileName << "'");
