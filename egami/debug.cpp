@@ -8,4 +8,7 @@
 
 #include <egami/debug.h>
 
-const char * egamiLibName = "egami    ";
+int32_t egami::getLogId(void) {
+	static int32_t g_val = etk::log::registerInstance("egami");
+	return g_val;
+}
