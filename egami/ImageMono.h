@@ -23,10 +23,10 @@ namespace egami {
 			// constructor :
 			ImageMono(const ivec2& _size=ivec2(32,32));
 			// destructor
-			~ImageMono(void) { };
+			~ImageMono() { };
 		// EWOL internal API for Texture system :
 		public:
-			void* getTextureDataPointer(void) {
+			void* getTextureDataPointer() {
 				return &m_data[0];
 			};
 		// -----------------------------------------------
@@ -36,13 +36,13 @@ namespace egami {
 			void resize(const ivec2& _size, const ivec2& _startPos=ivec2(0,0));
 			void resize(const ivec2& _size, const uint8_t& _color);
 			
-			const ivec2& getSize(void) const {
+			const ivec2& getSize() const {
 				return m_size;
 			};
-			int32_t getWidth(void) const {
+			int32_t getWidth() const {
 				return m_size.x();
 			};
-			int32_t getHeight(void) const {
+			int32_t getHeight() const {
 				return m_size.y();
 			};
 			void clear(uint8_t _fill);

@@ -8,7 +8,7 @@
 
 #include <egami/debug.h>
 
-int32_t egami::getLogId(void) {
+int32_t egami::getLogId() {
 	static int32_t g_val = etk::log::registerInstance("egami");
 	return g_val;
 }

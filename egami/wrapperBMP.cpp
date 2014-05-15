@@ -274,7 +274,7 @@ bool egami::storeBMP(const std::string& _fileName, const egami::Image& _inputIma
 }
 
 /*
-void ewol::texture::TextureBMP::display(void)
+void ewol::texture::TextureBMP::display()
 {
 	if (NULL == m_data) {
 		EWOL_ERROR("Might loading error of this Bitmap ...");
