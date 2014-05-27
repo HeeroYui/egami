@@ -174,8 +174,8 @@ bool egami::generateDistanceFieldFile(const std::string& _input, const std::stri
 	// Generate distance field :
 	egami::ImageMono input;
 	input.resize(data.getSize());
-	for (size_t yyy = 0; yyy < data.getSize().y(); ++yyy) {
-		for (size_t xxx = 0; xxx < data.getSize().x(); ++xxx) {
+	for (int32_t yyy = 0; yyy < data.getSize().y(); ++yyy) {
+		for (int32_t xxx = 0; xxx < data.getSize().x(); ++xxx) {
 			input.set(ivec2(xxx, yyy), data.get(ivec2(xxx, yyy)).a() );
 		}
 	}
