@@ -91,6 +91,7 @@ static void generateDistanceField(const egami::ImageMono& _input, egami::Image& 
 	std::vector<double> data(size);
 	std::vector<double> outside(size);
 	std::vector<double> inside(size);
+	/*
 	// Convert img into double (data)
 	double img_min = 255, img_max = -255;
 	for (int32_t yyy = 0; yyy < _input.getSize().y(); ++yyy) {
@@ -159,6 +160,7 @@ static void generateDistanceField(const egami::ImageMono& _input, egami::Image& 
 			_output.set(ivec2(xxx, yyy), etk::Color<>((int32_t)val,(int32_t)val,(int32_t)val,(int32_t)val));
 		}
 	}
+	*/
 }
 
 
@@ -173,12 +175,14 @@ bool egami::generateDistanceFieldFile(const std::string& _input, const std::stri
 	}
 	// Generate distance field :
 	egami::ImageMono input;
+	/*
 	input.resize(data.getSize());
 	for (int32_t yyy = 0; yyy < data.getSize().y(); ++yyy) {
 		for (int32_t xxx = 0; xxx < data.getSize().x(); ++xxx) {
 			input.set(ivec2(xxx, yyy), data.get(ivec2(xxx, yyy)).a() );
 		}
 	}
+	*/
 	generateDistanceField(input, data);
 	// scale:
 	data.scale(ivec2(64,64));
