@@ -47,8 +47,8 @@ namespace egami {
 			// TODO : Create a template function ...
 			void resize(const ivec2& _size, const etk::Color<>& _color, const ivec2& _startPos=ivec2(0,0));
 			void resize(const ivec2& _size, const etk::Color<float>& _color, const ivec2& _startPos=ivec2(0,0));
-			void resize(const ivec2& _size, const etk::Color<int16_t, 1>& _color, const ivec2& _startPos=ivec2(0,0));
-			void resize(const ivec2& _size, const etk::Color<int32_t, 1>& _color, const ivec2& _startPos=ivec2(0,0));
+			void resize(const ivec2& _size, const etk::Color<uint16_t, 1>& _color, const ivec2& _startPos=ivec2(0,0));
+			void resize(const ivec2& _size, const etk::Color<uint32_t, 1>& _color, const ivec2& _startPos=ivec2(0,0));
 			void resize(const ivec2& _size, const etk::Color<float, 1>& _color, const ivec2& _startPos=ivec2(0,0));
 			void resize(const ivec2& _size, const etk::Color<double, 1>& _color, const ivec2& _startPos=ivec2(0,0));
 			
@@ -57,8 +57,8 @@ namespace egami {
 			int32_t getHeight() const;
 			void clear(const etk::Color<>& _color);
 			void clear(const etk::Color<float>& _color);
-			void clear(const etk::Color<int16_t, 1>& _color);
-			void clear(const etk::Color<int32_t, 1>& _color);
+			void clear(const etk::Color<uint16_t, 1>& _color);
+			void clear(const etk::Color<uint32_t, 1>& _color);
 			void clear(const etk::Color<float, 1>& _color);
 			void clear(const etk::Color<double, 1>& _color);
 			
