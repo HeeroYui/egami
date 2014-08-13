@@ -16,32 +16,32 @@
 #include <edtaa3/edtaa3func.h>
 
 bool egami::scalable(const std::string& _fileName) {
-	if (true ==  end_with(_fileName, ".svg") ) {
+	if (true ==  etk::end_with(_fileName, ".svg") ) {
 		return true;
 	}
 	return false;
 }
 
 bool egami::load(egami::Image& _output, const std::string& _fileName, const ivec2& _size) {
-	std::string tmpName = std::tolower(_fileName);
+	std::string tmpName = etk::tolower(_fileName);
 	// select the corect Loader :
-	if (true == end_with(tmpName, ".edf") ) { // internal format for ewol distance field ==> simple sistance field image
+	if (true == etk::end_with(tmpName, ".edf") ) { // internal format for ewol distance field ==> simple sistance field image
 		if (false == egami::loadEDF(_fileName, _output)) {
 			EGAMI_ERROR("Error to load EDF file '" << _fileName << "'");
 			return false;
 		}
-	} else if (true == end_with(tmpName, ".bmp") ) {
+	} else if (true == etk::end_with(tmpName, ".bmp") ) {
 		if (false == egami::loadBMP(_fileName, _output)) {
 			EGAMI_ERROR("Error to load BMP file '" << _fileName << "'");
 			return false;
 		}
-	} else if (true == end_with(tmpName, ".svg") ) {
+	} else if (true == etk::end_with(tmpName, ".svg") ) {
 		if (false == egami::loadSVG(_fileName, _output, _size)) {
 			EGAMI_ERROR("Error to load SVG file '" << _fileName << "'");
 			return false;
 		}
 		//egami::storeEDF(_fileName + ".edf", _output);
-	} else if (true == end_with(tmpName, ".png") ) {
+	} else if (true == etk::end_with(tmpName, ".png") ) {
 		if (false == egami::loadPNG(_fileName, _output)) {
 			EGAMI_ERROR("Error to load PNG file '" << _fileName << "'");
 			return false;
@@ -54,23 +54,23 @@ bool egami::load(egami::Image& _output, const std::string& _fileName, const ivec
 }
 
 bool egami::store(const egami::Image& _input, const std::string& _fileName) {
-	std::string tmpName = std::tolower(_fileName);
+	std::string tmpName = etk::tolower(_fileName);
 	EGAMI_DEBUG("Store file : " << _fileName);
 	// select the corect Loader :
-	if (true == end_with(tmpName, ".edf") ) {
+	if (true == etk::end_with(tmpName, ".edf") ) {
 		if (false == egami::storeEDF(_fileName, _input)) {
 			EGAMI_ERROR("Error to load EDF file '" << _fileName << "'");
 			return false;
 		}
-	} else if (true == end_with(tmpName, ".bmp") ) {
+	} else if (true == etk::end_with(tmpName, ".bmp") ) {
 		if (false == egami::storeBMP(_fileName, _input)) {
 			EGAMI_ERROR("Error to load BMP file '" << _fileName << "'");
 			return false;
 		}
-	} else if (true == end_with(tmpName, ".svg") ) {
+	} else if (true == etk::end_with(tmpName, ".svg") ) {
 		EGAMI_ERROR("Can not store in SVG file '" << _fileName << "'");
 		return false;
-	} else if (true == end_with(tmpName, ".png") ) {
+	} else if (true == etk::end_with(tmpName, ".png") ) {
 		EGAMI_ERROR("Can not store in PNG file '" << _fileName << "'");
 		return false;
 	} else {
@@ -166,7 +166,7 @@ static void generateDistanceField(const egami::ImageMono& _input, egami::Image& 
 
 bool egami::generateDistanceFieldFile(const std::string& _input, const std::string& _output) {
 	egami::Image data;
-	if (std::end_with(_input, ".edf") == true) {
+	if (etk::end_with(_input, ".edf") == true) {
 		return false;
 	}
 	EGAMI_ERROR("Generate distance field : '" << _input << "' ==> '" << _output << "'");

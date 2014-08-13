@@ -31,7 +31,7 @@ bool egami::loadEDF(const std::string& _inputFile, egami::Image& _ouputImage) {
 	}
 	std::string line;
 	file.fileGets(line);
-	if (std::start_with(line, "#edf", false) == false) {
+	if (etk::start_with(line, "#edf", false) == false) {
 		EGAMI_ERROR("This file seams not to be a EDF file ...");
 		file.fileClose();
 		return false;
@@ -96,9 +96,9 @@ bool egami::storeEDF(const std::string& _fileName, const egami::Image& _inputIma
 		return false;
 	}
 	anErrorEccured = file.filePuts(   std::string("#EDF // Generate with EGAMI (")
-	                                + std::to_string(_inputImage.getSize().x())
+	                                + etk::to_string(_inputImage.getSize().x())
 	                                + ","
-	                                + std::to_string(_inputImage.getSize().y()) + ")\n");
+	                                + etk::to_string(_inputImage.getSize().y()) + ")\n");
 	
 	char tmp[256];
 	for (int32_t yyy = 0; yyy < _inputImage.getSize().y(); ++yyy) {
