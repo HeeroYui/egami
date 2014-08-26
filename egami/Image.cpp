@@ -190,7 +190,22 @@ void egami::Image::insert(const ivec2& _pos, const egami::Image& _input) {
 		EGAMI_WARNING("No internal data for image : Can not insert image");
 		return;
 	}
-	EGAMI_CRITICAL("Insert image");
+	if (_input.m_data == nullptr) {
+		EGAMI_WARNING("No input data for image : Can not insert nullptr image");
+		return;
+	}
+	enum colorType destType = m_data->getType();
+	enum colorType sourceType = _input.m_data->getType();
+	if (destType == sourceType) {
+		for (int32_t yyy=0; yyy < _input.getHeight(); ++yyy) {
+			for (int32_t xxx=0; xxx < _input.getWidth(); ++xxx) {
+				m_data->set(ivec2(_pos.x()+xxx,_pos.y()+yyy), _input.m_data->get(ivec2(xxx,yyy)));
+				//EGAMI_INFO("copy : " << ivec2(xxx,yyy) << " => " << ivec2(_pos.x()+xxx,_pos.y()+yyy));
+			}
+		}
+	} else {
+		EGAMI_CRITICAL("TODO : Insert image");
+	}
 }
 
 void egami::Image::set(const ivec2& _pos, const etk::Color<>& _newColor) {
