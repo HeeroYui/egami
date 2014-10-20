@@ -101,6 +101,36 @@ bool egami::loadPNG(const std::string& _inputFile, egami::Image& _ouputImage) {
 	int32_t bit_depth = png_get_bit_depth(png_ptr, info_ptr);
 	png_read_update_info(png_ptr, info_ptr);
 	setjmp(png_jmpbuf(png_ptr));
+	
+	/* expand palette images to RGB, low-bit-depth grayscale images to 8 bits,
+	* transparency chunks to full alpha channel; strip 16-bit-per-sample
+	* images to 8 bits per sample; and convert grayscale to RGB[A] */
+	
+	// TODO : TEMPORARY section : [START]
+	int32_t color_type = png_get_color_type(png_ptr, info_ptr);
+	if (color_type == PNG_COLOR_TYPE_PALETTE) {
+		png_set_expand(png_ptr);
+	}
+	if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8) {
+		png_set_expand(png_ptr);
+	}
+	if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS)) {
+		png_set_expand(png_ptr);
+	}
+	if (bit_depth == 16) {
+		png_set_strip_16(png_ptr);
+	}
+	/*
+	if (    color_type == PNG_COLOR_TYPE_GRAY
+	     || color_type == PNG_COLOR_TYPE_GRAY_ALPHA) {
+		png_set_gray_to_rgb(png_ptr);
+	}
+	*/
+	// TODO : TEMPORARY section : [STOP]
+	
+	bit_depth = png_get_bit_depth(png_ptr, info_ptr);
+	png_read_update_info(png_ptr, info_ptr);
+	
 	row_pointers = (png_bytep*) malloc(sizeof(png_bytep) * height);
 	rowbytes = width * ((bit_depth == 16) ? 8 : 4);
 
@@ -138,8 +168,41 @@ bool egami::loadPNG(const std::string& _inputFile, egami::Image& _ouputImage) {
 				delete row_pointers[y];
 			}
 			break;
+		case PNG_COLOR_TYPE_GRAY:
+			// Conversion to OpenGL texture
+			for (y = 0; y < height; y++) {
+				png_byte* row = row_pointers[y];
+				for (x = 0; x < width; x++) {
+					png_byte* ptr = &(row[x]);
+					tmpColor.set(ptr[0],ptr[0],ptr[0]);
+					_ouputImage.set(ivec2(x,y), tmpColor);
+				}
+				delete row_pointers[y];
+			}
+			break;
+		case PNG_COLOR_TYPE_GRAY_ALPHA:
+			// Conversion to OpenGL texture
+			for (y = 0; y < height; y++) {
+				png_byte* row = row_pointers[y];
+				for (x = 0; x < width; x++) {
+					png_byte* ptr = &(row[x*2]);
+					tmpColor.set(ptr[0],ptr[0],ptr[0],ptr[1]);
+					_ouputImage.set(ivec2(x,y), tmpColor);
+				}
+				delete row_pointers[y];
+			}
+			break;
 		default:
-			EGAMI_ERROR("Must be RGBA/RGB");
+			EGAMI_ERROR("Must be RGB+alpha?/GRAY+alpha? not supported : " << (int64_t)png_get_color_type(png_ptr, info_ptr));
+			if ((png_get_color_type(png_ptr, info_ptr) & PNG_COLOR_MASK_PALETTE) != 0) {
+				EGAMI_ERROR("    palette");
+			}
+			if ((png_get_color_type(png_ptr, info_ptr) & PNG_COLOR_MASK_COLOR) != 0) {
+				EGAMI_ERROR("    color");
+			}
+			if ((png_get_color_type(png_ptr, info_ptr) & PNG_COLOR_MASK_ALPHA) != 0) {
+				EGAMI_ERROR("    Alpha");
+			}
 			return false;
 	}
 	fileName.fileClose();
