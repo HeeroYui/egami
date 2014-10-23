@@ -153,7 +153,7 @@ bool egami::loadPNG(const std::string& _inputFile, egami::Image& _ouputImage) {
 					tmpColor.set(ptr[0], ptr[1],ptr[2],ptr[3]);
 					_ouputImage.set(ivec2(x,y), tmpColor);
 				}
-				delete row_pointers[y];
+				free(row_pointers[y]);
 			}
 			break;
 		case PNG_COLOR_TYPE_RGB:
@@ -165,7 +165,7 @@ bool egami::loadPNG(const std::string& _inputFile, egami::Image& _ouputImage) {
 					tmpColor.set(ptr[0], ptr[1],ptr[2]);
 					_ouputImage.set(ivec2(x,y), tmpColor);
 				}
-				delete row_pointers[y];
+				free(row_pointers[y]);
 			}
 			break;
 		case PNG_COLOR_TYPE_GRAY:
@@ -177,7 +177,7 @@ bool egami::loadPNG(const std::string& _inputFile, egami::Image& _ouputImage) {
 					tmpColor.set(ptr[0],ptr[0],ptr[0]);
 					_ouputImage.set(ivec2(x,y), tmpColor);
 				}
-				delete row_pointers[y];
+				free(row_pointers[y]);
 			}
 			break;
 		case PNG_COLOR_TYPE_GRAY_ALPHA:
@@ -189,7 +189,7 @@ bool egami::loadPNG(const std::string& _inputFile, egami::Image& _ouputImage) {
 					tmpColor.set(ptr[0],ptr[0],ptr[0],ptr[1]);
 					_ouputImage.set(ivec2(x,y), tmpColor);
 				}
-				delete row_pointers[y];
+				free(row_pointers[y]);
 			}
 			break;
 		default:
