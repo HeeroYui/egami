@@ -14,16 +14,7 @@
 namespace egami {
 	int32_t getLogId();
 };
-// TODO : Review this problem of multiple intanciation of "std::stringbuf sb"
-#define EGAMI_BASE(info,data) \
-	do { \
-		if (info <= etk::log::getLevel(egami::getLogId())) { \
-			std::stringbuf sb; \
-			std::ostream tmpStream(&sb); \
-			tmpStream << data; \
-			etk::log::logStream(egami::getLogId(), info, __LINE__, __class__, __func__, tmpStream); \
-		} \
-	} while(0)
+#define EGAMI_BASE(info,data) TK_LOG_BASE(egami::getLogId(),info,data)
 
 #define EGAMI_CRITICAL(data)      EGAMI_BASE(1, data)
 #define EGAMI_ERROR(data)         EGAMI_BASE(2, data)
