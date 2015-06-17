@@ -3,6 +3,8 @@ egami
 
 `egami` is a simple wrapper to decode image file in etk image format.
 
+[![Build Status](https://travis-ci.org/atria-soft/egami.svg?branch=master)](https://travis-ci.org/atria-soft/egami)
+
 Instructions
 ============
 
