@@ -241,7 +241,7 @@ bool egami::storeBMP(const std::string& _fileName, const egami::Image& _inputIma
 		EGAMI_ERROR("Can not find the file name=\"" << fileName << "\"");
 		return false;
 	}
-	// get the data : 
+	// get the data:
 	if (fileName.fileWrite(&m_FileHeader,sizeof(struct bitmapFileHeader),1) != 1) {
 		EGAMI_ERROR("error loading file header");
 		fileName.fileClose();
@@ -252,11 +252,13 @@ bool egami::storeBMP(const std::string& _fileName, const egami::Image& _inputIma
 		fileName.fileClose();
 		return false;
 	}
-	if(false == fileName.fileSeek(m_FileHeader.bfOffBits, etk::FSN_SEEK_START)) {
+	/* TODO: Avec ca, ca ne fonctionne pas ... ==> check
+	if(fileName.fileSeek(m_FileHeader.bfOffBits, etk::FSN_SEEK_START) == false) {
 		EGAMI_ERROR("error with the 'bfOffBits' in the file named=\"" << fileName << "\"");
 		fileName.fileClose();
 		return false;
 	}
+	*/
 	uint8_t data[16];
 	for(int32_t yyy=0; yyy<_inputImage.getSize().y(); yyy++) {
 		for(int32_t xxx=0; xxx<_inputImage.getSize().x(); xxx++) {
