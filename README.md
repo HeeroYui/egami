@@ -5,6 +5,12 @@ egami
 
 [![Build Status](https://travis-ci.org/atria-soft/egami.svg?branch=master)](https://travis-ci.org/atria-soft/egami)
 
+[![Coverage Status](http://atria-soft.com/ci/coverage/atria-soft/egami.svg?branch=master)](http://atria-soft.com/ci/atria-soft/egami)
+
+[![Test Status](http://atria-soft.com/ci/test/atria-soft/egami.svg?branch=master)](http://atria-soft.com/ci/atria-soft/egami)
+
+[![Warning Status](http://atria-soft.com/ci/warning/atria-soft/egami.svg?branch=master)](http://atria-soft.com/ci/atria-soft/egami)
+
 Instructions
 ============
 
