@@ -55,7 +55,7 @@ namespace egami {
 				// preallocate data with a basic bg elements :
 				m_data.resize(m_size.x()*m_size.y(), tmpBg);
 				if ((uint32_t)m_size.x()*m_size.y() > m_data.size()) {
-					TK_ERROR("Allocation of data buffer in error");
+					//TK_ERROR("Allocation of data buffer in error");
 					return;
 				}
 			}

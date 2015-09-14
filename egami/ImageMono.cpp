@@ -7,6 +7,7 @@
  */
 
 #include <egami/ImageMono.h>
+#include <egami/debug.h>
 
 egami::ImageMono::ImageMono(const ivec2& _size) :
   m_size(_size) {
@@ -15,7 +16,7 @@ egami::ImageMono::ImageMono(const ivec2& _size) :
 	// preallocate data with a basic bg elements :
 	m_data.resize(m_size.x()*m_size.y(), tmpBg);
 	if ((uint32_t)m_size.x()*m_size.y() > m_data.size()) {
-		TK_ERROR("Allocation of data buffer in error");
+		EGAMI_ERROR("Allocation of data buffer in error");
 		return;
 	}
 }

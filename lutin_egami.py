@@ -22,6 +22,12 @@ def create(target):
 		'egami/wrapperBMP.cpp',
 		'egami/wrapperEDF.cpp'])
 	
+	myModule.add_header_file([
+		'egami/Image.h',
+		'egami/ImageMono.h',
+		'egami/egami.h',
+		])
+	
 	# name of the dependency
 	myModule.add_module_depend(['etk', 'png', 'esvg', 'edtaa3'])
 	
@@ -29,7 +35,7 @@ def create(target):
 		'-Wno-write-strings',
 		'-Wall'])
 	
-	myModule.add_export_path(tools.get_current_path(__file__))
+	myModule.add_path(tools.get_current_path(__file__))
 	
 	# add the currrent module at the 
 	return myModule
