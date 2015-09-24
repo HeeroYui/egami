@@ -7,12 +7,12 @@ def get_desc():
 
 def create(target):
 	# module name is 'edn' and type binary.
-	myModule = module.Module(__file__, 'egami', 'LIBRARY')
+	my_module = module.Module(__file__, 'egami', 'LIBRARY')
 	
 	# add extra compilation flags :
-	myModule.add_extra_compile_flags()
+	my_module.add_extra_compile_flags()
 	# add the file to compile:
-	myModule.add_src_file([
+	my_module.add_src_file([
 		'egami/Image.cpp',
 		'egami/ImageMono.cpp',
 		'egami/egami.cpp',
@@ -22,22 +22,22 @@ def create(target):
 		'egami/wrapperBMP.cpp',
 		'egami/wrapperEDF.cpp'])
 	
-	myModule.add_header_file([
+	my_module.add_header_file([
 		'egami/Image.h',
 		'egami/ImageMono.h',
 		'egami/egami.h',
 		])
 	
 	# name of the dependency
-	myModule.add_module_depend(['etk', 'png', 'esvg', 'edtaa3'])
+	my_module.add_module_depend(['etk', 'png', 'esvg', 'edtaa3'])
 	
-	myModule.compile_flags('c++', [
+	my_module.compile_flags('c++', [
 		'-Wno-write-strings',
 		'-Wall'])
 	
-	myModule.add_path(tools.get_current_path(__file__))
+	my_module.add_path(tools.get_current_path(__file__))
 	
 	# add the currrent module at the 
-	return myModule
+	return my_module
 
 
