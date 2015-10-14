@@ -2,16 +2,31 @@
 import lutin.module as module
 import lutin.tools as tools
 
-def get_desc():
-	return "e-gami library (image generator from multiple image type)"
 
-def create(target):
-	# module name is 'edn' and type binary.
-	my_module = module.Module(__file__, 'egami', 'LIBRARY')
-	
-	# add extra compilation flags :
+def get_type():
+	return "LIBRARY"
+
+def get_desc():
+	return "image generator from multiple image type"
+
+def get_licence():
+	return "APACHE-2"
+
+def get_compagny_type():
+	return "com"
+
+def get_compagny_name():
+	return "atria-soft"
+
+def get_maintainer():
+	return ["Mr DUPIN Edouard <yui.heero@gmail.com>"]
+
+def get_version():
+	return [0,0,0]
+
+def create(target, module_name):
+	my_module = module.Module(__file__, module_name, get_type())
 	my_module.add_extra_compile_flags()
-	# add the file to compile:
 	my_module.add_src_file([
 		'egami/Image.cpp',
 		'egami/ImageMono.cpp',
@@ -20,24 +35,18 @@ def create(target):
 		'egami/wrapperPNG.cpp',
 		'egami/wrapperSVG.cpp',
 		'egami/wrapperBMP.cpp',
-		'egami/wrapperEDF.cpp'])
-	
+		'egami/wrapperEDF.cpp'
+		])
 	my_module.add_header_file([
 		'egami/Image.h',
 		'egami/ImageMono.h',
 		'egami/egami.h',
 		])
-	
-	# name of the dependency
 	my_module.add_module_depend(['etk', 'png', 'esvg', 'edtaa3'])
-	
 	my_module.compile_flags('c++', [
 		'-Wno-write-strings',
 		'-Wall'])
-	
 	my_module.add_path(tools.get_current_path(__file__))
-	
-	# add the currrent module at the 
 	return my_module
 
 
