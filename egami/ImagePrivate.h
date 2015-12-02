@@ -39,6 +39,7 @@ namespace egami {
 			virtual void set(const ivec2& _pos, const etk::Color<float, 1>& _newColor) = 0;
 			virtual void set(const ivec2& _pos, const etk::Color<double, 1>& _newColor) = 0;
 			virtual etk::Color<> get(const ivec2& _pos) const = 0;
+			virtual void set(const std::vector<etk::Color<float,4>>& _data, const ivec2& _size) = 0;
 	};
 	
 	template<typename T = etk::Color<>>
@@ -233,6 +234,14 @@ namespace egami {
 					}
 				}
 				resize(_size);
+			}
+			void set(const std::vector<etk::Color<float,4>>& _data, const ivec2& _size) {
+				m_data.clear();
+				m_size = _size;
+				m_data.resize(_data.size());
+				for (size_t iii=0; iii<m_data.size(); ++iii) {
+					m_data[iii] = _data[iii];
+				}
 			}
 	};
 	template <> enum colorType ImageTemplate<etk::Color<uint8_t>>::getType() {

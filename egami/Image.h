@@ -84,6 +84,8 @@ namespace egami {
 			 * @TODO Set this function more capacity like not a multiple ratio...
 			 */
 			void scale(const ivec2& _size);
+			
+			void set(const std::vector<etk::Color<float,4>>& _data, const ivec2& _size);
 	};
 };
 

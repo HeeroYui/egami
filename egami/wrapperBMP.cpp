@@ -58,11 +58,11 @@ bool egami::loadBMP(const std::string& _inputFile, egami::Image& _ouputImage) {
 		EWOL_ERROR("not enought data in the file named=\"" << fileName << "\"");
 		return;
 	}*/
-	if (false == fileName.exist()) {
+	if (fileName.exist() == false) {
 		EGAMI_ERROR("File does not existed=\"" << fileName << "\"");
 		return false;
 	}
-	if(false == fileName.fileOpenRead() ) {
+	if(fileName.fileOpenRead() ==false) {
 		EGAMI_ERROR("Can not find the file name=\"" << fileName << "\"");
 		return false;
 	}
@@ -77,7 +77,7 @@ bool egami::loadBMP(const std::string& _inputFile, egami::Image& _ouputImage) {
 		fileName.fileClose();
 		return false;
 	}
-	if(false == fileName.fileSeek(m_FileHeader.bfOffBits, etk::FSN_SEEK_START)) {
+	if(fileName.fileSeek(m_FileHeader.bfOffBits, etk::FSN_SEEK_START) == false) {
 		EGAMI_ERROR("error with the 'bfOffBits' in the file named=\"" << fileName << "\"");
 		fileName.fileClose();
 		return false;
@@ -123,10 +123,10 @@ bool egami::loadBMP(const std::string& _inputFile, egami::Image& _ouputImage) {
 	// reallocate the image 
 	_ouputImage.resize(ivec2(m_width,m_height));
 	
-	uint8_t* m_data = NULL;
+	std::vector<uint8_t> m_data;
 	if(0 != m_InfoHeader.biSizeImage) {
-		m_data=new uint8_t[m_InfoHeader.biSizeImage];
-		if (fileName.fileRead(m_data,m_InfoHeader.biSizeImage,1) != 1){
+		m_data.resize(m_InfoHeader.biSizeImage, 0);
+		if (fileName.fileRead(&m_data[0],m_InfoHeader.biSizeImage,1) != 1){
 			EGAMI_CRITICAL("Can not read the file with the good size...");
 		}
 	}
@@ -137,7 +137,7 @@ bool egami::loadBMP(const std::string& _inputFile, egami::Image& _ouputImage) {
 	// need now to generate RGBA data ...
 	switch(m_dataMode) {
 		case BITS_16_R5G6B5: {
-				uint16_t * pointer = (uint16_t*)m_data;
+				uint16_t * pointer = (uint16_t*)(&m_data[0]);
 				for(int32_t yyy=0; yyy<m_height; yyy++) {
 					for(int32_t xxx=0; xxx<m_width; xxx++) {
 						tmpColor.setR((uint8_t)((*pointer & 0xF800) >> 8));
@@ -151,7 +151,7 @@ bool egami::loadBMP(const std::string& _inputFile, egami::Image& _ouputImage) {
 			}
 			break;
 		case BITS_16_X1R5G5B5: {
-				uint16_t * pointer = (uint16_t*)m_data;
+				uint16_t * pointer = (uint16_t*)(&m_data[0]);
 				for(int32_t yyy=0; yyy<m_height; yyy++) {
 					for(int32_t xxx=0; xxx<m_width; xxx++) {
 						tmpColor.setR((int8_t)((*pointer & 0x7C00) >> 7));
@@ -165,7 +165,7 @@ bool egami::loadBMP(const std::string& _inputFile, egami::Image& _ouputImage) {
 			}
 			break;
 		case BITS_24_R8G8B8: {
-				uint8_t * pointer = m_data;
+				uint8_t * pointer = (&m_data[0]);
 				for(int32_t yyy=0; yyy<m_height; yyy++) {
 					for(int32_t xxx=0; xxx<m_width; xxx++) {
 						tmpColor.setR(*pointer++);
@@ -178,7 +178,7 @@ bool egami::loadBMP(const std::string& _inputFile, egami::Image& _ouputImage) {
 			}
 			break;
 		case BITS_32_X8R8G8B8: {
-				uint8_t * pointer = m_data;
+				uint8_t * pointer = (&m_data[0]);
 				for(int32_t yyy=0; yyy<m_height; yyy++) {
 					for(int32_t xxx=0; xxx<m_width; xxx++) {
 						pointer++;
@@ -192,7 +192,7 @@ bool egami::loadBMP(const std::string& _inputFile, egami::Image& _ouputImage) {
 			}
 			break;
 		case BITS_32_A8R8G8B8: {
-				uint8_t * pointer = m_data;
+				uint8_t * pointer = (&m_data[0]);
 				for(int32_t yyy=0; yyy<m_height; yyy++) {
 					for(int32_t xxx=0; xxx<m_width; xxx++) {
 						tmpColor.setR(*pointer++);
@@ -207,10 +207,6 @@ bool egami::loadBMP(const std::string& _inputFile, egami::Image& _ouputImage) {
 		default:
 			EGAMI_ERROR("        mode = ERROR");
 			break;
-	}
-	if (NULL != m_data) {
-		delete(m_data);
-		m_data=NULL;
 	}
 	return true;
 }
@@ -260,8 +256,8 @@ bool egami::storeBMP(const std::string& _fileName, const egami::Image& _inputIma
 	}
 	*/
 	uint8_t data[16];
-	for(int32_t yyy=0; yyy<_inputImage.getSize().y(); yyy++) {
-		for(int32_t xxx=0; xxx<_inputImage.getSize().x(); xxx++) {
+	for(int32_t yyy=0; yyy<_inputImage.getSize().y(); ++yyy) {
+		for(int32_t xxx=0; xxx<_inputImage.getSize().x(); ++xxx) {
 			const etk::Color<>& tmpColor = _inputImage.get(ivec2(xxx,yyy));
 			uint8_t* pointer = data;
 			*pointer++ = tmpColor.r();
