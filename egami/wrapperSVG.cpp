@@ -25,7 +25,12 @@ bool egami::loadSVG(const std::string& _fileName, egami::Image& _ouputImage, con
 		return false;
 	}
 	ivec2 imageSize = _size;
-	std::vector<etk::Color<float,4>> svgImage = svgDocument.renderImageFloatRGBA(imageSize);
-	_ouputImage.set(svgImage, imageSize);
+	#if 0
+		std::vector<etk::Color<float,4>> svgImage = svgDocument.renderImageFloatRGBA(imageSize);
+		_ouputImage.set(svgImage, imageSize);
+	#else
+		std::vector<etk::Color<uint8_t,4>> svgImage = svgDocument.renderImageU8RGBA(imageSize);
+		_ouputImage.set(svgImage, imageSize);
+	#endif
 	return true;
 }

@@ -264,3 +264,11 @@ void egami::Image::set(const std::vector<etk::Color<float,4>>& _data, const ivec
 	m_data->set(_data, _size);
 }
 
+void egami::Image::set(const std::vector<etk::Color<uint8_t,4>>& _data, const ivec2& _size) {
+	if (m_data == nullptr) {
+		EGAMI_WARNING("No internal data for image : Can not set color");
+		return;
+	}
+	m_data->set(_data, _size);
+}
+
