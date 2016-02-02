@@ -5,14 +5,11 @@
  * 
  * @license APACHE v2.0 (see license file)
  */
-
-#ifndef __EGAMI_WRAPPER_SVG_H__
-#define __EGAMI_WRAPPER_SVG_H__
+#pragma once
 
 #include <egami/egami.h>
 
-namespace egami
-{
+namespace egami {
 	/**
 	 * @breif Load a svg file in the image.
 	 * @param[in] _fileName Name of the file.
@@ -21,6 +18,5 @@ namespace egami
 	 * @return true if all is done correctly, false otherwise.
 	 */
 	bool loadSVG(const std::string& _fileName, egami::Image& _ouputImage, const ivec2& _size=ivec2(-1,-1));
-};
+}
 
-#endif

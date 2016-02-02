@@ -6,8 +6,7 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#ifndef __EGAMI_IMAGE_MONO_H__
-#define __EGAMI_IMAGE_MONO_H__
+#pragma once
 
 #include <etk/types.h>
 #include <vector>
@@ -49,8 +48,5 @@ namespace egami {
 			const uint8_t& get(const ivec2& _pos) const;
 			void set(const ivec2& _pos, const uint8_t& _newColor);
 	};
-	
-};
-
-#endif
+}
 

@@ -5,14 +5,11 @@
  * 
  * @license APACHE v2.0 (see license file)
  */
-
-#ifndef __EGAMI_WRAPPER_BMP_H__
-#define __EGAMI_WRAPPER_BMP_H__
+#pragma once
 
 #include <egami/egami.h>
 
-namespace egami
-{
+namespace egami {
 	/**
 	 * @breif Load a bmp file in the image.
 	 * @param[in] _fileName Name of the file.
@@ -27,7 +24,6 @@ namespace egami
 	 * @return true if all is done correctly, false otherwise.
 	 */
 	bool storeBMP(const std::string& _fileName, const egami::Image& _inputImage);
-};
+}
 
-#endif
 

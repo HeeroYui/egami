@@ -5,9 +5,7 @@
  * 
  * @license APACHE v2.0 (see license file)
  */
-
-#ifndef __EGAMI_WRAPPER_EDF_H__
-#define __EGAMI_WRAPPER_EDF_H__
+#pragma once
 
 #include <egami/egami.h>
 
@@ -35,7 +33,5 @@ namespace egami {
 	 * @return true if all is done correctly, false otherwise.
 	 */
 	bool storeEDF(const std::string& _fileName, const egami::Image& _inputImage);
-};
-
-#endif
+}
 

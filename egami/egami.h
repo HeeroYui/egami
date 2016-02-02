@@ -5,9 +5,7 @@
  * 
  * @license APACHE v2.0 (see license file)
  */
-
-#ifndef __EGAMI_H__
-#define __EGAMI_H__
+#pragma once
 
 #include <etk/types.h>
 #include <vector>
@@ -16,8 +14,7 @@
 #include <egami/Image.h>
 #include <egami/ImageMono.h>
 
-namespace egami
-{
+namespace egami {
 	/**
 	 * @brief Load a specific ilage file in the requested image data.
 	 * @param[out] _output Data of the image.
@@ -47,7 +44,6 @@ namespace egami
 	 * @return false An error occured.
 	 */
 	bool generateDistanceFieldFile(const std::string& _input, const std::string& _output);
-};
+}
 
-#endif
 

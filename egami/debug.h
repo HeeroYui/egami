@@ -5,9 +5,7 @@
  * 
  * @license APACHE v2.0 (see license file)
  */
-
-#ifndef __EGAMI_DEBUG_H__
-#define __EGAMI_DEBUG_H__
+#pragma once
 
 #include <etk/log.h>
 
@@ -38,6 +36,4 @@ namespace egami {
 			assert(!#cond); \
 		} \
 	} while (0)
-
-#endif
 

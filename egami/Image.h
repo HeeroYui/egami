@@ -5,9 +5,7 @@
  * 
  * @license APACHE v2.0 (see license file)
  */
-
-#ifndef __EGAMI_IMAGE_H__
-#define __EGAMI_IMAGE_H__
+#pragma once
 
 #include <etk/types.h>
 #include <vector>
@@ -88,7 +86,6 @@ namespace egami {
 			void set(const std::vector<etk::Color<float,4>>& _data, const ivec2& _size);
 			void set(const std::vector<etk::Color<uint8_t,4>>& _data, const ivec2& _size);
 	};
-};
+}
 
-#endif
 

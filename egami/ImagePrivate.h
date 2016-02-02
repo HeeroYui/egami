@@ -5,9 +5,7 @@
  * 
  * @license APACHE v2.0 (see license file)
  */
-
-#ifndef __EGAMI_IMAGE_PRIVATE_H__
-#define __EGAMI_IMAGE_PRIVATE_H__
+#pragma once
 
 #include <etk/types.h>
 #include <vector>
@@ -279,4 +277,3 @@ namespace egami {
 	}
 };
 
-#endif
