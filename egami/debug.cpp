@@ -9,6 +9,6 @@
 #include <egami/debug.h>
 
 int32_t egami::getLogId() {
-	static int32_t g_val = etk::log::registerInstance("egami");
+	static int32_t g_val = elog::registerInstance("egami");
 	return g_val;
 }

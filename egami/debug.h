@@ -7,12 +7,12 @@
  */
 #pragma once
 
-#include <etk/log.h>
+#include <elog/log.h>
 
 namespace egami {
 	int32_t getLogId();
 };
-#define EGAMI_BASE(info,data) TK_LOG_BASE(egami::getLogId(),info,data)
+#define EGAMI_BASE(info,data) ELOG_BASE(egami::getLogId(),info,data)
 
 #define EGAMI_CRITICAL(data)      EGAMI_BASE(1, data)
 #define EGAMI_ERROR(data)         EGAMI_BASE(2, data)
