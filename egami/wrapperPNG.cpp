@@ -13,10 +13,6 @@
 #include <etk/os/FSNode.h>
 #include <png/png.h>
 
-
-#undef __class__
-#define __class__	"wrapperPNG"
-
 // we must change the access of the IO of the png lib :
 static void local_ReadData(png_structp png_ptr, png_bytep data, png_size_t length) {
 	etk::FSNode* fileNode = static_cast<etk::FSNode*>(png_get_io_ptr(png_ptr));

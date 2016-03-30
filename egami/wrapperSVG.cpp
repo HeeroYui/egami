@@ -14,10 +14,6 @@
 #include <esvg/esvg.h>
 
 
-#undef __class__
-#define __class__	"wrapperSVG"
-
-
 bool egami::loadSVG(const std::string& _fileName, egami::Image& _ouputImage, const ivec2& _size) {
 	esvg::Document svgDocument;
 	if (svgDocument.load(_fileName) == false) {

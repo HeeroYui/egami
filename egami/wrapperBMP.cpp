@@ -42,9 +42,6 @@ enum modeBitmap {
 	BITS_32_A8R8G8B8
 };
 
-#undef __class__
-#define __class__ "wrapperBMP"
-
 bool egami::loadBMP(const std::string& _inputFile, egami::Image& _ouputImage) {
 	enum modeBitmap m_dataMode = BITS_16_R5G6B5;
 	int32_t m_width = 0;

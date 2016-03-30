@@ -12,9 +12,6 @@
 #include <egami/wrapperEDF.h>
 #include <etk/os/FSNode.h>
 
-#undef __class__
-#define __class__ "wrapperEDF"
-
 //EDF format is a simple format for image in text for distance field image (special case)
 // it is composed of the fist line : description of type (starting with #EDF and some other information, the data start just after the first \n
 
