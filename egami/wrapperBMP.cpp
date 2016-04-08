@@ -74,7 +74,7 @@ bool egami::loadBMP(const std::string& _inputFile, egami::Image& _ouputImage) {
 		fileName.fileClose();
 		return false;
 	}
-	if(fileName.fileSeek(m_FileHeader.bfOffBits, etk::FSN_SEEK_START) == false) {
+	if(fileName.fileSeek(m_FileHeader.bfOffBits, etk::seekNode_start) == false) {
 		EGAMI_ERROR("error with the 'bfOffBits' in the file named=\"" << fileName << "\"");
 		fileName.fileClose();
 		return false;

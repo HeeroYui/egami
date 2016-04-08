@@ -49,7 +49,7 @@ bool egami::loadEDF(const std::string& _inputFile, egami::Image& _ouputImage) {
 	}
 	EGAMI_DEBUG("'" << file << "' ==> size=" << size);
 	// jup to the start of the file
-	file.fileSeek(0, etk::FSN_SEEK_START);
+	file.fileSeek(0, etk::seekNode_start);
 	// drop the first line
 	file.fileGets(line);
 	
