@@ -15,28 +15,31 @@
 #include <memory>
 
 namespace egami {
-	enum colorType {
-		colorRGBA8,
-		colorRGB8,
-		colorRGBAf,
-		colorRGBf,
-		colorU16,
-		colorU32,
-		colorFloat,
-		colorDouble,
+	enum class colorType {
+		RGBA8,
+		RGB8,
+		RGBAf,
+		RGBf,
+		//unsignedInt8,
+		unsignedInt16,
+		unsignedInt32,
+		float32,
+		float64,
 	};
+	std::ostream& operator <<(std::ostream& _os, const enum egami::colorType _obj);
 	class ImagePrivate;
 	class Image {
 		private:
-			std::shared_ptr<ImagePrivate> m_data;
+			std::shared_ptr<ImagePrivate> m_data; //!< data of the image
 		public:
 			// constructor :
-			Image(const ivec2& _size=ivec2(32,32), enum colorType _type=colorRGBA8);
+			Image(const ivec2& _size=ivec2(32,32), enum colorType _type=egami::colorType::RGBA8);
 			// destructor
 			~Image() { };
 		// EWOL internal API for Texture system :
 		public:
 			void* getTextureDataPointer();
+			enum colorType getType();
 		// -----------------------------------------------
 		// -- basic tools :
 		// -----------------------------------------------

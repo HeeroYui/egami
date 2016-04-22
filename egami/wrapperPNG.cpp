@@ -38,25 +38,27 @@ static void localFlushData(png_structp png_ptr)
 }
 */
 
+void user_error_fn(png_structp _pngPtr, png_const_charp _errorMsg) {
+	EGAMI_DEBUG("libpng error: '" << _errorMsg << "'");
+}
+
+void user_warning_fn(png_structp _pngPtr, png_const_charp _warningMsg) {
+	EGAMI_DEBUG("libpng warning: '" << _warningMsg << "'");
+}
+
 bool egami::loadPNG(const std::string& _inputFile, egami::Image& _ouputImage) {
 	etk::FSNode fileName(_inputFile);
-	
-	if (false == fileName.exist()) {
-		EGAMI_ERROR("File does not existed=\"" << fileName << "\"");
+	if (fileName.exist() == false) {
+		EGAMI_ERROR("File does not existed='" << fileName << "'");
 		return false;
 	}
-	if(false == fileName.fileOpenRead() ) {
-		EGAMI_ERROR("Can not find the file name=\"" << fileName << "\"");
+	if(fileName.fileOpenRead() == false) {
+		EGAMI_ERROR("Can not find the file name='" << fileName << "'");
 		return false;
 	}
-	
-	// Vars
-	int x, y = 0;
-	int rowbytes;
 	unsigned char header[8];
 	png_infop info_ptr;
 	png_structp png_ptr;
-	png_bytep * row_pointers;
 	
 	if (fileName.fileRead(header,1,8) != 8) {
 		EGAMI_ERROR("error loading file header");
@@ -69,123 +71,170 @@ bool egami::loadPNG(const std::string& _inputFile, egami::Image& _ouputImage) {
 	}
 	
 	// PNG read setup
-	png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+	png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, user_error_fn, user_warning_fn);
+	if (png_ptr == nullptr) {
+		EGAMI_ERROR("Can not Allocate PNG structure");
+		fileName.fileClose();
+		return false;
+	}
 	info_ptr = png_create_info_struct(png_ptr);
-	setjmp(png_jmpbuf(png_ptr));
+	if (info_ptr == nullptr) {
+		EGAMI_ERROR("Can not Allocate PNG info structure");
+		png_destroy_read_struct(&png_ptr, nullptr, nullptr);
+		fileName.fileClose();
+		return false;
+	}
+	/*
+	if (setjmp(png_jmpbuf(png_ptr))) {
+		EGAMI_ERROR(" Can not set the JUMP buffer adresses");
+		// Free all of the memory associated with the png_ptr and info_ptr
+		png_destroy_read_struct(&png_ptr, &info_ptr, nullptr);
+		fileName.fileClose();
+		return false;
+	}
+	*/
 	// overwrite the read and write function :
-	#if 1
-		png_set_read_fn(png_ptr,
-		                &fileName,
-		                &local_ReadData);
-		/*
-		png_set_write_fn(png_ptr,
-		                 &fileName,
-		                 &LocalWriteData,
-		                 &localFlushData);
-		*/
-	#else
-		png_init_io(png_ptr, fp);
-	#endif
+	png_set_read_fn(png_ptr,
+	                &fileName,
+	                &local_ReadData);
+	/*
+	png_set_write_fn(png_ptr,
+	                 &fileName,
+	                 &LocalWriteData,
+	                 &localFlushData);
+	*/
+	// If we have already read some of the signature
 	png_set_sig_bytes(png_ptr, 8);
+	
 	png_read_info(png_ptr, info_ptr);
-	int32_t width = png_get_image_width(png_ptr, info_ptr);
-	int32_t height = png_get_image_height(png_ptr, info_ptr);
+	png_uint_32 width = 0;
+	png_uint_32 height = 0;
+	int bit_depth = 0;
+	int color_type = 0;
+	int interlace_type = 0;
+	png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, &interlace_type, NULL, NULL);
 	// reallocate the image 
 	EGAMI_VERBOSE("Load PNG image : (" << width << "," << height << ")" );
 	_ouputImage.resize(ivec2(width,height));
 	
-	int32_t bit_depth = png_get_bit_depth(png_ptr, info_ptr);
-	png_read_update_info(png_ptr, info_ptr);
-	setjmp(png_jmpbuf(png_ptr));
-	
-	/* expand palette images to RGB, low-bit-depth grayscale images to 8 bits,
-	* transparency chunks to full alpha channel; strip 16-bit-per-sample
-	* images to 8 bits per sample; and convert grayscale to RGB[A] */
-	
-	// TODO : TEMPORARY section : [START]
-	int32_t color_type = png_get_color_type(png_ptr, info_ptr);
-	if (color_type == PNG_COLOR_TYPE_PALETTE) {
-		png_set_expand(png_ptr);
-	}
-	if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8) {
-		png_set_expand(png_ptr);
-	}
-	if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS)) {
-		png_set_expand(png_ptr);
-	}
-	if (bit_depth == 16) {
+	// Tell libpng to strip 16 bits/color files down to 8 bits/color. Use accurate scaling if it's available, otherwise just chop off the low byte.
+	#ifdef PNG_READ_SCALE_16_TO_8_SUPPORTED
+		png_set_scale_16(png_ptr);
+	#else
 		png_set_strip_16(png_ptr);
+	#endif
+	
+	// Strip alpha bytes from the input data without combining with the background (not recommended).
+	//png_set_strip_alpha(png_ptr);
+	
+	// Extract multiple pixels with bit depths of 1, 2, and 4 from a single byte into separate bytes (useful for paletted and grayscale images).
+	png_set_packing(png_ptr);
+	
+	// Change the order of packed pixels to least significant bit first (not useful if you are using png_set_packing).
+	png_set_packswap(png_ptr);
+	
+	/* Expand paletted colors into true RGB triplets */
+	if (color_type == PNG_COLOR_TYPE_PALETTE) {
+		png_set_palette_to_rgb(png_ptr);
 	}
-	/*
+	
+	// Expand grayscale images to the full 8 bits from 1, 2, or 4 bits/pixel
 	if (    color_type == PNG_COLOR_TYPE_GRAY
-	     || color_type == PNG_COLOR_TYPE_GRAY_ALPHA) {
-		png_set_gray_to_rgb(png_ptr);
+	     && bit_depth < 8) {
+		png_set_expand_gray_1_2_4_to_8(png_ptr);
+	}
+	
+	// Expand paletted or RGB images with transparency to full alpha channels so the data will be available as RGBA quartets.
+	if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS) != 0) {
+		png_set_tRNS_to_alpha(png_ptr);
+	}
+	
+	/* Set the background color to draw transparent and alpha images over.
+	 * It is possible to set the red, green, and blue components directly
+	 * for paletted images instead of supplying a palette index.  Note that
+	 * even if the PNG file supplies a background, you are not required to
+	 * use it - you should use the (solid) application background if it has one.
+	 */
+	 /*
+	png_color_16 my_background, *image_background;
+	if (png_get_bKGD(png_ptr, info_ptr, &image_background) != 0) {
+		png_set_background(png_ptr, image_background, PNG_BACKGROUND_GAMMA_FILE, 1, 1.0);
+	} else {
+		png_set_background(png_ptr, &my_background, PNG_BACKGROUND_GAMMA_SCREEN, 0, 1.0);
 	}
 	*/
-	// TODO : TEMPORARY section : [STOP]
-	
-	bit_depth = png_get_bit_depth(png_ptr, info_ptr);
+	/* Optional call to gamma correct and add the background to the palette
+	 * and update info structure.  REQUIRED if you are expecting libpng to
+	 * update the palette for you (ie you selected such a transform above).
+	 */
 	png_read_update_info(png_ptr, info_ptr);
 	
-	row_pointers = (png_bytep*) malloc(sizeof(png_bytep) * height);
-	rowbytes = width * ((bit_depth == 16) ? 8 : 4);
-
-	// File read
-	for (y = 0; y < height; y++) {
-		row_pointers[y] = (png_byte*) malloc(rowbytes);
+	// Allocate the memory to hold the image using the fields of info_ptr.
+	// The easiest way to read the image:
+	png_bytep row_pointers[height];
+	/* Clear the pointer array */
+	for (png_uint_32 row = 0; row < height; row++) {
+		row_pointers[row] = nullptr;
 	}
+	for (png_uint_32 row = 0; row < height; row++) {
+		row_pointers[row] = (png_bytep)png_malloc(png_ptr, png_get_rowbytes(png_ptr, info_ptr));
+	}
+	EGAMI_ERROR("Load image: " << _inputFile);
 	png_read_image(png_ptr, row_pointers);
-	png_set_expand(png_ptr);
-	png_set_strip_16(png_ptr);
+	EGAMI_ERROR("Load image: " << _inputFile << " DONE");
+	// Read rest of file, and get additional chunks in info_ptr - REQUIRED
+	png_read_end(png_ptr, info_ptr);
 	
+	//png_set_expand(png_ptr);
+
 	etk::Color<> tmpColor(0,0,0,0);
-	switch (png_get_color_type(png_ptr, info_ptr) ) {
+	switch (color_type) {
 		case PNG_COLOR_TYPE_RGBA:
+			EGAMI_ERROR("plop: PNG_COLOR_TYPE_RGBA");
 			// Conversion to OpenGL texture
-			for (y = 0; y < height; y++) {
-				png_byte* row = row_pointers[y];
-				for (x = 0; x < width; x++) {
-					png_byte* ptr = &(row[x*4]);
-					tmpColor.set(ptr[0], ptr[1],ptr[2],ptr[3]);
-					_ouputImage.set(ivec2(x,y), tmpColor);
+			for (png_uint_32 yyy = 0; yyy < height; ++yyy) {
+				png_byte* row = row_pointers[yyy];
+				for (png_uint_32 xxx = 0; xxx < width; ++xxx) {
+					png_byte* ptr = &(row[xxx*4]);
+					tmpColor.set(ptr[0], ptr[1], ptr[2], ptr[3]);
+					_ouputImage.set(ivec2(xxx,yyy), tmpColor);
 				}
-				free(row_pointers[y]);
 			}
 			break;
 		case PNG_COLOR_TYPE_RGB:
+			EGAMI_ERROR("plop: PNG_COLOR_TYPE_RGB");
 			// Conversion to OpenGL texture
-			for (y = 0; y < height; y++) {
-				png_byte* row = row_pointers[y];
-				for (x = 0; x < width; x++) {
-					png_byte* ptr = &(row[x*3]);
-					tmpColor.set(ptr[0], ptr[1],ptr[2]);
-					_ouputImage.set(ivec2(x,y), tmpColor);
+			for (png_uint_32 yyy = 0; yyy < height; ++yyy) {
+				png_byte* row = row_pointers[yyy];
+				for (png_uint_32 xxx = 0; xxx < width; ++xxx) {
+					png_byte* ptr = &(row[xxx*3]);
+					tmpColor.set(ptr[0], ptr[1], ptr[2]);
+					_ouputImage.set(ivec2(xxx,yyy), tmpColor);
 				}
-				free(row_pointers[y]);
 			}
 			break;
 		case PNG_COLOR_TYPE_GRAY:
+			EGAMI_ERROR("plop: PNG_COLOR_TYPE_GRAY");
 			// Conversion to OpenGL texture
-			for (y = 0; y < height; y++) {
-				png_byte* row = row_pointers[y];
-				for (x = 0; x < width; x++) {
-					png_byte* ptr = &(row[x]);
-					tmpColor.set(ptr[0],ptr[0],ptr[0]);
-					_ouputImage.set(ivec2(x,y), tmpColor);
+			for (png_uint_32 yyy = 0; yyy < height; ++yyy) {
+				png_byte* row = row_pointers[yyy];
+				for (png_uint_32 xxx = 0; xxx < width; ++xxx) {
+					png_byte* ptr = &(row[xxx]);
+					tmpColor.set(ptr[0], ptr[0], ptr[0]);
+					_ouputImage.set(ivec2(xxx,yyy), tmpColor);
 				}
-				free(row_pointers[y]);
 			}
 			break;
 		case PNG_COLOR_TYPE_GRAY_ALPHA:
+			EGAMI_ERROR("plop: PNG_COLOR_TYPE_GRAY_ALPHA");
 			// Conversion to OpenGL texture
-			for (y = 0; y < height; y++) {
-				png_byte* row = row_pointers[y];
-				for (x = 0; x < width; x++) {
-					png_byte* ptr = &(row[x*2]);
-					tmpColor.set(ptr[0],ptr[0],ptr[0],ptr[1]);
-					_ouputImage.set(ivec2(x,y), tmpColor);
+			for (png_uint_32 yyy = 0; yyy < height; ++yyy) {
+				png_byte* row = row_pointers[yyy];
+				for (png_uint_32 xxx = 0; xxx < width; ++xxx) {
+					png_byte* ptr = &(row[xxx*2]);
+					tmpColor.set(ptr[0], ptr[0], ptr[0], ptr[1]);
+					_ouputImage.set(ivec2(xxx,yyy), tmpColor);
 				}
-				free(row_pointers[y]);
 			}
 			break;
 		default:
@@ -202,6 +251,8 @@ bool egami::loadPNG(const std::string& _inputFile, egami::Image& _ouputImage) {
 			return false;
 	}
 	fileName.fileClose();
+	// Clean up after the read, and free any memory allocated - REQUIRED
+	png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 	return true;
 }
 

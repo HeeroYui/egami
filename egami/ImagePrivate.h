@@ -21,7 +21,7 @@ namespace egami {
 			virtual const ivec2& getSize()=0;
 			virtual int32_t getWidth() const { return 0; };
 			virtual int32_t getHeight() const { return 0; };
-			virtual enum colorType getType() { return colorRGBA8; };
+			virtual enum colorType getType() { return egami::colorType::RGBA8; };
 			virtual void clear() = 0;
 			virtual void resize(const ivec2& _size, const etk::Color<uint8_t, 4>& _color, const ivec2& _startPos) = 0;
 			virtual void resize(const ivec2& _size, const etk::Color<float, 4>& _color, const ivec2& _startPos) = 0;
@@ -252,28 +252,28 @@ namespace egami {
 			}
 	};
 	template <> enum colorType ImageTemplate<etk::Color<uint8_t>>::getType() {
-		return colorRGBA8;
+		return egami::colorType::RGBA8;
 	}
 	template <> enum colorType ImageTemplate<etk::Color<uint8_t, 3>>::getType() {
-		return colorRGB8;
+		return egami::colorType::RGB8;
 	}
 	template <> enum colorType ImageTemplate<etk::Color<float>>::getType() {
-		return colorRGBAf;
+		return egami::colorType::RGBAf;
 	}
 	template <> enum colorType ImageTemplate<etk::Color<float, 3>>::getType() {
-		return colorRGBf;
+		return egami::colorType::RGBf;
 	}
 	template <> enum colorType ImageTemplate<etk::Color<uint16_t, 1>>::getType() {
-		return colorU16;
+		return egami::colorType::unsignedInt16;
 	}
 	template <> enum colorType ImageTemplate<etk::Color<uint32_t, 1>>::getType() {
-		return colorU32;
+		return egami::colorType::unsignedInt32;
 	}
 	template <> enum colorType ImageTemplate<etk::Color<float, 1>>::getType() {
-		return colorFloat;
+		return egami::colorType::float32;
 	}
 	template <> enum colorType ImageTemplate<etk::Color<double, 1>>::getType() {
-		return colorDouble;
+		return egami::colorType::float64;
 	}
 };
 

@@ -28,6 +28,11 @@ namespace egami {
 			void* getTextureDataPointer() {
 				return &m_data[0];
 			};
+			/*
+			enum colorType getType() {
+				return egami::colorType::unsignedInt8;
+			};
+			*/
 		// -----------------------------------------------
 		// -- basic tools :
 		// -----------------------------------------------
