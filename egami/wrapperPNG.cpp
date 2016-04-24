@@ -39,11 +39,11 @@ static void localFlushData(png_structp png_ptr)
 */
 
 void user_error_fn(png_structp _pngPtr, png_const_charp _errorMsg) {
-	EGAMI_DEBUG("libpng error: '" << _errorMsg << "'");
+	EGAMI_ERROR("libpng error: '" << _errorMsg << "'");
 }
 
 void user_warning_fn(png_structp _pngPtr, png_const_charp _warningMsg) {
-	EGAMI_DEBUG("libpng warning: '" << _warningMsg << "'");
+	EGAMI_WARNING("libpng warning: '" << _warningMsg << "'");
 }
 
 bool egami::loadPNG(const std::string& _inputFile, egami::Image& _ouputImage) {
@@ -115,7 +115,22 @@ bool egami::loadPNG(const std::string& _inputFile, egami::Image& _ouputImage) {
 	png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, &interlace_type, NULL, NULL);
 	// reallocate the image 
 	EGAMI_VERBOSE("Load PNG image : (" << width << "," << height << ")" );
-	_ouputImage.resize(ivec2(width,height));
+	switch (color_type) {
+		case PNG_COLOR_TYPE_RGBA:
+			_ouputImage.configure(ivec2(width,height), egami::colorType::RGBA8);
+			break;
+		case PNG_COLOR_TYPE_RGB:
+			_ouputImage.configure(ivec2(width,height), egami::colorType::RGB8);
+			break;
+		case PNG_COLOR_TYPE_GRAY:
+			_ouputImage.configure(ivec2(width,height), egami::colorType::RGB8);
+			break;
+		case PNG_COLOR_TYPE_GRAY_ALPHA:
+			_ouputImage.configure(ivec2(width,height), egami::colorType::RGBA8);
+			break;
+		default:
+			break;
+	}
 	
 	// Tell libpng to strip 16 bits/color files down to 8 bits/color. Use accurate scaling if it's available, otherwise just chop off the low byte.
 	#ifdef PNG_READ_SCALE_16_TO_8_SUPPORTED

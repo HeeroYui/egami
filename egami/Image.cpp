@@ -44,6 +44,10 @@ std::ostream& egami::operator <<(std::ostream& _os, const enum egami::colorType 
 
 egami::Image::Image(const ivec2& _size, enum colorType _type) :
   m_data(nullptr) {
+	configure(_size, _type);
+}
+
+void egami::Image::configure(const ivec2& _size, enum colorType _type) {
 	switch (_type) {
 		case egami::colorType::RGBA8:
 			//m_data = std::make_shared<egami::ImagePrivate>(new egami::ImageTemplate<etk::Color<uint8_t>>(_size));

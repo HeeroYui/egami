@@ -36,8 +36,8 @@ namespace egami {
 			Image(const ivec2& _size=ivec2(32,32), enum colorType _type=egami::colorType::RGBA8);
 			// destructor
 			~Image() { };
-		// EWOL internal API for Texture system :
 		public:
+			void configure(const ivec2& _size=ivec2(32,32), enum colorType _type=egami::colorType::RGBA8);
 			void* getTextureDataPointer();
 			enum colorType getType();
 		// -----------------------------------------------
