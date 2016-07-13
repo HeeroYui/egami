@@ -14,42 +14,42 @@
 #include <edtaa3/edtaa3func.h>
 
 bool egami::scalable(const std::string& _fileName) {
-	if (true ==  etk::end_with(_fileName, ".svg") ) {
+	if (true == etk::end_with(_fileName, ".svg") ) {
 		return true;
 	}
 	return false;
 }
 
-bool egami::load(egami::Image& _output, const std::string& _fileName, const ivec2& _size) {
+egami::Image egami::load(const std::string& _fileName, const ivec2& _size) {
 	std::string tmpName = etk::tolower(_fileName);
+	egami::Image out;
 	// select the corect Loader :
 	if (etk::end_with(tmpName, ".edf") == true) {
 		// internal format for ewol distance field ==> simple sistance field image
-		if (egami::loadEDF(_fileName, _output) == false) {
+		out = egami::loadEDF(_fileName);
+		if (out.exist() == false) {
 			EGAMI_ERROR("Error to load EDF file '" << _fileName << "'");
-			return false;
 		}
 	} else if (etk::end_with(tmpName, ".bmp") == true) {
-		if (egami::loadBMP(_fileName, _output) == false) {
+		out = egami::loadBMP(_fileName);
+		if (out.exist() == false) {
 			EGAMI_ERROR("Error to load BMP file '" << _fileName << "'");
-			return false;
 		}
 	} else if (etk::end_with(tmpName, ".svg") == true) {
-		if (egami::loadSVG(_fileName, _output, _size) == false) {
+		out = egami::loadSVG(_fileName, _size);
+		if (out.exist() == false) {
 			EGAMI_ERROR("Error to load SVG file '" << _fileName << "'");
-			return false;
 		}
 		//egami::storeEDF(_fileName + ".edf", _output);
 	} else if (etk::end_with(tmpName, ".png") == true) {
-		if (egami::loadPNG(_fileName, _output) == false) {
+		out = egami::loadPNG(_fileName);
+		if (out.exist() == false) {
 			EGAMI_ERROR("Error to load PNG file '" << _fileName << "'");
-			return false;
 		}
 	} else {
 		EGAMI_ERROR("Extention not managed '" << _fileName << "' Sopported extention : .edf / .bmp / .svg / .png");
-		return false;
 	}
-	return true;
+	return out;
 }
 
 bool egami::store(const egami::Image& _input, const std::string& _fileName) {
@@ -169,7 +169,8 @@ bool egami::generateDistanceFieldFile(const std::string& _input, const std::stri
 		return false;
 	}
 	EGAMI_ERROR("Generate distance field : '" << _input << "' ==> '" << _output << "'");
-	if (egami::load(data, _input, ivec2(64*5,64*5)) == false) {
+	data = egami::load(_input, ivec2(64*5,64*5));
+	if (data.exist() == false) {
 		return false;
 	}
 	// Generate distance field :

@@ -12,19 +12,20 @@
 #include <esvg/esvg.h>
 
 
-bool egami::loadSVG(const std::string& _fileName, egami::Image& _ouputImage, const ivec2& _size) {
+egami::Image egami::loadSVG(const std::string& _fileName, const ivec2& _size) {
+	egami::Image out;
 	esvg::Document svgDocument;
 	if (svgDocument.load(_fileName) == false) {
 		EGAMI_ERROR("Error to load SVG file " << _fileName );
-		return false;
+		return out;
 	}
 	ivec2 imageSize = _size;
 	#if 0
 		std::vector<etk::Color<float,4>> svgImage = svgDocument.renderImageFloatRGBA(imageSize);
-		_ouputImage.set(svgImage, imageSize);
+		out.set(svgImage, imageSize);
 	#else
 		std::vector<etk::Color<uint8_t,4>> svgImage = svgDocument.renderImageU8RGBA(imageSize);
-		_ouputImage.set(svgImage, imageSize);
+		out.set(svgImage, imageSize);
 	#endif
-	return true;
+	return out;
 }

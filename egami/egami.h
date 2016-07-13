@@ -15,12 +15,10 @@
 namespace egami {
 	/**
 	 * @brief Load a specific ilage file in the requested image data.
-	 * @param[out] _output Data of the image.
 	 * @param[in] _fileName Name of the file (SVG, BMP, PNG).
 	 * @param[in] _size Dimention of the file when resizable (SVG).
-	 * @return true if the file is corectly loaded, false otherwise.
 	 */
-	bool load(egami::Image& _output, const std::string& _fileName, const ivec2& _size=ivec2(-1,-1) );
+	egami::Image load(const std::string& _fileName, const ivec2& _size=ivec2(-1,-1) );
 	/**
 	 * @brief Save an image in a file.
 	 * @param[in] _input Data of the image.

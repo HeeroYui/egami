@@ -11,9 +11,8 @@ namespace egami {
 	/**
 	 * @breif Load a png file in the image.
 	 * @param[in] _fileName Name of the file.
-	 * @param[out] _ouputImage Read data.
-	 * @return true if all is done correctly, false otherwise.
+	 * @return Read Image.
 	 */
-	bool loadPNG(const std::string& _fileName, egami::Image& _ouputImage);
+	egami::Image loadPNG(const std::string& _fileName);
 }
 

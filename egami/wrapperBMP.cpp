@@ -40,7 +40,8 @@ enum modeBitmap {
 	BITS_32_A8R8G8B8
 };
 
-bool egami::loadBMP(const std::string& _inputFile, egami::Image& _ouputImage) {
+egami::Image egami::loadBMP(const std::string& _inputFile) {
+	egami::Image out;
 	enum modeBitmap m_dataMode = BITS_16_R5G6B5;
 	int32_t m_width = 0;
 	int32_t m_height = 0;
@@ -55,38 +56,38 @@ bool egami::loadBMP(const std::string& _inputFile, egami::Image& _ouputImage) {
 	}*/
 	if (fileName.exist() == false) {
 		EGAMI_ERROR("File does not existed=\"" << fileName << "\"");
-		return false;
+		return out;
 	}
 	if(fileName.fileOpenRead() ==false) {
 		EGAMI_ERROR("Can not find the file name=\"" << fileName << "\"");
-		return false;
+		return out;
 	}
 	// get the data : 
 	if (fileName.fileRead(&m_FileHeader,sizeof(struct bitmapFileHeader),1) != 1) {
 		EGAMI_ERROR("error loading file header");
 		fileName.fileClose();
-		return false;
+		return out;
 	}
 	if (fileName.fileRead(&m_InfoHeader,sizeof(struct bitmapInfoHeader),1) != 1) {
 		EGAMI_ERROR("error loading file header");
 		fileName.fileClose();
-		return false;
+		return out;
 	}
 	if(fileName.fileSeek(m_FileHeader.bfOffBits, etk::seekNode_start) == false) {
 		EGAMI_ERROR("error with the 'bfOffBits' in the file named=\"" << fileName << "\"");
 		fileName.fileClose();
-		return false;
+		return out;
 	}
 	// check the header error : 
 	if (m_FileHeader.bfType != 0x4D42) {
 		EGAMI_ERROR("the file=\"" << fileName << "\" is not a bitmap file ...");
 		fileName.fileClose();
-		return false;
+		return out;
 	}
 	if (m_FileHeader.bfReserved != 0x00000000) {
 		EGAMI_ERROR("the bfReserved feald is not at 0  == > not supported format ...");
 		fileName.fileClose();
-		return false;
+		return out;
 	}
 	if(    m_InfoHeader.biBitCount == 16
 	    && m_InfoHeader.biCompression == 0)
@@ -111,12 +112,12 @@ bool egami::loadBMP(const std::string& _inputFile, egami::Image& _ouputImage) {
 	} else {
 		EGAMI_ERROR("the biBitCount & biCompression fealds are unknow  == > not supported format ...");
 		fileName.fileClose();;
-		return false;
+		return out;
 	}
 	m_width = m_InfoHeader.biWidth;
 	m_height = m_InfoHeader.biHeight;
 	// reallocate the image 
-	_ouputImage.resize(ivec2(m_width,m_height));
+	out.configure(ivec2(m_width,m_height), egami::colorType::RGBA8);
 	
 	std::vector<uint8_t> m_data;
 	if(0 != m_InfoHeader.biSizeImage) {
@@ -139,7 +140,7 @@ bool egami::loadBMP(const std::string& _inputFile, egami::Image& _ouputImage) {
 						tmpColor.setG((uint8_t)((*pointer & 0x07E0) >> 3));
 						tmpColor.setB((uint8_t)(*pointer << 3));
 						tmpColor.setA(0xFF);
-						_ouputImage.set(ivec2(xxx,yyy), tmpColor);
+						out.set(ivec2(xxx,yyy), tmpColor);
 						pointer++;
 					}
 				}
@@ -153,7 +154,7 @@ bool egami::loadBMP(const std::string& _inputFile, egami::Image& _ouputImage) {
 						tmpColor.setG((int8_t)((*pointer & 0x03E0) >> 2));
 						tmpColor.setB((int8_t)(*pointer << 3));
 						tmpColor.setA(0xFF);
-						_ouputImage.set(ivec2(xxx,yyy), tmpColor);
+						out.set(ivec2(xxx,yyy), tmpColor);
 						pointer++;
 					}
 				}
@@ -167,7 +168,7 @@ bool egami::loadBMP(const std::string& _inputFile, egami::Image& _ouputImage) {
 						tmpColor.setG(*pointer++);
 						tmpColor.setB(*pointer++);
 						tmpColor.setA(0xFF);
-						_ouputImage.set(ivec2(xxx,yyy), tmpColor);
+						out.set(ivec2(xxx,yyy), tmpColor);
 					}
 				}
 			}
@@ -181,7 +182,7 @@ bool egami::loadBMP(const std::string& _inputFile, egami::Image& _ouputImage) {
 						tmpColor.setG(*pointer++);
 						tmpColor.setB(*pointer++);
 						tmpColor.setA(0xFF);
-						_ouputImage.set(ivec2(xxx,yyy), tmpColor);
+						out.set(ivec2(xxx,yyy), tmpColor);
 					}
 				}
 			}
@@ -194,7 +195,7 @@ bool egami::loadBMP(const std::string& _inputFile, egami::Image& _ouputImage) {
 						tmpColor.setG(*pointer++);
 						tmpColor.setB(*pointer++);
 						tmpColor.setA(*pointer++);
-						_ouputImage.set(ivec2(xxx,yyy), tmpColor);
+						out.set(ivec2(xxx,yyy), tmpColor);
 					}
 				}
 			}
@@ -203,7 +204,7 @@ bool egami::loadBMP(const std::string& _inputFile, egami::Image& _ouputImage) {
 			EGAMI_ERROR("        mode = ERROR");
 			break;
 	}
-	return true;
+	return out;
 }
 
 bool egami::storeBMP(const std::string& _fileName, const egami::Image& _inputImage) {

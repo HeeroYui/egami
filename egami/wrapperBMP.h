@@ -11,10 +11,9 @@ namespace egami {
 	/**
 	 * @breif Load a bmp file in the image.
 	 * @param[in] _fileName Name of the file.
-	 * @param[out] _ouputImage Read data.
-	 * @return true if all is done correctly, false otherwise.
+	 * @return Generate image or empty image
 	 */
-	bool loadBMP(const std::string& _fileName, egami::Image& _ouputImage);
+	egami::Image loadBMP(const std::string& _fileName);
 	/**
 	 * @breif Store a bmp file in the image.
 	 * @param[in] _fileName Name of the file.

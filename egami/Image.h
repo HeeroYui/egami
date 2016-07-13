@@ -14,6 +14,7 @@
 
 namespace egami {
 	enum class colorType {
+		undefined,
 		RGBA8,
 		RGB8,
 		RGBAf,
@@ -28,16 +29,25 @@ namespace egami {
 	class ImagePrivate;
 	class Image {
 		private:
+			// TODO : Change this in a unique_ptr ...
 			std::shared_ptr<ImagePrivate> m_data; //!< data of the image
 		public:
-			// constructor :
-			Image(const ivec2& _size=ivec2(32,32), enum colorType _type=egami::colorType::RGBA8);
-			// destructor
-			~Image() { };
+			/**
+			 * @brief contructor that create an empty image (no valid data)
+			 * @note use @ref configure to set a correct image
+			 */
+			Image();
+			Image(const ivec2& _size,
+			      enum colorType _type = egami::colorType::undefined);
+			// TODO : IMplement move operator ... and copy operator...
 		public:
-			void configure(const ivec2& _size=ivec2(32,32), enum colorType _type=egami::colorType::RGBA8);
+			void configure(const ivec2& _size=ivec2(32,32),
+			               enum colorType _type=egami::colorType::RGBA8);
 			void* getTextureDataPointer();
 			enum colorType getType();
+			bool exist() {
+				return m_data != nullptr;
+			}
 		// -----------------------------------------------
 		// -- basic tools :
 		// -----------------------------------------------

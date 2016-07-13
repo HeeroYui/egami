@@ -11,6 +11,9 @@
 
 std::ostream& egami::operator <<(std::ostream& _os, const enum egami::colorType _type) {
 	switch (_type) {
+		case egami::colorType::undefined:
+			_os << "egami::colorType::undefined";
+			break;
 		case egami::colorType::RGBA8:
 			_os << "egami::colorType::RGBA8";
 			break;
@@ -39,6 +42,10 @@ std::ostream& egami::operator <<(std::ostream& _os, const enum egami::colorType 
 	return _os;
 }
 
+egami::Image::Image() :
+  m_data(nullptr) {
+	EGAMI_WARNING("Chek this code, the caller can not use it corectly ... (NEW API)");
+}
 
 egami::Image::Image(const ivec2& _size, enum colorType _type) :
   m_data(nullptr) {
@@ -47,6 +54,9 @@ egami::Image::Image(const ivec2& _size, enum colorType _type) :
 
 void egami::Image::configure(const ivec2& _size, enum colorType _type) {
 	switch (_type) {
+		case egami::colorType::undefined:
+			m_data = nullptr;
+			break;
 		case egami::colorType::RGBA8:
 			//m_data = std::make_shared<egami::ImagePrivate>(new egami::ImageTemplate<etk::Color<uint8_t>>(_size));
 			m_data = std::shared_ptr<egami::ImagePrivate>(new egami::ImageTemplate<etk::Color<uint8_t>>(_size));
@@ -78,7 +88,7 @@ void egami::Image::configure(const ivec2& _size, enum colorType _type) {
 enum egami::colorType egami::Image::getType() {
 	if (m_data == nullptr) {
 		EGAMI_WARNING("No internal data for image (nullptr)");
-		return egami::colorType::RGBA8;
+		return egami::colorType::undefined;
 	}
 	return m_data->getType();
 }

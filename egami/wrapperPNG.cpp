@@ -14,7 +14,7 @@
 // we must change the access of the IO of the png lib :
 static void local_ReadData(png_structp png_ptr, png_bytep data, png_size_t length) {
 	etk::FSNode* fileNode = static_cast<etk::FSNode*>(png_get_io_ptr(png_ptr));
-	if (NULL!=fileNode) {
+	if (fileNode != nullptr) {
 		fileNode->fileRead(data, 1, length);
 	}
 }
@@ -44,15 +44,16 @@ void user_warning_fn(png_structp _pngPtr, png_const_charp _warningMsg) {
 	EGAMI_WARNING("libpng warning: '" << _warningMsg << "'");
 }
 
-bool egami::loadPNG(const std::string& _inputFile, egami::Image& _ouputImage) {
+egami::Image egami::loadPNG(const std::string& _inputFile) {
+	egami::Image out;
 	etk::FSNode fileName(_inputFile);
 	if (fileName.exist() == false) {
 		EGAMI_ERROR("File does not existed='" << fileName << "'");
-		return false;
+		return out;
 	}
 	if(fileName.fileOpenRead() == false) {
 		EGAMI_ERROR("Can not find the file name='" << fileName << "'");
-		return false;
+		return out;
 	}
 	unsigned char header[8];
 	png_infop info_ptr;
@@ -61,11 +62,11 @@ bool egami::loadPNG(const std::string& _inputFile, egami::Image& _ouputImage) {
 	if (fileName.fileRead(header,1,8) != 8) {
 		EGAMI_ERROR("error loading file header");
 		fileName.fileClose();
-		return false;
+		return out;
 	}
 	if (png_sig_cmp(header, 0, 8)) {
 		EGAMI_ERROR("Invalid file :" << fileName);
-		return false;
+		return out;
 	}
 	
 	// PNG read setup
@@ -73,14 +74,14 @@ bool egami::loadPNG(const std::string& _inputFile, egami::Image& _ouputImage) {
 	if (png_ptr == nullptr) {
 		EGAMI_ERROR("Can not Allocate PNG structure");
 		fileName.fileClose();
-		return false;
+		return out;
 	}
 	info_ptr = png_create_info_struct(png_ptr);
 	if (info_ptr == nullptr) {
 		EGAMI_ERROR("Can not Allocate PNG info structure");
 		png_destroy_read_struct(&png_ptr, nullptr, nullptr);
 		fileName.fileClose();
-		return false;
+		return out;
 	}
 	/*
 	if (setjmp(png_jmpbuf(png_ptr))) {
@@ -110,21 +111,21 @@ bool egami::loadPNG(const std::string& _inputFile, egami::Image& _ouputImage) {
 	int bit_depth = 0;
 	int colorType = 0;
 	int interlace_type = 0;
-	png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &colorType, &interlace_type, NULL, NULL);
+	png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &colorType, &interlace_type, nullptr, nullptr);
 	// reallocate the image 
 	EGAMI_VERBOSE("Load PNG image : (" << width << "," << height << ")" );
 	switch (colorType) {
 		case PNG_COLOR_TYPE_RGBA:
-			_ouputImage.configure(ivec2(width,height), egami::colorType::RGBA8);
+			out.configure(ivec2(width,height), egami::colorType::RGBA8);
 			break;
 		case PNG_COLOR_TYPE_RGB:
-			_ouputImage.configure(ivec2(width,height), egami::colorType::RGB8);
+			out.configure(ivec2(width,height), egami::colorType::RGB8);
 			break;
 		case PNG_COLOR_TYPE_GRAY:
-			_ouputImage.configure(ivec2(width,height), egami::colorType::RGB8);
+			out.configure(ivec2(width,height), egami::colorType::RGB8);
 			break;
 		case PNG_COLOR_TYPE_GRAY_ALPHA:
-			_ouputImage.configure(ivec2(width,height), egami::colorType::RGBA8);
+			out.configure(ivec2(width,height), egami::colorType::RGBA8);
 			break;
 		default:
 			break;
@@ -210,7 +211,7 @@ bool egami::loadPNG(const std::string& _inputFile, egami::Image& _ouputImage) {
 				for (png_uint_32 xxx = 0; xxx < width; ++xxx) {
 					png_byte* ptr = &(row[xxx*4]);
 					tmpColor.set(ptr[0], ptr[1], ptr[2], ptr[3]);
-					_ouputImage.set(ivec2(xxx,yyy), tmpColor);
+					out.set(ivec2(xxx,yyy), tmpColor);
 				}
 			}
 			break;
@@ -222,7 +223,7 @@ bool egami::loadPNG(const std::string& _inputFile, egami::Image& _ouputImage) {
 				for (png_uint_32 xxx = 0; xxx < width; ++xxx) {
 					png_byte* ptr = &(row[xxx*3]);
 					tmpColor.set(ptr[0], ptr[1], ptr[2]);
-					_ouputImage.set(ivec2(xxx,yyy), tmpColor);
+					out.set(ivec2(xxx,yyy), tmpColor);
 				}
 			}
 			break;
@@ -234,7 +235,7 @@ bool egami::loadPNG(const std::string& _inputFile, egami::Image& _ouputImage) {
 				for (png_uint_32 xxx = 0; xxx < width; ++xxx) {
 					png_byte* ptr = &(row[xxx]);
 					tmpColor.set(ptr[0], ptr[0], ptr[0]);
-					_ouputImage.set(ivec2(xxx,yyy), tmpColor);
+					out.set(ivec2(xxx,yyy), tmpColor);
 				}
 			}
 			break;
@@ -246,7 +247,7 @@ bool egami::loadPNG(const std::string& _inputFile, egami::Image& _ouputImage) {
 				for (png_uint_32 xxx = 0; xxx < width; ++xxx) {
 					png_byte* ptr = &(row[xxx*2]);
 					tmpColor.set(ptr[0], ptr[0], ptr[0], ptr[1]);
-					_ouputImage.set(ivec2(xxx,yyy), tmpColor);
+					out.set(ivec2(xxx,yyy), tmpColor);
 				}
 			}
 			break;
@@ -261,11 +262,11 @@ bool egami::loadPNG(const std::string& _inputFile, egami::Image& _ouputImage) {
 			if ((png_get_color_type(png_ptr, info_ptr) & PNG_COLOR_MASK_ALPHA) != 0) {
 				EGAMI_ERROR("    Alpha");
 			}
-			return false;
+			return egami::Image();
 	}
 	fileName.fileClose();
 	// Clean up after the read, and free any memory allocated - REQUIRED
-	png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
-	return true;
+	png_destroy_read_struct(&png_ptr, &info_ptr, nullptr);
+	return out;
 }
 

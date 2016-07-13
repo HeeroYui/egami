@@ -20,10 +20,9 @@ namespace egami {
 	 *   *  
 	 * [PRE]
 	 * @param[in] _fileName Name of the file.
-	 * @param[out] _ouputImage Read data.
-	 * @return true if all is done correctly, false otherwise.
+	 * @return Read Image
 	 */
-	bool loadEDF(const std::string& _fileName, egami::Image& _ouputImage);
+	egami::Image loadEDF(const std::string& _fileName);
 	/**
 	 * @breif Store a edf file in the image.
 	 * @param[in] _fileName Name of the file.
