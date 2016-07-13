@@ -173,7 +173,7 @@ bool egami::generateDistanceFieldFile(const std::string& _input, const std::stri
 	if (data.exist() == false) {
 		return false;
 	}
-	// Generate distance field :
+	// Generate distance field:
 	egami::ImageMono input;
 	/*
 	input.resize(data.getSize());
