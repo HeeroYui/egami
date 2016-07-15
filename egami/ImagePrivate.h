@@ -9,35 +9,9 @@
 #include <vector>
 #include <etk/math/Vector2D.h>
 #include <etk/Color.h>
+#include <egami/debug.h>
 
 namespace egami {
-	class ImagePrivate {
-		public:
-			ImagePrivate() {};
-			virtual ~ImagePrivate() {};
-			virtual void* getTextureDataPointer() { return nullptr; };
-			virtual const ivec2& getSize()=0;
-			virtual int32_t getWidth() const { return 0; };
-			virtual int32_t getHeight() const { return 0; };
-			virtual enum colorType getType() { return egami::colorType::RGBA8; };
-			virtual void clear() = 0;
-			virtual void resize(const ivec2& _size, const etk::Color<uint8_t, 4>& _color, const ivec2& _startPos) = 0;
-			virtual void resize(const ivec2& _size, const etk::Color<float, 4>& _color, const ivec2& _startPos) = 0;
-			virtual void resize(const ivec2& _size, const etk::Color<uint16_t, 1>& _color, const ivec2& _startPos) = 0;
-			virtual void resize(const ivec2& _size, const etk::Color<uint32_t, 1>& _color, const ivec2& _startPos) = 0;
-			virtual void resize(const ivec2& _size, const etk::Color<float, 1>& _color, const ivec2& _startPos) = 0;
-			virtual void resize(const ivec2& _size, const etk::Color<double, 1>& _color, const ivec2& _startPos) = 0;
-			virtual void resize(const ivec2& _size, const ivec2& _startPos) = 0;
-			virtual void set(const ivec2& _pos, const etk::Color<>& _newColor) = 0;
-			virtual void set(const ivec2& _pos, const etk::Color<float>& _newColor) = 0;
-			virtual void set(const ivec2& _pos, const etk::Color<uint16_t, 1>& _newColor) = 0;
-			virtual void set(const ivec2& _pos, const etk::Color<uint32_t, 1>& _newColor) = 0;
-			virtual void set(const ivec2& _pos, const etk::Color<float, 1>& _newColor) = 0;
-			virtual void set(const ivec2& _pos, const etk::Color<double, 1>& _newColor) = 0;
-			virtual etk::Color<> get(const ivec2& _pos) const = 0;
-			virtual void set(const std::vector<etk::Color<float,4>>& _data, const ivec2& _size) = 0;
-			virtual void set(const std::vector<etk::Color<uint8_t,4>>& _data, const ivec2& _size) = 0;
-	};
 	
 	template<typename T = etk::Color<>>
 	class ImageTemplate : public ImagePrivate {
@@ -65,8 +39,10 @@ namespace egami {
 			void* getTextureDataPointer() {
 				return &m_data[0];
 			};
-			enum colorType getType();
-			const ivec2& getSize() { return m_size; };
+			enum colorType getType() const;
+			const ivec2& getSize() {
+				return m_size;
+			};
 		// -----------------------------------------------
 		// -- basic tools :
 		// -----------------------------------------------
@@ -249,28 +225,28 @@ namespace egami {
 				}
 			}
 	};
-	template <> enum colorType ImageTemplate<etk::Color<uint8_t>>::getType() {
+	template <> enum colorType ImageTemplate<etk::Color<uint8_t>>::getType() const {
 		return egami::colorType::RGBA8;
 	}
-	template <> enum colorType ImageTemplate<etk::Color<uint8_t, 3>>::getType() {
+	template <> enum colorType ImageTemplate<etk::Color<uint8_t, 3>>::getType() const {
 		return egami::colorType::RGB8;
 	}
-	template <> enum colorType ImageTemplate<etk::Color<float>>::getType() {
+	template <> enum colorType ImageTemplate<etk::Color<float>>::getType() const {
 		return egami::colorType::RGBAf;
 	}
-	template <> enum colorType ImageTemplate<etk::Color<float, 3>>::getType() {
+	template <> enum colorType ImageTemplate<etk::Color<float, 3>>::getType() const {
 		return egami::colorType::RGBf;
 	}
-	template <> enum colorType ImageTemplate<etk::Color<uint16_t, 1>>::getType() {
+	template <> enum colorType ImageTemplate<etk::Color<uint16_t, 1>>::getType() const {
 		return egami::colorType::unsignedInt16;
 	}
-	template <> enum colorType ImageTemplate<etk::Color<uint32_t, 1>>::getType() {
+	template <> enum colorType ImageTemplate<etk::Color<uint32_t, 1>>::getType() const {
 		return egami::colorType::unsignedInt32;
 	}
-	template <> enum colorType ImageTemplate<etk::Color<float, 1>>::getType() {
+	template <> enum colorType ImageTemplate<etk::Color<float, 1>>::getType() const {
 		return egami::colorType::float32;
 	}
-	template <> enum colorType ImageTemplate<etk::Color<double, 1>>::getType() {
+	template <> enum colorType ImageTemplate<etk::Color<double, 1>>::getType() const {
 		return egami::colorType::float64;
 	}
 };

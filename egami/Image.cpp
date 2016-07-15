@@ -7,7 +7,7 @@
 #include <egami/Image.h>
 #include <egami/debug.h>
 #include <egami/ImagePrivate.h>
-#include <memory>
+#include <ememory/memory.h>
 
 std::ostream& egami::operator <<(std::ostream& _os, const enum egami::colorType _type) {
 	switch (_type) {
@@ -47,6 +47,10 @@ egami::Image::Image() :
 	EGAMI_WARNING("Chek this code, the caller can not use it corectly ... (NEW API)");
 }
 
+egami::Image::~Image() {
+	
+}
+
 egami::Image::Image(const ivec2& _size, enum colorType _type) :
   m_data(nullptr) {
 	configure(_size, _type);
@@ -58,29 +62,29 @@ void egami::Image::configure(const ivec2& _size, enum colorType _type) {
 			m_data = nullptr;
 			break;
 		case egami::colorType::RGBA8:
-			//m_data = std::make_shared<egami::ImagePrivate>(new egami::ImageTemplate<etk::Color<uint8_t>>(_size));
-			m_data = std::shared_ptr<egami::ImagePrivate>(new egami::ImageTemplate<etk::Color<uint8_t>>(_size));
+			//m_data = ememory::makeShared<egami::ImagePrivate>(new egami::ImageTemplate<etk::Color<uint8_t>>(_size));
+			m_data = ememory::makeShared<egami::ImageTemplate<etk::Color<uint8_t>>>(_size);
 			break;
 		case egami::colorType::RGB8:
-			m_data = std::shared_ptr<egami::ImagePrivate>(new egami::ImageTemplate<etk::Color<uint8_t, 3>>(_size));
+			m_data = ememory::makeShared<egami::ImageTemplate<etk::Color<uint8_t, 3>>>(_size);
 			break;
 		case egami::colorType::RGBAf:
-			m_data = std::shared_ptr<egami::ImagePrivate>(new egami::ImageTemplate<etk::Color<float>>(_size));
+			m_data = ememory::makeShared<egami::ImageTemplate<etk::Color<float>>>(_size);
 			break;
 		case egami::colorType::RGBf:
-			m_data = std::shared_ptr<egami::ImagePrivate>(new egami::ImageTemplate<etk::Color<float, 3>>(_size));
+			m_data = ememory::makeShared<egami::ImageTemplate<etk::Color<float, 3>>>(_size);
 			break;
 		case egami::colorType::unsignedInt16:
-			m_data = std::shared_ptr<egami::ImagePrivate>(new egami::ImageTemplate<etk::Color<uint16_t, 1>>(_size));
+			m_data = ememory::makeShared<egami::ImageTemplate<etk::Color<uint16_t, 1>>>(_size);
 			break;
 		case egami::colorType::unsignedInt32:
-			m_data = std::shared_ptr<egami::ImagePrivate>(new egami::ImageTemplate<etk::Color<uint32_t, 1>>(_size));
+			m_data = ememory::makeShared<egami::ImageTemplate<etk::Color<uint32_t, 1>>>(_size);
 			break;
 		case egami::colorType::float32:
-			m_data = std::shared_ptr<egami::ImagePrivate>(new egami::ImageTemplate<etk::Color<float, 1>>(_size));
+			m_data = ememory::makeShared<egami::ImageTemplate<etk::Color<float, 1>>>(_size);
 			break;
 		case egami::colorType::float64:
-			m_data = std::shared_ptr<egami::ImagePrivate>(new egami::ImageTemplate<etk::Color<double, 1>>(_size));
+			m_data = ememory::makeShared<egami::ImageTemplate<etk::Color<double, 1>>>(_size);
 			break;
 	}
 }

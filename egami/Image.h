@@ -10,7 +10,7 @@
 #include <etk/math/Vector2D.h>
 #include <etk/Color.h>
 #include <etk/stdTools.h>
-#include <memory>
+#include <ememory/memory.h>
 
 namespace egami {
 	enum class colorType {
@@ -26,11 +26,47 @@ namespace egami {
 		float64,
 	};
 	std::ostream& operator <<(std::ostream& _os, const enum egami::colorType _obj);
-	class ImagePrivate;
+	
+	class ImagePrivate {
+		public:
+			ImagePrivate() {};
+			virtual ~ImagePrivate() {};
+			virtual void* getTextureDataPointer() {
+				return nullptr;
+			};
+			virtual const ivec2& getSize() const = 0;
+			virtual int32_t getWidth() const {
+				return 0;
+			};
+			virtual int32_t getHeight() const {
+				return 0;
+			};
+			virtual enum colorType getType() const {
+				return egami::colorType::RGBA8;
+			};
+			virtual void clear() = 0;
+			virtual void resize(const ivec2& _size, const etk::Color<uint8_t, 4>& _color, const ivec2& _startPos) = 0;
+			virtual void resize(const ivec2& _size, const etk::Color<float, 4>& _color, const ivec2& _startPos) = 0;
+			virtual void resize(const ivec2& _size, const etk::Color<uint16_t, 1>& _color, const ivec2& _startPos) = 0;
+			virtual void resize(const ivec2& _size, const etk::Color<uint32_t, 1>& _color, const ivec2& _startPos) = 0;
+			virtual void resize(const ivec2& _size, const etk::Color<float, 1>& _color, const ivec2& _startPos) = 0;
+			virtual void resize(const ivec2& _size, const etk::Color<double, 1>& _color, const ivec2& _startPos) = 0;
+			virtual void resize(const ivec2& _size, const ivec2& _startPos) = 0;
+			virtual void set(const ivec2& _pos, const etk::Color<>& _newColor) = 0;
+			virtual void set(const ivec2& _pos, const etk::Color<float>& _newColor) = 0;
+			virtual void set(const ivec2& _pos, const etk::Color<uint16_t, 1>& _newColor) = 0;
+			virtual void set(const ivec2& _pos, const etk::Color<uint32_t, 1>& _newColor) = 0;
+			virtual void set(const ivec2& _pos, const etk::Color<float, 1>& _newColor) = 0;
+			virtual void set(const ivec2& _pos, const etk::Color<double, 1>& _newColor) = 0;
+			virtual etk::Color<> get(const ivec2& _pos) const = 0;
+			virtual void set(const std::vector<etk::Color<float,4>>& _data, const ivec2& _size) = 0;
+			virtual void set(const std::vector<etk::Color<uint8_t,4>>& _data, const ivec2& _size) = 0;
+	};
+	
 	class Image {
 		private:
 			// TODO : Change this in a unique_ptr ...
-			std::shared_ptr<ImagePrivate> m_data; //!< data of the image
+			ememory::SharedPtr<ImagePrivate> m_data; //!< data of the image
 		public:
 			/**
 			 * @brief contructor that create an empty image (no valid data)
@@ -39,6 +75,7 @@ namespace egami {
 			Image();
 			Image(const ivec2& _size,
 			      enum colorType _type = egami::colorType::undefined);
+			~Image();
 			// TODO : IMplement move operator ... and copy operator...
 		public:
 			void configure(const ivec2& _size=ivec2(32,32),
@@ -98,5 +135,4 @@ namespace egami {
 			void set(const std::vector<etk::Color<uint8_t,4>>& _data, const ivec2& _size);
 	};
 }
-
 
