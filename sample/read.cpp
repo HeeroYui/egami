@@ -6,6 +6,7 @@
 
 //! [egami_sample_read_all]
 #include <test-debug/debug.h>
+#include <etk/math/Vector2D.h>
 //! [egami_sample_include]
 #include <egami/egami.h>
 //! [egami_sample_include]
@@ -29,11 +30,11 @@ static void readSVG() {
 	//! [egami_sample_read_file_svg]
 	TEST_INFO("image exist (SVG): " << image.exist());
 	//! [egami_sample_read_file_svg_rescale]
-	image = egami::load("DATA:read.svg", ivec(800,600));
+	image = egami::load("DATA:read.svg", ivec2(800,600));
 	//! [egami_sample_read_file_svg_rescale]
 	TEST_INFO("image exist (SVG-rescale): " << image.exist());
 	//! [egami_sample_read_file_svg_scale_factor]
-	image = egami::load("DATA:read.svg", 0.5);
+	// TODO : image = egami::load("DATA:read.svg", 0.5);
 	//! [egami_sample_read_file_svg_scale_factor]
 	TEST_INFO("image exist (SVG-scale): " << image.exist());
 }

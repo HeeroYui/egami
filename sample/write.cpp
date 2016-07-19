@@ -14,9 +14,9 @@ static void writeBMP() {
 	//! [egami_sample_create_image]
 	// create an empty Image (no type and no inside data)
 	egami::Image image(ivec2(25,25));
-	image.set(ivec2(5,5), etk::Color<>(0x88, 0xFF, 0x00, 0xFF);
-	image.set(ivec2(12,15), etk::Color<>(0x88, 0xFF, 0x00, 0xFF);
-	image.set(ivec2(4,9), etk::Color<>(0x88, 0xFF, 0x00, 0xFF);
+	image.set(ivec2(5,5), etk::Color<>(0x88, 0xFF, 0x00, 0xFF));
+	image.set(ivec2(12,15), etk::Color<>(0x88, 0xFF, 0x00, 0xFF));
+	image.set(ivec2(4,9), etk::Color<>(0x88, 0xFF, 0x00, 0xFF));
 	// ...
 	//! [egami_sample_create_image]
 	//! [egami_sample_write_file_bmp]

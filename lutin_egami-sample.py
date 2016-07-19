@@ -28,9 +28,9 @@ def create(target, module_name):
 	my_module = module.Module(__file__, module_name, get_type())
 	my_module.add_module_depend(['egami', 'test-debug'])
 	my_module.add_src_file([
-		'test/main.cpp',
-		'test/read.cpp',
-		'test/write.cpp'
+		'sample/main.cpp',
+		'sample/read.cpp',
+		'sample/write.cpp'
 		])
 	my_module.copy_path('sample/read.bmp')
 	my_module.copy_path('sample/read.svg')
