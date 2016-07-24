@@ -193,9 +193,9 @@ egami::Image egami::loadPNG(const std::string& _inputFile) {
 	for (png_uint_32 row = 0; row < height; row++) {
 		row_pointers[row] = (png_bytep)png_malloc(png_ptr, png_get_rowbytes(png_ptr, info_ptr));
 	}
-	EGAMI_ERROR("Load image: " << _inputFile);
+	EGAMI_DEBUG("Load image: " << _inputFile);
 	png_read_image(png_ptr, row_pointers);
-	EGAMI_ERROR("Load image: " << _inputFile << " DONE");
+	EGAMI_DEBUG("Load image: " << _inputFile << " DONE");
 	// Read rest of file, and get additional chunks in info_ptr - REQUIRED
 	png_read_end(png_ptr, info_ptr);
 	
@@ -204,7 +204,7 @@ egami::Image egami::loadPNG(const std::string& _inputFile) {
 	etk::Color<> tmpColor(0,0,0,0);
 	switch (colorType) {
 		case PNG_COLOR_TYPE_RGBA:
-			EGAMI_ERROR("plop: PNG_COLOR_TYPE_RGBA");
+			EGAMI_DEBUG("colorset: PNG_COLOR_TYPE_RGBA");
 			// Conversion to OpenGL texture
 			for (png_uint_32 yyy = 0; yyy < height; ++yyy) {
 				png_byte* row = row_pointers[yyy];
@@ -216,7 +216,7 @@ egami::Image egami::loadPNG(const std::string& _inputFile) {
 			}
 			break;
 		case PNG_COLOR_TYPE_RGB:
-			EGAMI_ERROR("plop: PNG_COLOR_TYPE_RGB");
+			EGAMI_DEBUG("colorset: PNG_COLOR_TYPE_RGB");
 			// Conversion to OpenGL texture
 			for (png_uint_32 yyy = 0; yyy < height; ++yyy) {
 				png_byte* row = row_pointers[yyy];
@@ -228,7 +228,7 @@ egami::Image egami::loadPNG(const std::string& _inputFile) {
 			}
 			break;
 		case PNG_COLOR_TYPE_GRAY:
-			EGAMI_ERROR("plop: PNG_COLOR_TYPE_GRAY");
+			EGAMI_DEBUG("colorset: PNG_COLOR_TYPE_GRAY");
 			// Conversion to OpenGL texture
 			for (png_uint_32 yyy = 0; yyy < height; ++yyy) {
 				png_byte* row = row_pointers[yyy];
@@ -240,7 +240,7 @@ egami::Image egami::loadPNG(const std::string& _inputFile) {
 			}
 			break;
 		case PNG_COLOR_TYPE_GRAY_ALPHA:
-			EGAMI_ERROR("plop: PNG_COLOR_TYPE_GRAY_ALPHA");
+			EGAMI_DEBUG("colorset: PNG_COLOR_TYPE_GRAY_ALPHA");
 			// Conversion to OpenGL texture
 			for (png_uint_32 yyy = 0; yyy < height; ++yyy) {
 				png_byte* row = row_pointers[yyy];

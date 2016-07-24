@@ -44,7 +44,7 @@ std::ostream& egami::operator <<(std::ostream& _os, const enum egami::colorType 
 
 egami::Image::Image() :
   m_data(nullptr) {
-	EGAMI_WARNING("Chek this code, the caller can not use it corectly ... (NEW API)");
+	
 }
 
 egami::Image::~Image() {
@@ -107,7 +107,7 @@ void* egami::Image::getTextureDataPointer() {
 
 void egami::Image::resize(const ivec2& _size, const ivec2& _startPos) {
 	if (m_data == nullptr) {
-		EGAMI_WARNING("No internal data for image (nullptr)");
+		EGAMI_CRITICAL("No internal data for image (nullptr)");
 		return;
 	}
 	m_data->resize(_size, _startPos);
