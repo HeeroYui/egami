@@ -22,9 +22,11 @@ egami::Image egami::loadSVG(const std::string& _fileName, const ivec2& _size) {
 	ivec2 imageSize = _size;
 	#if 0
 		std::vector<etk::Color<float,4>> svgImage = svgDocument.renderImageFloatRGBA(imageSize);
+		out.configure(imageSize, egami::colorType::RGBAf);
 		out.set(svgImage, imageSize);
 	#else
 		std::vector<etk::Color<uint8_t,4>> svgImage = svgDocument.renderImageU8RGBA(imageSize);
+		out.configure(imageSize, egami::colorType::RGBA8);
 		out.set(svgImage, imageSize);
 	#endif
 	return out;
