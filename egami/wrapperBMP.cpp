@@ -89,38 +89,35 @@ egami::Image egami::loadBMP(const std::string& _inputFile) {
 		fileName.fileClose();
 		return out;
 	}
+	m_width = m_InfoHeader.biWidth;
+	m_height = m_InfoHeader.biHeight;
 	if(    m_InfoHeader.biBitCount == 16
-	    && m_InfoHeader.biCompression == 0)
-	{
+	    && m_InfoHeader.biCompression == 0) {
 		m_dataMode = BITS_16_X1R5G5B5;
+		out.configure(ivec2(m_width,m_height), egami::colorType::RGB8);
 	} else if(    m_InfoHeader.biBitCount == 16
-	         && m_InfoHeader.biCompression == 3)
-	{
+	         && m_InfoHeader.biCompression == 3) {
 		m_dataMode = BITS_16_R5G6B5;
+		out.configure(ivec2(m_width,m_height), egami::colorType::RGB8);
 	} else if(    m_InfoHeader.biBitCount == 24
-	           && m_InfoHeader.biCompression == 0)
-	{
+	           && m_InfoHeader.biCompression == 0) {
 		m_dataMode = BITS_24_R8G8B8;
+		out.configure(ivec2(m_width,m_height), egami::colorType::RGB8);
 	} else if(    m_InfoHeader.biBitCount == 32
-	           && m_InfoHeader.biCompression == 3)
-	{
+	           && m_InfoHeader.biCompression == 3) {
 		m_dataMode = BITS_32_X8R8G8B8;
+		out.configure(ivec2(m_width,m_height), egami::colorType::RGB8);
 	} else if(    m_InfoHeader.biBitCount == 32
-	           && m_InfoHeader.biCompression == 0)
-	{
+	           && m_InfoHeader.biCompression == 0) {
 		m_dataMode = BITS_32_A8R8G8B8;
+		out.configure(ivec2(m_width,m_height), egami::colorType::RGBA8);
 	} else {
 		EGAMI_ERROR("the biBitCount & biCompression fealds are unknow  == > not supported format ...");
 		fileName.fileClose();;
 		return out;
 	}
-	m_width = m_InfoHeader.biWidth;
-	m_height = m_InfoHeader.biHeight;
-	// reallocate the image 
-	out.configure(ivec2(m_width,m_height), egami::colorType::RGBA8);
-	
 	std::vector<uint8_t> m_data;
-	if(0 != m_InfoHeader.biSizeImage) {
+	if(m_InfoHeader.biSizeImage != 0) {
 		m_data.resize(m_InfoHeader.biSizeImage, 0);
 		if (fileName.fileRead(&m_data[0],m_InfoHeader.biSizeImage,1) != 1){
 			EGAMI_CRITICAL("Can not read the file with the good size...");
@@ -220,9 +217,15 @@ bool egami::storeBMP(const std::string& _fileName, const egami::Image& _inputIma
 	m_InfoHeader.biWidth = _inputImage.getSize().x();
 	m_InfoHeader.biHeight = _inputImage.getSize().y();
 	m_InfoHeader.biPlanes = 1;
-	m_InfoHeader.biBitCount = 32;
-	m_InfoHeader.biCompression = 0;
-	m_InfoHeader.biSizeImage = _inputImage.getSize().x()*_inputImage.getSize().y()*4;
+	if (_inputImage.getType() == egami::colorType::RGBA8) {
+		m_InfoHeader.biBitCount = 32;
+		m_InfoHeader.biCompression = 0;
+		m_InfoHeader.biSizeImage = _inputImage.getSize().x()*_inputImage.getSize().y()*4;
+	} else {
+		m_InfoHeader.biBitCount = 24;
+		m_InfoHeader.biCompression = 0;
+		m_InfoHeader.biSizeImage = _inputImage.getSize().x()*_inputImage.getSize().y()*3;
+	}
 	m_InfoHeader.biXPelsPerMeter = 75;
 	m_InfoHeader.biYPelsPerMeter = 75;
 	m_InfoHeader.biClrUsed = 0;
@@ -251,16 +254,30 @@ bool egami::storeBMP(const std::string& _fileName, const egami::Image& _inputIma
 		return false;
 	}
 	*/
-	uint8_t data[16];
-	for(int32_t yyy=0; yyy<_inputImage.getSize().y(); ++yyy) {
-		for(int32_t xxx=0; xxx<_inputImage.getSize().x(); ++xxx) {
-			const etk::Color<>& tmpColor = _inputImage.get(ivec2(xxx,yyy));
-			uint8_t* pointer = data;
-			*pointer++ = tmpColor.r();
-			*pointer++ = tmpColor.g();
-			*pointer++ = tmpColor.b();
-			*pointer++ = tmpColor.a();
-			fileName.fileWrite(data,4,1);
+	if (_inputImage.getType() == egami::colorType::RGBA8) {
+		uint8_t data[16];
+		for(int32_t yyy=0; yyy<_inputImage.getSize().y(); ++yyy) {
+			for(int32_t xxx=0; xxx<_inputImage.getSize().x(); ++xxx) {
+				const etk::Color<>& tmpColor = _inputImage.get(ivec2(xxx,yyy));
+				uint8_t* pointer = data;
+				*pointer++ = tmpColor.r();
+				*pointer++ = tmpColor.g();
+				*pointer++ = tmpColor.b();
+				*pointer++ = tmpColor.a();
+				fileName.fileWrite(data,4,1);
+			}
+		}
+	} else {
+		uint8_t data[16];
+		for(int32_t yyy=0; yyy<_inputImage.getSize().y(); ++yyy) {
+			for(int32_t xxx=0; xxx<_inputImage.getSize().x(); ++xxx) {
+				const etk::Color<>& tmpColor = _inputImage.get(ivec2(xxx,yyy));
+				uint8_t* pointer = data;
+				*pointer++ = tmpColor.r();
+				*pointer++ = tmpColor.g();
+				*pointer++ = tmpColor.b();
+				fileName.fileWrite(data,3,1);
+			}
 		}
 	}
 	fileName.fileClose();

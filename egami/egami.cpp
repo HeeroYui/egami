@@ -58,12 +58,12 @@ bool egami::store(const egami::Image& _input, const std::string& _fileName) {
 	// select the corect Loader :
 	if (etk::end_with(tmpName, ".edf") == true) {
 		if (egami::storeEDF(_fileName, _input) == false) {
-			EGAMI_ERROR("Error to load EDF file '" << _fileName << "'");
+			EGAMI_ERROR("Error to store EDF file '" << _fileName << "'");
 			return false;
 		}
 	} else if (etk::end_with(tmpName, ".bmp") == true) {
 		if (egami::storeBMP(_fileName, _input) == false) {
-			EGAMI_ERROR("Error to load BMP file '" << _fileName << "'");
+			EGAMI_ERROR("Error to store BMP file '" << _fileName << "'");
 			return false;
 		}
 	} else if (etk::end_with(tmpName, ".svg") == true) {
@@ -73,7 +73,7 @@ bool egami::store(const egami::Image& _input, const std::string& _fileName) {
 		EGAMI_ERROR("Can not store in PNG file '" << _fileName << "'");
 		return false;
 	} else {
-		EGAMI_ERROR("Extention not managed '" << _fileName << "' Sopported extention : .bmp / .svg / .png");
+		EGAMI_ERROR("Extention not managed '" << _fileName << "' Sopported extention: .edf / .bmp / .svg / .png");
 		return false;
 	}
 	return true;

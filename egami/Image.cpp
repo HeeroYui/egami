@@ -89,7 +89,7 @@ void egami::Image::configure(const ivec2& _size, enum colorType _type) {
 	}
 }
 
-enum egami::colorType egami::Image::getType() {
+enum egami::colorType egami::Image::getType() const {
 	if (m_data == nullptr) {
 		EGAMI_DEBUG("No internal data for image (nullptr)");
 		return egami::colorType::undefined;

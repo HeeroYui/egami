@@ -81,7 +81,7 @@ namespace egami {
 			void configure(const ivec2& _size=ivec2(32,32),
 			               enum colorType _type=egami::colorType::RGBA8);
 			void* getTextureDataPointer();
-			enum colorType getType();
+			enum colorType getType() const;
 			bool exist() {
 				return m_data != nullptr;
 			}
