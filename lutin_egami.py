@@ -26,7 +26,7 @@ def get_version():
 
 def create(target, module_name):
 	my_module = module.Module(__file__, module_name, get_type())
-	my_module.add_extra_compile_flags()
+	my_module.add_extra_flags()
 	my_module.add_src_file([
 		'egami/Image.cpp',
 		'egami/ImageMono.cpp',
@@ -42,8 +42,8 @@ def create(target, module_name):
 		'egami/ImageMono.h',
 		'egami/egami.h',
 		])
-	my_module.add_module_depend(['etk', 'png', 'esvg', 'edtaa3'])
-	my_module.compile_flags('c++', [
+	my_module.add_depend(['etk', 'png', 'esvg', 'edtaa3'])
+	my_module.add_flag('c++', [
 		'-Wno-write-strings',
 		'-Wall'])
 	my_module.add_path(tools.get_current_path(__file__))

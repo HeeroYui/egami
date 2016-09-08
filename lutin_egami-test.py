@@ -26,7 +26,7 @@ def get_maintainer():
 
 def create(target, module_name):
 	my_module = module.Module(__file__, module_name, get_type())
-	my_module.add_module_depend(['egami', 'gtest', 'test-debug'])
+	my_module.add_depend(['egami', 'gtest', 'test-debug'])
 	my_module.add_src_file([
 		'test/main.cpp'
 		])
