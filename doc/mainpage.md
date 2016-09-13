@@ -1,52 +1,59 @@
-EXML library                                {#mainpage}
-============
+EGAMI library                                {#mainpage}
+=============
 
 @tableofcontents
 
-What is EXML:                               {#exml_mainpage_what}
-==================
+What is EGAMI:                               {#egami_mainpage_what}
+==============
 
-EXML, or Ewol XML interface is a simple, small, efficient, C++ XML parser/generator that can be easily integrating into other programs.
+EGAMI, or IMAGE in the oposity way is a simple library that permit to read many format of image without knolege of the specific under library API.
 
-What it does:                               {#exml_mainpage_what_it_does}
+What it does:                               {#egami_mainpage_what_it_does}
 -------------
 
-EXML parses an XML document, and builds from that a Document Object Model (DOM) that can be read, modified, and saved.
+EGAMI Read some image format:
+  - bmp
+  - png
+  - svg
 
-XML stands for "eXtensible Markup Language." It is a general purpose human and machine readable markup language to describe arbitrary data.
-All those random file formats created to store application data can all be replaced with XML. One parser for everything.
+Egami stor file format:
+  - bmp
 
-http://wikipedia.org/wiki/XML
+EGAMI is dependent of the STL (compatible with MacOs stl (CXX))
 
-There are different ways to access and interact with XML data.
-EXML uses a Document Object Model (DOM), meaning the XML data is parsed into a C++ objects that can be browsed and manipulated, and then written to disk.
-You can also construct an XML document from scratch with C++ objects and write this to disk.
+What is the TODO list:                       {#egami_mainpage_todo}
+----------------------
 
-EXML is designed to be easy and fast to learn.
+Must integrate read of:
+  - jpeg
+  - webp
+  - gif
+  - tga
+  - yuv
 
-EXML is dependent of the STL (compatible with MacOs stl (CXX))
+Must integrate store of:
+  - png
+  - webp
 
-What it doesn't do:                          {#exml_mainpage_what_it_not_does}
--------------------
+must port to use Open-cv core backend to store image (in optionnal mode)
 
-EXML doesn't parse or use DTDs (Document Type Definitions) or XSLs (eXtensible Stylesheet Language).
 
-What languages are supported?                    {#exml_mainpage_language}
+What languages are supported?                    {#egami_mainpage_language}
 =============================
 
-EXML is written in C++.
+EGAMI is written in C++.
 
 
-Are there any licensing restrictions?            {#exml_mainpage_license_restriction}
+Are there any licensing restrictions?            {#egami_mainpage_license_restriction}
 =====================================
 
-EXML is **FREE software** and _all sub-library are FREE and staticly linkable !!!_
+EGAMI is **FREE software** and _all sub-library are FREE and staticly linkable !!!_
 
 
-License (APACHE-2.0)                             {#exml_mainpage_license}
+License (APACHE-2.0)                             {#egami_mainpage_license}
 ====================
 
-Copyright EXML Edouard DUPIN
+Copyright EGAMI Edouard DUPIN
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -61,11 +68,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 
-Other pages                              {#exml_mainpage_sub_page}
+Other pages                              {#egami_mainpage_sub_page}
 ===========
 
-  - @ref exml_build
-  - @ref exml_tutorial_read
-  - @ref exml_tutorial_write
+  - @ref egami_build
+  - @ref egami_tutorial_read
+  - @ref egami_tutorial_write
   - [**ewol coding style**](http://atria-soft.github.io/ewol/ewol_coding_style.html)
 
