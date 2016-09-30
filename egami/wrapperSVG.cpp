@@ -4,12 +4,12 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include <etk/types.h>
-#include <egami/debug.h>
-#include <egami/Image.h>
-#include <egami/wrapperSVG.h>
-#include <etk/os/FSNode.h>
-#include <esvg/esvg.h>
+#include <etk/types.hpp>
+#include <egami/debug.hpp>
+#include <egami/Image.hpp>
+#include <egami/wrapperSVG.hpp>
+#include <etk/os/FSNode.hpp>
+#include <esvg/esvg.hpp>
 
 
 egami::Image egami::loadSVG(const std::string& _fileName, const ivec2& _size) {

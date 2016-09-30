@@ -4,10 +4,10 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include <egami/Image.h>
-#include <egami/debug.h>
-#include <egami/ImagePrivate.h>
-#include <ememory/memory.h>
+#include <egami/Image.hpp>
+#include <egami/debug.hpp>
+#include <egami/ImagePrivate.hpp>
+#include <ememory/memory.hpp>
 
 std::ostream& egami::operator <<(std::ostream& _os, const enum egami::colorType _type) {
 	switch (_type) {

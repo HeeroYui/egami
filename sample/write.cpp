@@ -5,9 +5,9 @@
  */
 
 //! [egami_sample_write_all]
-#include <test-debug/debug.h>
-#include <egami/egami.h>
-#include "write.h"
+#include <test-debug/debug.hpp>
+#include <egami/egami.hpp>
+#include "write.hpp"
 
 
 static void writeBMP() {

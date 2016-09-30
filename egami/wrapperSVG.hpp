@@ -5,7 +5,7 @@
  */
 #pragma once
 
-#include <egami/egami.h>
+#include <egami/egami.hpp>
 
 namespace egami {
 	/**

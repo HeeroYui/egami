@@ -4,14 +4,14 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include <egami/egami.h>
-#include <egami/debug.h>
+#include <egami/egami.hpp>
+#include <egami/debug.hpp>
 
-#include <egami/wrapperSVG.h>
-#include <egami/wrapperPNG.h>
-#include <egami/wrapperBMP.h>
-#include <egami/wrapperEDF.h>
-#include <edtaa3/edtaa3func.h>
+#include <egami/wrapperSVG.hpp>
+#include <egami/wrapperPNG.hpp>
+#include <egami/wrapperBMP.hpp>
+#include <egami/wrapperEDF.hpp>
+#include <edtaa3/edtaa3func.hpp>
 
 bool egami::scalable(const std::string& _fileName) {
 	if (true == etk::end_with(_fileName, ".svg") ) {

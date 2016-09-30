@@ -4,11 +4,11 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include <etk/types.h>
-#include <egami/debug.h>
-#include <egami/Image.h>
-#include <egami/wrapperBMP.h>
-#include <etk/os/FSNode.h>
+#include <etk/types.hpp>
+#include <egami/debug.hpp>
+#include <egami/Image.hpp>
+#include <egami/wrapperBMP.hpp>
+#include <etk/os/FSNode.hpp>
 extern "C" {
 	#pragma pack(push,1)
 	struct bitmapFileHeader {

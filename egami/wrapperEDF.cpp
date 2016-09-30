@@ -4,11 +4,11 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include <etk/types.h>
-#include <egami/debug.h>
-#include <egami/Image.h>
-#include <egami/wrapperEDF.h>
-#include <etk/os/FSNode.h>
+#include <etk/types.hpp>
+#include <egami/debug.hpp>
+#include <egami/Image.hpp>
+#include <egami/wrapperEDF.hpp>
+#include <etk/os/FSNode.hpp>
 
 //EDF format is a simple format for image in text for distance field image (special case)
 // it is composed of the fist line : description of type (starting with #EDF and some other information, the data start just after the first \n

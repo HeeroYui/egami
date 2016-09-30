@@ -4,12 +4,12 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include <etk/types.h>
-#include <egami/debug.h>
-#include <egami/Image.h>
-#include <egami/wrapperPNG.h>
-#include <etk/os/FSNode.h>
-#include <png/png.h>
+#include <etk/types.hpp>
+#include <egami/debug.hpp>
+#include <egami/Image.hpp>
+#include <egami/wrapperPNG.hpp>
+#include <etk/os/FSNode.hpp>
+#include <png/png.hpp>
 
 // we must change the access of the IO of the png lib :
 static void local_ReadData(png_structp png_ptr, png_bytep data, png_size_t length) {

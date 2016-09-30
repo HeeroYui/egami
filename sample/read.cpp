@@ -5,12 +5,12 @@
  */
 
 //! [egami_sample_read_all]
-#include <test-debug/debug.h>
-#include <etk/math/Vector2D.h>
+#include <test-debug/debug.hpp>
+#include <etk/math/Vector2D.hpp>
 //! [egami_sample_include]
-#include <egami/egami.h>
+#include <egami/egami.hpp>
 //! [egami_sample_include]
-#include "read.h"
+#include "read.hpp"
 
 
 static void readBMP() {

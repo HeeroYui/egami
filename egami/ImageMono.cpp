@@ -4,8 +4,8 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include <egami/ImageMono.h>
-#include <egami/debug.h>
+#include <egami/ImageMono.hpp>
+#include <egami/debug.hpp>
 
 egami::ImageMono::ImageMono(const ivec2& _size) :
   m_size(_size) {

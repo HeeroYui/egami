@@ -5,12 +5,12 @@
  */
 #pragma once
 
-#include <etk/types.h>
+#include <etk/types.hpp>
 #include <vector>
-#include <etk/math/Vector2D.h>
-#include <etk/Color.h>
-#include <egami/Image.h>
-#include <egami/ImageMono.h>
+#include <etk/math/Vector2D.hpp>
+#include <etk/Color.hpp>
+#include <egami/Image.hpp>
+#include <egami/ImageMono.hpp>
 
 namespace egami {
 	/**

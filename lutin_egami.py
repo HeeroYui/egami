@@ -38,9 +38,9 @@ def create(target, module_name):
 		'egami/wrapperEDF.cpp'
 		])
 	my_module.add_header_file([
-		'egami/Image.h',
-		'egami/ImageMono.h',
-		'egami/egami.h',
+		'egami/Image.hpp',
+		'egami/ImageMono.hpp',
+		'egami/egami.hpp',
 		])
 	my_module.add_depend(['etk', 'png', 'esvg', 'edtaa3'])
 	my_module.add_flag('c++', [
