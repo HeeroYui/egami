@@ -11,7 +11,7 @@
 #include <egami/wrapperPNG.hpp>
 #include <egami/wrapperBMP.hpp>
 #include <egami/wrapperEDF.hpp>
-#include <edtaa3/edtaa3func.hpp>
+#include <edtaa3/edtaa3func.h>
 
 bool egami::scalable(const std::string& _fileName) {
 	if (true == etk::end_with(_fileName, ".svg") ) {

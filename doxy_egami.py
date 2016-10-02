@@ -21,5 +21,9 @@ def create(target, module_name):
 	    'esvg',
 	    'etk'
 	    ])
+	my_module.add_file_patterns([
+	    '*.hpp',
+	    '*.md',
+	    ])
 	
 	return my_module
