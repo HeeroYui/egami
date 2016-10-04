@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import lutin.module as module
+import lutin.debug as debug
 import lutin.tools as tools
 
 
@@ -24,8 +24,7 @@ def get_compagny_name():
 def get_maintainer():
 	return ["Mr DUPIN Edouard <yui.heero@gmail.com>"]
 
-def create(target, module_name):
-	my_module = module.Module(__file__, module_name, get_type())
+def configure(target, my_module):
 	my_module.add_depend(['egami', 'test-debug'])
 	my_module.add_src_file([
 		'sample/main.cpp',
@@ -35,7 +34,7 @@ def create(target, module_name):
 	my_module.copy_path('sample/read.bmp')
 	my_module.copy_path('sample/read.svg')
 	my_module.copy_path('sample/read.png')
-	return my_module
+	return True
 
 
 

@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import lutin.module as module
+import lutin.debug as debug
 import lutin.tools as tools
 
 
@@ -24,29 +24,34 @@ def get_maintainer():
 def get_version():
 	return "version.txt"
 
-def create(target, module_name):
-	my_module = module.Module(__file__, module_name, get_type())
+def configure(target, my_module):
 	my_module.add_extra_flags()
 	my_module.add_src_file([
-		'egami/Image.cpp',
-		'egami/ImageMono.cpp',
-		'egami/egami.cpp',
-		'egami/debug.cpp',
-		'egami/wrapperPNG.cpp',
-		'egami/wrapperSVG.cpp',
-		'egami/wrapperBMP.cpp',
-		'egami/wrapperEDF.cpp'
-		])
+	    'egami/Image.cpp',
+	    'egami/ImageMono.cpp',
+	    'egami/egami.cpp',
+	    'egami/debug.cpp',
+	    'egami/wrapperPNG.cpp',
+	    'egami/wrapperSVG.cpp',
+	    'egami/wrapperBMP.cpp',
+	    'egami/wrapperEDF.cpp'
+	    ])
 	my_module.add_header_file([
-		'egami/Image.hpp',
-		'egami/ImageMono.hpp',
-		'egami/egami.hpp',
-		])
-	my_module.add_depend(['etk', 'png', 'esvg', 'edtaa3'])
+	    'egami/Image.hpp',
+	    'egami/ImageMono.hpp',
+	    'egami/egami.hpp',
+	    ])
+	my_module.add_depend([
+	    'etk',
+	    'png',
+	    'esvg',
+	    'edtaa3'
+	    ])
 	my_module.add_flag('c++', [
-		'-Wno-write-strings',
-		'-Wall'])
-	my_module.add_path(tools.get_current_path(__file__))
-	return my_module
+	    '-Wno-write-strings',
+	    '-Wall'
+	    ])
+	my_module.add_path(".")
+	return True
 
 
