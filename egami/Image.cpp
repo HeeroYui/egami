@@ -56,6 +56,12 @@ egami::Image::Image(const ivec2& _size, enum colorType _type) :
 	configure(_size, _type);
 }
 
+void egami::Image::swap(egami::Image& _obj) {
+	ememory::SharedPtr<ImagePrivate> tmp = m_data;
+	m_data = _obj.m_data;
+	_obj.m_data = tmp;
+}
+
 void egami::Image::configure(const ivec2& _size, enum colorType _type) {
 	switch (_type) {
 		case egami::colorType::undefined:

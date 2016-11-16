@@ -85,6 +85,7 @@ namespace egami {
 			bool exist() {
 				return m_data != nullptr;
 			}
+			void swap(egami::Image& _obj);
 		// -----------------------------------------------
 		// -- basic tools :
 		// -----------------------------------------------
