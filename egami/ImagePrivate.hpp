@@ -171,8 +171,8 @@ namespace egami {
 			
 			const T& get__(const ivec2& _pos) const {
 				static const T errorColor(0x00000000);
-				if(    _pos.x()>0 && _pos.x()<m_size.x()
-				    && _pos.y()>0 && _pos.y()<m_size.y()) {
+				if(    _pos.x()>=0 && _pos.x()<m_size.x()
+				    && _pos.y()>=0 && _pos.y()<m_size.y()) {
 					return m_data[_pos.x()+_pos.y()*m_size.x()];
 				}
 				return errorColor;

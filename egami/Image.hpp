@@ -140,7 +140,6 @@ namespace egami {
 			
 			void set(const std::vector<etk::Color<float,4>>& _data, const ivec2& _size);
 			void set(const std::vector<etk::Color<uint8_t,4>>& _data, const ivec2& _size);
-			void swap(egami::Image& _image);
 	};
 }
 

@@ -226,9 +226,10 @@ egami::Image egami::loadBMP(const std::string& _inputFile) {
 						tmpColor.setA(0xFF);
 						out.set(ivec2(xxx,yyy), tmpColor);
 					}
+					/*
 					for(int32_t xxx=0; xxx<offset; xxx++) {
 						pointer++;
-					}
+					}*/
 				}
 			}
 			break;
