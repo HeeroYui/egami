@@ -26,6 +26,12 @@ namespace egami {
 		float64,
 	};
 	std::ostream& operator <<(std::ostream& _os, const enum egami::colorType _obj);
+	/**
+	 * @brief Get the Color size use in octet
+	 * @param[in] type of the color
+	 * @return Number of byte requested by the color
+	 */
+	int32_t getFormatColorSize(enum colorType _type);
 	
 	class ImagePrivate {
 		public:
@@ -134,6 +140,7 @@ namespace egami {
 			
 			void set(const std::vector<etk::Color<float,4>>& _data, const ivec2& _size);
 			void set(const std::vector<etk::Color<uint8_t,4>>& _data, const ivec2& _size);
+			void swap(egami::Image& _image);
 	};
 }
 

@@ -25,15 +25,16 @@ def get_maintainer():
 	return ["Mr DUPIN Edouard <yui.heero@gmail.com>"]
 
 def configure(target, my_module):
-	my_module.add_depend(['egami', 'test-debug'])
+	my_module.add_depend([
+	    'egami',
+	    'test-debug'
+	    ])
 	my_module.add_src_file([
 		'sample/main.cpp',
 		'sample/read.cpp',
 		'sample/write.cpp'
 		])
-	my_module.copy_path('sample/read.bmp')
-	my_module.copy_path('sample/read.svg')
-	my_module.copy_path('sample/read.png')
+	my_module.copy_path('data/*')
 	return True
 
 

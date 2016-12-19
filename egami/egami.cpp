@@ -7,10 +7,24 @@
 #include <egami/egami.hpp>
 #include <egami/debug.hpp>
 
-#include <egami/wrapperSVG.hpp>
-#include <egami/wrapperPNG.hpp>
+#ifdef EGAMI_BUILD_ESVG
+	#include <egami/wrapperSVG.hpp>
+#endif
+#ifdef EGAMI_BUILD_PNG
+	#include <egami/wrapperPNG.hpp>
+#endif
 #include <egami/wrapperBMP.hpp>
 #include <egami/wrapperEDF.hpp>
+
+#ifdef EGAMI_BUILD_JPEG
+	#include <egami/wrapperJPG.hpp>
+#endif
+#ifdef EGAMI_BUILD_JPEG2000
+	#include <egami/wrapperJPG2000.hpp>
+#endif
+#ifdef EGAMI_BUILD_TIFF
+	#include <egami/wrapperTIFF.hpp>
+#endif
 #include <edtaa3/edtaa3func.h>
 
 bool egami::scalable(const std::string& _fileName) {
@@ -36,18 +50,52 @@ egami::Image egami::load(const std::string& _fileName, const ivec2& _size) {
 			EGAMI_ERROR("Error to load BMP file '" << _fileName << "'");
 		}
 	} else if (etk::end_with(tmpName, ".svg") == true) {
-		out = egami::loadSVG(_fileName, _size);
-		if (out.exist() == false) {
-			EGAMI_ERROR("Error to load SVG file '" << _fileName << "'");
-		}
-		//egami::storeEDF(_fileName + ".edf", _output);
+		#ifdef EGAMI_BUILD_ESVG
+			out = egami::loadSVG(_fileName, _size);
+			if (out.exist() == false) {
+				EGAMI_ERROR("Error to load SVG file '" << _fileName << "'");
+			}
+		#else
+			EGAMI_WARNING("egamy not compile with the ESVG dependency for file '" << _fileName << "'");
+		#endif
 	} else if (etk::end_with(tmpName, ".png") == true) {
-		out = egami::loadPNG(_fileName);
-		if (out.exist() == false) {
-			EGAMI_ERROR("Error to load PNG file '" << _fileName << "'");
-		}
+		#ifdef EGAMI_BUILD_PNG
+			out = egami::loadPNG(_fileName);
+			if (out.exist() == false) {
+				EGAMI_ERROR("Error to load PNG file '" << _fileName << "'");
+			}
+		#else
+			EGAMI_WARNING("egamy not compile with the PNG dependency for file '" << _fileName << "'");
+		#endif
+	} else if (etk::end_with(tmpName, ".jpg") == true) {
+		#ifdef EGAMI_BUILD_JPEG
+			out = egami::loadJPG(_fileName);
+			if (out.exist() == false) {
+				EGAMI_ERROR("Error to load JPG file '" << _fileName << "'");
+			}
+		#else
+			EGAMI_WARNING("egamy not compile with the JPEG dependency for file '" << _fileName << "'");
+		#endif
+	} else if (etk::end_with(tmpName, ".j2k") == true) {
+		#ifdef EGAMI_BUILD_JPEG2000
+			out = egami::loadJPG2000(_fileName);
+			if (out.exist() == false) {
+				EGAMI_ERROR("Error to load JPEG2000 file '" << _fileName << "'");
+			}
+		#else
+			EGAMI_WARNING("egamy not compile with the JPEG 2000 (openjpeg) dependency for file '" << _fileName << "'");
+		#endif
+	} else if (etk::end_with(tmpName, ".tif") == true) {
+		#ifdef EGAMI_BUILD_TIFF
+			out = egami::loadTIFF(_fileName);
+			if (out.exist() == false) {
+				EGAMI_ERROR("Error to load TIFF file '" << _fileName << "'");
+			}
+		#else
+			EGAMI_WARNING("egamy not compile with the TIFF dependency for file '" << _fileName << "'");
+		#endif
 	} else {
-		EGAMI_ERROR("Extention not managed '" << _fileName << "' Sopported extention : .edf / .bmp / .svg / .png");
+		EGAMI_ERROR("Extention not managed '" << _fileName << "' Sopported extention : .edf / .bmp / .svg / .png / .jpg / .j2k / .tif");
 	}
 	return out;
 }
@@ -72,8 +120,17 @@ bool egami::store(const egami::Image& _input, const std::string& _fileName) {
 	} else if (etk::end_with(tmpName, ".png") == true) {
 		EGAMI_ERROR("Can not store in PNG file '" << _fileName << "'");
 		return false;
+	} else if (etk::end_with(tmpName, ".jpg") == true) {
+		EGAMI_ERROR("Can not store in JPEG file '" << _fileName << "'");
+		return false;
+	} else if (etk::end_with(tmpName, ".j2k") == true) {
+		EGAMI_ERROR("Can not store in JPEG 2000 file '" << _fileName << "'");
+		return false;
+	} else if (etk::end_with(tmpName, ".tif") == true) {
+		EGAMI_ERROR("Can not store in TIFF file '" << _fileName << "'");
+		return false;
 	} else {
-		EGAMI_ERROR("Extention not managed '" << _fileName << "' Sopported extention: .edf / .bmp / .svg / .png");
+		EGAMI_ERROR("Extention not managed '" << _fileName << "' Sopported extention: .edf / .bmp / .svg / .png / .jpg / .j2k / .tif");
 		return false;
 	}
 	return true;

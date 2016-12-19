@@ -25,11 +25,16 @@ def get_maintainer():
 	return ["Mr DUPIN Edouard <yui.heero@gmail.com>"]
 
 def configure(target, my_module):
-	my_module.add_depend(['egami', 'gtest', 'test-debug'])
+	my_module.add_depend([
+	    'egami',
+	    'gtest',
+	    'test-debug',
+	    'algue',
+	    ])
 	my_module.add_src_file([
 	    'test/main.cpp'
 	    ])
-	#my_module.add_export_path(tools.get_current_path(__file__))
+	my_module.copy_path('data/*')
 	return True
 
 

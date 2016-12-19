@@ -42,6 +42,39 @@ std::ostream& egami::operator <<(std::ostream& _os, const enum egami::colorType 
 	return _os;
 }
 
+int32_t egami::getFormatColorSize(enum colorType _type) {
+	switch (_type) {
+		case egami::colorType::undefined:
+			return 1;
+			break;
+		case egami::colorType::RGBA8:
+			return 1*4;
+			break;
+		case egami::colorType::RGB8:
+			return 1*3;
+			break;
+		case egami::colorType::RGBAf:
+			return 4*4;
+			break;
+		case egami::colorType::RGBf:
+			return 4*3;
+			break;
+		case egami::colorType::unsignedInt16:
+			return 2;
+			break;
+		case egami::colorType::unsignedInt32:
+			return 4;
+			break;
+		case egami::colorType::float32:
+			return 4;
+			break;
+		case egami::colorType::float64:
+			return 8;
+			break;
+	}
+	return 1;
+}
+
 egami::Image::Image() :
   m_data(nullptr) {
 	

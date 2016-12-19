@@ -31,8 +31,6 @@ def configure(target, my_module):
 	    'egami/ImageMono.cpp',
 	    'egami/egami.cpp',
 	    'egami/debug.cpp',
-	    'egami/wrapperPNG.cpp',
-	    'egami/wrapperSVG.cpp',
 	    'egami/wrapperBMP.cpp',
 	    'egami/wrapperEDF.cpp'
 	    ])
@@ -43,14 +41,47 @@ def configure(target, my_module):
 	    ])
 	my_module.add_depend([
 	    'etk',
-	    'png',
-	    'esvg',
 	    'edtaa3'
 	    ])
 	my_module.add_flag('c++', [
 	    '-Wno-write-strings',
 	    '-Wall'
 	    ])
+	my_module.add_optionnal_depend(
+	    'png',
+	    ["c++", "-DEGAMI_BUILD_PNG"],
+	    src_file=[
+	        'egami/wrapperPNG.cpp',
+	        ]
+	    )
+	my_module.add_optionnal_depend(
+	    'esvg',
+	    ["c++", "-DEGAMI_BUILD_ESVG"],
+	    src_file=[
+	        'egami/wrapperSVG.cpp',
+	        ]
+	    )
+	my_module.add_optionnal_depend(
+	    'jpeg',
+	    ["c++", "-DEGAMI_BUILD_JPEG"],
+	    src_file=[
+	        'egami/wrapperJPG.cpp',
+	        ]
+	    )
+	my_module.add_optionnal_depend(
+	    'openjpeg',
+	    ["c++", "-DEGAMI_BUILD_JPEG2000"],
+	    src_file=[
+	        'egami/wrapperJPG2000.cpp',
+	        ]
+	    )
+	my_module.add_optionnal_depend(
+	    'tiff',
+	    ["c++", "-DEGAMI_BUILD_TIFF"],
+	    src_file=[
+	        'egami/wrapperTIFF.cpp',
+	        ]
+	    )
 	my_module.add_path(".")
 	return True
 
