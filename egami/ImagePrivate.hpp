@@ -89,7 +89,7 @@ namespace egami {
 						}
 					} else {
 						for (int32_t yyy=oldSize.y()-1; yyy>=0; --yyy) {
-							for (int32_t xxx=0; xxx<oldSize.x(); ++xxx) {
+							for (int32_t xxx=oldSize.x()-1; xxx>=0; --xxx) {
 								m_data[yyy*m_size.x()+xxx] = m_data[yyy*oldSize.x()+xxx];
 							}
 						}
@@ -101,13 +101,13 @@ namespace egami {
 				// Clean all Data outside old range:
 				// basic element:
 				etk::Color<> tmpBg(0,0,0,0);
-				for (int32_t yyy=oldSize.y()-1; yyy<m_size.x(); ++yyy) {
+				for (int32_t yyy=oldSize.y(); yyy<m_size.x(); ++yyy) {
 					for (int32_t xxx=0; xxx<m_size.x(); ++xxx) {
 						set(ivec2(xxx,yyy), tmpBg);
 					}
 				}
 				for (int32_t yyy=0; yyy<m_size.x(); ++yyy) {
-					for (int32_t xxx=oldSize.x()-1; xxx<m_size.x(); ++xxx) {
+					for (int32_t xxx=oldSize.x(); xxx<m_size.x(); ++xxx) {
 						set(ivec2(xxx,yyy), tmpBg);
 					}
 				}
