@@ -31,7 +31,7 @@ TEST(TestBMP, read_227x149) {
 	EXPECT_EQ(egami::colorType::RGB8, image.getType());
 	// check integrity
 	std::string sha512 = algue::stringConvert(algue::sha512::encode((const uint8_t *)image.getTextureDataPointer(), egami::getFormatColorSize(image.getType()) * image.getSize().x() * image.getSize().y()));
-	EXPECT_EQ("3518a9693a349044d23c3a95262831144011086fdb339ef8532f9c6cebffe76b2c994b0a3e6d69addca15538a1cb559af3be445c5b622b5cf80c9291e7b8ca5b", sha512);
+	EXPECT_EQ("42dbad7abf1e651da58c9df06521d63a878b5bd0db6e1cbe129db3c9782ce640a6709583ba9e6571d314f39b259321dcc392f98bf4412deb5ce8392566d2bc0f", sha512);
 }
 
 TEST(TestBMP, read_128x128) {
@@ -45,7 +45,7 @@ TEST(TestBMP, read_128x128) {
 	EXPECT_EQ(egami::colorType::RGB8, image.getType());
 	// check integrity
 	std::string sha512 = algue::stringConvert(algue::sha512::encode((const uint8_t *)image.getTextureDataPointer(), egami::getFormatColorSize(image.getType()) * image.getSize().x() * image.getSize().y()));
-	EXPECT_EQ("3518a9693a349044d23c3a95262831144011086fdb339ef8532f9c6cebffe76b2c994b0a3e6d69addca15538a1cb559af3be445c5b622b5cf80c9291e7b8ca5b", sha512);
+	EXPECT_EQ("ad09f5e165b4acf576e95e27ccd5fcd4003bcdd66c74b3a543807e5fd85db7a6c11a3bbb811950ba19421b2a71815caa14ea9e6575669114766c3483dcc523f3", sha512);
 }
 
 
@@ -69,12 +69,12 @@ TEST(TestPNG, read_128x128) {
 	// Check if image is loaded
 	EXPECT_EQ(true, image.exist());
 	// check image correct size
-	EXPECT_EQ(ivec2(227,149), image.getSize());
+	EXPECT_EQ(ivec2(128,128), image.getSize());
 	// check image correct type
 	EXPECT_EQ(egami::colorType::RGB8, image.getType());
 	// check integrity
 	std::string sha512 = algue::stringConvert(algue::sha512::encode((const uint8_t *)image.getTextureDataPointer(), egami::getFormatColorSize(image.getType()) * image.getSize().x() * image.getSize().y()));
-	EXPECT_EQ("42dbad7abf1e651da58c9df06521d63a878b5bd0db6e1cbe129db3c9782ce640a6709583ba9e6571d314f39b259321dcc392f98bf4412deb5ce8392566d2bc0f", sha512);
+	EXPECT_EQ("ad09f5e165b4acf576e95e27ccd5fcd4003bcdd66c74b3a543807e5fd85db7a6c11a3bbb811950ba19421b2a71815caa14ea9e6575669114766c3483dcc523f3", sha512);
 }
 
 TEST(TestSVG, read) {
@@ -103,7 +103,7 @@ TEST(TestJPG, read_227x149) {
 	EXPECT_EQ(egami::colorType::RGB8, image.getType());
 	// check integrity
 	std::string sha512 = algue::stringConvert(algue::sha512::encode((const uint8_t *)image.getTextureDataPointer(), egami::getFormatColorSize(image.getType()) * image.getSize().x() * image.getSize().y()));
-	EXPECT_EQ("42dbad7abf1e651da58c9df06521d63a878b5bd0db6e1cbe129db3c9782ce640a6709583ba9e6571d314f39b259321dcc392f98bf4412deb5ce8392566d2bc0f", sha512);
+	EXPECT_EQ("ac18fe31c86a18566199829bcea0ede3fc8bcac2c62fb5e8b04259719031605450cc53e3dce5fb197e7c3f13c484d015bdbef94f640b7da40f7c32c2d0f803b8", sha512);
 }
 
 
@@ -113,10 +113,10 @@ TEST(TestJPG, read_128x128) {
 	// Check if image is loaded
 	EXPECT_EQ(true, image.exist());
 	// check image correct size
-	EXPECT_EQ(ivec2(227,149), image.getSize());
+	EXPECT_EQ(ivec2(128,128), image.getSize());
 	// check image correct type
 	EXPECT_EQ(egami::colorType::RGB8, image.getType());
 	// check integrity
 	std::string sha512 = algue::stringConvert(algue::sha512::encode((const uint8_t *)image.getTextureDataPointer(), egami::getFormatColorSize(image.getType()) * image.getSize().x() * image.getSize().y()));
-	EXPECT_EQ("42dbad7abf1e651da58c9df06521d63a878b5bd0db6e1cbe129db3c9782ce640a6709583ba9e6571d314f39b259321dcc392f98bf4412deb5ce8392566d2bc0f", sha512);
+	EXPECT_EQ("dd521e6b75239ee2492c9b3ae81ef1a5061c5d05588ec04a98db65cc210ec4496ca4bb4c18aa45c591a7283e3ce82c8ec4d2554f36a0ed119918a4be89f2e3e0", sha512);
 }

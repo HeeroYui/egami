@@ -139,7 +139,7 @@ egami::Image egami::loadBMP(const std::string& _inputFile) {
 		return out;
 	}
 	if (m_FileHeader.bfOffBits > sizeof(struct bitmapFileHeader) + sizeof(struct bitmapInfoHeader)) {
-		EGAMI_WARNING("Read bitmap in EXTENDED mode ...");
+		EGAMI_VERBOSE("Read bitmap in EXTENDED mode ...");
 		if (fileName.fileRead(&m_InfoHeaderExtended,sizeof(struct bitmapInfoHeaderExtended),1) != 1) {
 			EGAMI_ERROR("error loading file header");
 			fileName.fileClose();
@@ -157,7 +157,7 @@ egami::Image egami::loadBMP(const std::string& _inputFile) {
 		m_InfoHeader.biXPelsPerMeter = m_InfoHeaderExtended.biXPelsPerMeter;
 		m_InfoHeader.biYPelsPerMeter = m_InfoHeaderExtended.biYPelsPerMeter;
 	} else {
-		EGAMI_WARNING("Read bitmap in BASIC mode ...");
+		EGAMI_VERBOSE("Read bitmap in BASIC mode ...");
 		if (fileName.fileRead(&m_InfoHeader,sizeof(struct bitmapInfoHeader),1) != 1) {
 			EGAMI_ERROR("error loading file header");
 			fileName.fileClose();
