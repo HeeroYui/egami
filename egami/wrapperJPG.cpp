@@ -107,12 +107,13 @@ egami::Image egami::loadJPG(const std::string& _inputFile) {
 	
 	
 	// Here we use the library's state variable cinfo.output_scanline as the loop counter, so that we don't have to keep track ourselves.
-	int32_t yyy = 1;
+	int32_t yyy = 0;
 	while (cinfo.output_scanline < cinfo.output_height) {
 		// Get a simple line:
 		(void) jpeg_read_scanlines(&cinfo, buffer, 1);
 		// Direst push on the output (got output format RGB8)
-		uint8_t* tmpp = dataOutPointer + (row_stride*(cinfo.output_height-yyy));
+		//uint8_t* tmpp = dataOutPointer + (row_stride*(cinfo.output_height-yyy));
+		uint8_t* tmpp = dataOutPointer + (row_stride*yyy);
 		memcpy(tmpp, buffer[0], row_stride);
 		yyy++;
 	}

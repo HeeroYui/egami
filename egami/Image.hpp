@@ -57,7 +57,7 @@ namespace egami {
 			virtual void resize(const ivec2& _size, const etk::Color<uint32_t, 1>& _color, const ivec2& _startPos) = 0;
 			virtual void resize(const ivec2& _size, const etk::Color<float, 1>& _color, const ivec2& _startPos) = 0;
 			virtual void resize(const ivec2& _size, const etk::Color<double, 1>& _color, const ivec2& _startPos) = 0;
-			virtual void resize(const ivec2& _size, const ivec2& _startPos) = 0;
+			virtual void resize2(const ivec2& _size, const ivec2& _startPos) = 0;
 			virtual void set(const ivec2& _pos, const etk::Color<>& _newColor) = 0;
 			virtual void set(const ivec2& _pos, const etk::Color<float>& _newColor) = 0;
 			virtual void set(const ivec2& _pos, const etk::Color<uint16_t, 1>& _newColor) = 0;

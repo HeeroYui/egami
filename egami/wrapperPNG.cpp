@@ -211,7 +211,7 @@ egami::Image egami::loadPNG(const std::string& _inputFile) {
 				for (png_uint_32 xxx = 0; xxx < width; ++xxx) {
 					png_byte* ptr = &(row[xxx*4]);
 					tmpColor.set(ptr[0], ptr[1], ptr[2], ptr[3]);
-					out.set(ivec2(xxx,height-yyy-1), tmpColor);
+					out.set(ivec2(xxx,yyy), tmpColor);
 				}
 			}
 			break;
@@ -223,7 +223,7 @@ egami::Image egami::loadPNG(const std::string& _inputFile) {
 				for (png_uint_32 xxx = 0; xxx < width; ++xxx) {
 					png_byte* ptr = &(row[xxx*3]);
 					tmpColor.set(ptr[0], ptr[1], ptr[2]);
-					out.set(ivec2(xxx,height-yyy-1), tmpColor);
+					out.set(ivec2(xxx,yyy), tmpColor);
 				}
 			}
 			break;
@@ -235,7 +235,7 @@ egami::Image egami::loadPNG(const std::string& _inputFile) {
 				for (png_uint_32 xxx = 0; xxx < width; ++xxx) {
 					png_byte* ptr = &(row[xxx]);
 					tmpColor.set(ptr[0], ptr[0], ptr[0]);
-					out.set(ivec2(xxx,height-yyy-1), tmpColor);
+					out.set(ivec2(xxx,yyy), tmpColor);
 				}
 			}
 			break;
@@ -247,7 +247,7 @@ egami::Image egami::loadPNG(const std::string& _inputFile) {
 				for (png_uint_32 xxx = 0; xxx < width; ++xxx) {
 					png_byte* ptr = &(row[xxx*2]);
 					tmpColor.set(ptr[0], ptr[0], ptr[0], ptr[1]);
-					out.set(ivec2(xxx,height-yyy-1), tmpColor);
+					out.set(ivec2(xxx,yyy), tmpColor);
 				}
 			}
 			break;

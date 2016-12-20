@@ -27,8 +27,28 @@ extern "C" {
 		int32_t biSizeImage;
 		int32_t biXPelsPerMeter;
 		int32_t biYPelsPerMeter;
-		int32_t biClrUsed;
-		int32_t biClrImportant;
+		int32_t biPaletteNumber;
+		int32_t biImportantColor;
+	};
+	struct bitmapInfoHeaderExtended {
+		int32_t biSize;
+		int32_t biWidth;
+		int32_t biHeight;
+		int16_t biPlanes;
+		int16_t biBitCount;
+		int32_t biCompression;
+		int32_t biSizeImage;
+		int32_t biXPelsPerMeter;
+		int32_t biYPelsPerMeter;
+		// https://en.wikipedia.org/wiki/BMP_file_format / example 2
+		int32_t biPaletteNumber;
+		int32_t biImportantColor;
+		int32_t biLCSColorSpace; // This is at this position, inspection of "gimp" output ...
+		int32_t biBitMaskRed;
+		int32_t biBitMaskGreen;
+		int32_t biBitMaskBlue;
+		int32_t biBitMaskAlpha;
+		int32_t biUnused[12];
 	};
 	#pragma pack(pop)
 }
@@ -59,8 +79,8 @@ static void display(struct bitmapFileHeader _header, struct bitmapInfoHeader _in
 	EGAMI_DEBUG("        biSizeImage    =" << _info.biSizeImage << "      specifies the size of the image data, in bytes. If there is no compression, it is valid to set this member to zero.");
 	EGAMI_DEBUG("        biXPelsPerMeter=" << _info.biXPelsPerMeter << "      specifies the the horizontal pixels per meter on the designated targer device, usually set to zero.");
 	EGAMI_DEBUG("        biYPelsPerMeter=" << _info.biYPelsPerMeter << "      specifies the the vertical pixels per meter on the designated targer device, usually set to zero.");
-	EGAMI_DEBUG("        biClrUsed      =" << _info.biClrUsed << "      speglTexImage2Dcifies the number of colors used in the bitmap, if set to zero the number of colors is calculated using the biBitCount member.");
-	EGAMI_DEBUG("        biClrImportant =" << _info.biClrImportant << "      specifies the number of color that are 'important' for the bitmap, if set to zero, all colors are important.");
+	EGAMI_DEBUG("        biClrUsed      =" << _info.biPaletteNumber << "      Pallet color number.");
+	EGAMI_DEBUG("        biClrImportant =" << _info.biImportantColor << "      Important color ID.");
 	/*
 	EGAMI_DEBUG("Bitmap : " << m_width << "x" << m_height);
 	switch(m_dataMode)
@@ -94,7 +114,9 @@ egami::Image egami::loadBMP(const std::string& _inputFile) {
 	int32_t m_width = 0;
 	int32_t m_height = 0;
 	struct bitmapFileHeader m_FileHeader;
+	bool useExtended = false;
 	struct bitmapInfoHeader m_InfoHeader;
+	struct bitmapInfoHeaderExtended m_InfoHeaderExtended;
 
 	etk::FSNode fileName(_inputFile);
 	// get the fileSize ...
@@ -116,10 +138,32 @@ egami::Image egami::loadBMP(const std::string& _inputFile) {
 		fileName.fileClose();
 		return out;
 	}
-	if (fileName.fileRead(&m_InfoHeader,sizeof(struct bitmapInfoHeader),1) != 1) {
-		EGAMI_ERROR("error loading file header");
-		fileName.fileClose();
-		return out;
+	if (m_FileHeader.bfOffBits > sizeof(struct bitmapFileHeader) + sizeof(struct bitmapInfoHeader)) {
+		EGAMI_WARNING("Read bitmap in EXTENDED mode ...");
+		if (fileName.fileRead(&m_InfoHeaderExtended,sizeof(struct bitmapInfoHeaderExtended),1) != 1) {
+			EGAMI_ERROR("error loading file header");
+			fileName.fileClose();
+			return out;
+		}
+		useExtended = true;
+		m_InfoHeader.biSize = m_InfoHeaderExtended.biSize;
+		m_InfoHeader.biWidth = m_InfoHeaderExtended.biWidth;
+		m_InfoHeader.biHeight = m_InfoHeaderExtended.biHeight;
+		m_InfoHeader.biHeight = m_InfoHeaderExtended.biHeight;
+		m_InfoHeader.biHeight = m_InfoHeaderExtended.biHeight;
+		m_InfoHeader.biBitCount = m_InfoHeaderExtended.biBitCount;
+		m_InfoHeader.biCompression = m_InfoHeaderExtended.biCompression;
+		m_InfoHeader.biSizeImage = m_InfoHeaderExtended.biSizeImage;
+		m_InfoHeader.biXPelsPerMeter = m_InfoHeaderExtended.biXPelsPerMeter;
+		m_InfoHeader.biYPelsPerMeter = m_InfoHeaderExtended.biYPelsPerMeter;
+	} else {
+		EGAMI_WARNING("Read bitmap in BASIC mode ...");
+		if (fileName.fileRead(&m_InfoHeader,sizeof(struct bitmapInfoHeader),1) != 1) {
+			EGAMI_ERROR("error loading file header");
+			fileName.fileClose();
+			return out;
+		}
+		useExtended = false;
 	}
 	//display(m_FileHeader, m_InfoHeader);
 	//EGAMI_ERROR("plopppppppppppppp " << m_FileHeader.bfOffBits);
@@ -166,6 +210,7 @@ egami::Image egami::loadBMP(const std::string& _inputFile) {
 		fileName.fileClose();;
 		return out;
 	}
+
 	std::vector<uint8_t> m_data;
 	if(m_InfoHeader.biSizeImage != 0) {
 		m_data.resize(m_InfoHeader.biSizeImage, 0);
@@ -183,11 +228,11 @@ egami::Image egami::loadBMP(const std::string& _inputFile) {
 				uint16_t * pointer = (uint16_t*)(&m_data[0]);
 				for(int32_t yyy=0; yyy<m_height; yyy++) {
 					for(int32_t xxx=0; xxx<m_width; xxx++) {
-						tmpColor.setR((uint8_t)((*pointer & 0xF800) >> 8));
+						tmpColor.setB((uint8_t)((*pointer & 0xF800) >> 8));
 						tmpColor.setG((uint8_t)((*pointer & 0x07E0) >> 3));
-						tmpColor.setB((uint8_t)(*pointer << 3));
+						tmpColor.setR((uint8_t)(*pointer << 3));
 						tmpColor.setA(0xFF);
-						out.set(ivec2(xxx,yyy), tmpColor);
+						out.set(ivec2(xxx,m_height-yyy-1), tmpColor);
 						pointer++;
 					}
 				}
@@ -197,11 +242,11 @@ egami::Image egami::loadBMP(const std::string& _inputFile) {
 				uint16_t * pointer = (uint16_t*)(&m_data[0]);
 				for(int32_t yyy=0; yyy<m_height; yyy++) {
 					for(int32_t xxx=0; xxx<m_width; xxx++) {
-						tmpColor.setR((int8_t)((*pointer & 0x7C00) >> 7));
+						tmpColor.setB((int8_t)((*pointer & 0x7C00) >> 7));
 						tmpColor.setG((int8_t)((*pointer & 0x03E0) >> 2));
-						tmpColor.setB((int8_t)(*pointer << 3));
+						tmpColor.setR((int8_t)(*pointer << 3));
 						tmpColor.setA(0xFF);
-						out.set(ivec2(xxx,yyy), tmpColor);
+						out.set(ivec2(xxx,m_height-yyy-1), tmpColor);
 						pointer++;
 					}
 				}
@@ -220,16 +265,15 @@ egami::Image egami::loadBMP(const std::string& _inputFile) {
 				uint8_t * pointer = (&m_data[0]);
 				for(int32_t yyy=0; yyy<m_height; yyy++) {
 					for(int32_t xxx=0; xxx<m_width; xxx++) {
-						tmpColor.setR(*pointer++);
-						tmpColor.setG(*pointer++);
 						tmpColor.setB(*pointer++);
+						tmpColor.setG(*pointer++);
+						tmpColor.setR(*pointer++);
 						tmpColor.setA(0xFF);
-						out.set(ivec2(xxx,yyy), tmpColor);
+						out.set(ivec2(xxx,m_height-yyy-1), tmpColor);
 					}
-					/*
 					for(int32_t xxx=0; xxx<offset; xxx++) {
 						pointer++;
-					}*/
+					}
 				}
 			}
 			break;
@@ -238,11 +282,11 @@ egami::Image egami::loadBMP(const std::string& _inputFile) {
 				for(int32_t yyy=0; yyy<m_height; yyy++) {
 					for(int32_t xxx=0; xxx<m_width; xxx++) {
 						pointer++;
-						tmpColor.setR(*pointer++);
-						tmpColor.setG(*pointer++);
 						tmpColor.setB(*pointer++);
+						tmpColor.setG(*pointer++);
+						tmpColor.setR(*pointer++);
 						tmpColor.setA(0xFF);
-						out.set(ivec2(xxx,yyy), tmpColor);
+						out.set(ivec2(xxx,m_height-yyy-1), tmpColor);
 					}
 				}
 			}
@@ -251,11 +295,11 @@ egami::Image egami::loadBMP(const std::string& _inputFile) {
 				uint8_t * pointer = (&m_data[0]);
 				for(int32_t yyy=0; yyy<m_height; yyy++) {
 					for(int32_t xxx=0; xxx<m_width; xxx++) {
-						tmpColor.setR(*pointer++);
-						tmpColor.setG(*pointer++);
 						tmpColor.setB(*pointer++);
+						tmpColor.setG(*pointer++);
+						tmpColor.setR(*pointer++);
 						tmpColor.setA(*pointer++);
-						out.set(ivec2(xxx,yyy), tmpColor);
+						out.set(ivec2(xxx,m_height-yyy-1), tmpColor);
 					}
 				}
 			}
@@ -269,14 +313,14 @@ egami::Image egami::loadBMP(const std::string& _inputFile) {
 
 bool egami::storeBMP(const std::string& _fileName, const egami::Image& _inputImage) {
 	struct bitmapFileHeader m_FileHeader;
-	struct bitmapInfoHeader m_InfoHeader;
-	
+	struct bitmapInfoHeaderExtended m_InfoHeader;
+	memset(&m_InfoHeader, 0, sizeof(bitmapInfoHeaderExtended));
 	m_FileHeader.bfType = 0x4D42;
-	m_FileHeader.bfSize = sizeof(struct bitmapFileHeader);
+	m_FileHeader.bfSize = sizeof(struct bitmapFileHeader) + sizeof(struct bitmapInfoHeaderExtended);
 	m_FileHeader.bfReserved = 0;
-	m_FileHeader.bfOffBits = sizeof(struct bitmapFileHeader) + sizeof(struct bitmapInfoHeader);
+	m_FileHeader.bfOffBits = sizeof(struct bitmapFileHeader) + sizeof(struct bitmapInfoHeaderExtended);
 	//EGAMI_ERROR("plopppppppppppppp " << m_FileHeader.bfOffBits);
-	m_InfoHeader.biSize = sizeof(struct bitmapInfoHeader);
+	m_InfoHeader.biSize = sizeof(struct bitmapInfoHeaderExtended);
 	m_InfoHeader.biWidth = _inputImage.getSize().x();
 	m_InfoHeader.biHeight = _inputImage.getSize().y();
 	m_InfoHeader.biPlanes = 1;
@@ -298,12 +342,19 @@ bool egami::storeBMP(const std::string& _fileName, const egami::Image& _inputIma
 		}
 		m_InfoHeader.biSizeImage = (baseLine+offset)*_inputImage.getSize().y();
 	}
-	m_InfoHeader.biXPelsPerMeter = 75;
-	m_InfoHeader.biYPelsPerMeter = 75;
-	m_InfoHeader.biClrUsed = 0;
-	m_InfoHeader.biClrImportant = 0;
+	m_FileHeader.bfSize += m_InfoHeader.biSizeImage;
+	m_InfoHeader.biXPelsPerMeter = 72*39.3701+1;
+	m_InfoHeader.biYPelsPerMeter = 72*39.3701+1;
+	//m_InfoHeader.biClrUsed = 0;
+	//m_InfoHeader.biClrImportant = 0;
+	
+	m_InfoHeader.biLCSColorSpace = 0x73524742; // "Win "
 	
 	//display(m_FileHeader, m_InfoHeader);
+	m_InfoHeader.biBitMaskRed   = 0x0000FF00;
+	m_InfoHeader.biBitMaskGreen = 0x00FF0000;
+	m_InfoHeader.biBitMaskBlue  = 0xFF000000;
+	m_InfoHeader.biBitMaskAlpha = 0x000000FF;
 	
 	etk::FSNode fileName(_fileName);
 	if(false == fileName.fileOpenWrite() ) {
@@ -316,7 +367,7 @@ bool egami::storeBMP(const std::string& _fileName, const egami::Image& _inputIma
 		fileName.fileClose();
 		return false;
 	}
-	if (fileName.fileWrite(&m_InfoHeader,sizeof(struct bitmapInfoHeader),1) != 1) {
+	if (fileName.fileWrite(&m_InfoHeader,sizeof(struct bitmapInfoHeaderExtended),1) != 1) {
 		EGAMI_ERROR("error loading file header");
 		fileName.fileClose();
 		return false;
@@ -333,7 +384,7 @@ bool egami::storeBMP(const std::string& _fileName, const egami::Image& _inputIma
 		uint8_t data[16];
 		for(int32_t yyy=0; yyy<_inputImage.getSize().y(); ++yyy) {
 			for(int32_t xxx=0; xxx<_inputImage.getSize().x(); ++xxx) {
-				const etk::Color<>& tmpColor = _inputImage.get(ivec2(xxx,yyy));
+				const etk::Color<>& tmpColor = _inputImage.get(ivec2(xxx,_inputImage.getSize().y()-yyy-1));
 				uint8_t* pointer = data;
 				*pointer++ = tmpColor.r();
 				*pointer++ = tmpColor.g();
@@ -346,11 +397,11 @@ bool egami::storeBMP(const std::string& _fileName, const egami::Image& _inputIma
 		uint8_t data[16];
 		for(int32_t yyy=0; yyy<_inputImage.getSize().y(); ++yyy) {
 			for(int32_t xxx=0; xxx<_inputImage.getSize().x(); ++xxx) {
-				const etk::Color<>& tmpColor = _inputImage.get(ivec2(xxx,yyy));
+				const etk::Color<>& tmpColor = _inputImage.get(ivec2(xxx,_inputImage.getSize().y()-yyy-1));
 				uint8_t* pointer = data;
-				*pointer++ = tmpColor.r();
-				*pointer++ = tmpColor.g();
 				*pointer++ = tmpColor.b();
+				*pointer++ = tmpColor.g();
+				*pointer++ = tmpColor.r();
 				fileName.fileWrite(data,3,1);
 			}
 			if (offset != 0) {

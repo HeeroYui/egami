@@ -14,18 +14,18 @@
 
 namespace egami {
 	
-	template<typename T = etk::Color<>>
+	template<typename EGAMI_TYPE_COLOR = etk::Color<>>
 	class ImageTemplate : public ImagePrivate {
 		private:
 			ivec2 m_size;
-			std::vector<T> m_data;
+			std::vector<EGAMI_TYPE_COLOR> m_data;
 		public:
 			// constructor :
 			ImageTemplate(const ivec2& _size=ivec2(32,32)) :
 			  m_size(_size) {
-				// basic element :
+				// basic element:
 				etk::Color<> tmpBg(0,0,0,0);
-				// preallocate data with a basic bg elements :
+				// preallocate data with a basic bg elements:
 				m_data.resize(m_size.x()*m_size.y(), tmpBg);
 				if ((uint32_t)m_size.x()*m_size.y() > m_data.size()) {
 					//TK_ERROR("Allocation of data buffer in error");
@@ -35,7 +35,7 @@ namespace egami {
 			
 			// destructor
 			virtual ~ImageTemplate() { };
-		// EWOL internal API for Texture system :
+		// EWOL internal API for Texture system:
 		public:
 			void* getTextureDataPointer() {
 				return &m_data[0];
@@ -45,60 +45,74 @@ namespace egami {
 				return m_size;
 			};
 		// -----------------------------------------------
-		// -- basic tools :
+		// -- basic tools:
 		// -----------------------------------------------
 		public :
-			void resize__(const ivec2& _size, const ivec2& _startPos=ivec2(0,0)) {
+			void resize2__(const ivec2& _size, const ivec2& _startPos=ivec2(0,0)) {
 				if (_size == m_size) {
 					// same size  == > nothing to do ...
 					return;
 				}
-				if ((size_t)(_size.x()*_size.y()) > m_data.size()) {
-					m_data.resize(_size.x()*_size.y());
+				ivec2 oldSize = m_size;
+				m_size = _size;
+				if ((size_t)(m_size.x()*m_size.y()) > m_data.size()) {
+					m_data.resize(m_size.x()*m_size.y());
 				}
 				// grow size :
-				if (_size.x() == m_size.x()) {
-					if (_size.y() < m_size.y()) {
+				if (m_size.x() == oldSize.x()) {
+					if (m_size.y() < oldSize.y()) {
 						// Just remove lines ....
 					} else {
 						// just add lines
 					}
-				} else if (_size.x() < m_size.x()) {
-					if (_size.y() <= m_size.y()) {
-						for (int32_t yyy=0; yyy<_size.y(); ++yyy) {
-							for (int32_t xxx=0; xxx<_size.x(); ++xxx) {
-								m_data[yyy*_size.x()+xxx] = m_data[yyy*m_size.x()+xxx];
+				} else if (m_size.x() < oldSize.x()) {
+					if (m_size.y() <= oldSize.y()) {
+						for (int32_t yyy=0; yyy<m_size.y(); ++yyy) {
+							for (int32_t xxx=0; xxx<m_size.x(); ++xxx) {
+								m_data[yyy*m_size.x()+xxx] = m_data[yyy*oldSize.x()+xxx];
 							}
 						}
 					} else {
-						for (int32_t yyy=m_size.y()-1; yyy>=0; --yyy) {
-							for (int32_t xxx=0; xxx<_size.x(); ++xxx) {
-								m_data[yyy*_size.x()+xxx] = m_data[yyy*m_size.x()+xxx];
+						for (int32_t yyy=oldSize.y()-1; yyy>=0; --yyy) {
+							for (int32_t xxx=0; xxx<m_size.x(); ++xxx) {
+								m_data[yyy*m_size.x()+xxx] = m_data[yyy*oldSize.x()+xxx];
 							}
 						}
 					}
-				} else { // (_size.x() > m_size.x())
+				} else { // (m_size.x() > oldSize.x())
 					
-					if (_size.y() <= m_size.y()) {
-						for (int32_t yyy=0; yyy<_size.y(); ++yyy) {
-							for (int32_t xxx=0; xxx<m_size.x(); ++xxx) {
-								m_data[yyy*_size.x()+xxx] = m_data[yyy*m_size.x()+xxx];
+					if (m_size.y() <= oldSize.y()) {
+						for (int32_t yyy=0; yyy<m_size.y(); ++yyy) {
+							for (int32_t xxx=0; xxx<oldSize.x(); ++xxx) {
+								m_data[yyy*m_size.x()+xxx] = m_data[yyy*oldSize.x()+xxx];
 							}
 						}
 					} else {
-						for (int32_t yyy=m_size.y()-1; yyy>=0; --yyy) {
-							for (int32_t xxx=0; xxx<m_size.x(); ++xxx) {
-								m_data[yyy*_size.x()+xxx] = m_data[yyy*m_size.x()+xxx];
+						for (int32_t yyy=oldSize.y()-1; yyy>=0; --yyy) {
+							for (int32_t xxx=0; xxx<oldSize.x(); ++xxx) {
+								m_data[yyy*m_size.x()+xxx] = m_data[yyy*oldSize.x()+xxx];
 							}
 						}
 					}
 				}
-				if ((size_t)(_size.x()*_size.y()) < m_data.size()) {
-					m_data.resize(_size.x()*_size.y());
+				if ((size_t)(m_size.x()*m_size.y()) < m_data.size()) {
+					m_data.resize(m_size.x()*m_size.y());
 				}
-				m_size = _size;
+				// Clean all Data outside old range:
+				// basic element:
+				etk::Color<> tmpBg(0,0,0,0);
+				for (int32_t yyy=oldSize.y()-1; yyy<m_size.x(); ++yyy) {
+					for (int32_t xxx=0; xxx<m_size.x(); ++xxx) {
+						set(ivec2(xxx,yyy), tmpBg);
+					}
+				}
+				for (int32_t yyy=0; yyy<m_size.x(); ++yyy) {
+					for (int32_t xxx=oldSize.x()-1; xxx<m_size.x(); ++xxx) {
+						set(ivec2(xxx,yyy), tmpBg);
+					}
+				}
 			}
-			void resize__(const ivec2& _size, const T& _color) {
+			void resize__(const ivec2& _size, const EGAMI_TYPE_COLOR& _color) {
 				m_size=_size;
 				m_data.resize(m_size.x()*m_size.y(), _color);
 			}
@@ -122,11 +136,11 @@ namespace egami {
 				resize__(_size, _color);
 			}
 			
-			void resize(const ivec2& _size, const ivec2& _startPos) {
-				resize__(_size);
+			void resize2(const ivec2& _size, const ivec2& _startPos) {
+				resize2__(_size, _startPos);
 			}
-			template<typename TYPE_2> void resize(const ivec2& _size, const TYPE_2& _color) {
-				T tmp(_color);
+			template<typename EGAMI_TYPE_COLOR_2> void resize(const ivec2& _size, const EGAMI_TYPE_COLOR_2& _color) {
+				EGAMI_TYPE_COLOR tmp(_color);
 				resize__(_size, tmp);
 			}
 			void set(const ivec2& _pos, const etk::Color<>& _newColor) {
@@ -157,33 +171,33 @@ namespace egami {
 			int32_t getHeight() const {
 				return m_size.y();
 			};
-			void clearColor(const T& _fill) {
+			void clearColor(const EGAMI_TYPE_COLOR& _fill) {
 				for (int32_t iii=0; iii<m_size.x()*m_size.y(); iii++) {
 					m_data[iii] = _fill;
 				}
 			}
 			void clear() {
-				clearColor(T::emptyColor);
+				clearColor(EGAMI_TYPE_COLOR::emptyColor);
 			}
 			etk::Color<> get(const ivec2& _pos) const {
 				return get__(_pos);
 			}
 			
-			const T& get__(const ivec2& _pos) const {
-				static const T errorColor(0x00000000);
+			const EGAMI_TYPE_COLOR& get__(const ivec2& _pos) const {
+				static const EGAMI_TYPE_COLOR errorColor(0x00000000);
 				if(    _pos.x()>=0 && _pos.x()<m_size.x()
 				    && _pos.y()>=0 && _pos.y()<m_size.y()) {
 					return m_data[_pos.x()+_pos.y()*m_size.x()];
 				}
 				return errorColor;
 			}
-			void set__(const ivec2& _pos, const T& _newColor) {
+			void set__(const ivec2& _pos, const EGAMI_TYPE_COLOR& _newColor) {
 				if(    _pos.x()>=0 && _pos.x()<m_size.x()
 				    && _pos.y()>=0 && _pos.y()<m_size.y()) {
 					m_data[_pos.x()+_pos.y()*m_size.x()] = _newColor;
 				}
 			}
-			void insert(const ivec2& _pos, const ImageTemplate<T>& _input) {
+			void insert(const ivec2& _pos, const ImageTemplate<EGAMI_TYPE_COLOR>& _input) {
 				for(int32_t yyy = 0; yyy < _input.getSize().y() && _pos.y() + yyy < m_size.y(); ++yyy) {
 					for(int32_t xxx = 0; xxx < _input.getSize().x() && _pos.x() + xxx < m_size.x(); ++xxx) {
 						set(ivec2(_pos.x()+xxx, _pos.y()+yyy), _input.get(ivec2(xxx, yyy)) );

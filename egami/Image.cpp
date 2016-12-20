@@ -149,7 +149,7 @@ void egami::Image::resize(const ivec2& _size, const ivec2& _startPos) {
 		EGAMI_DEBUG("No internal data for image (nullptr)");
 		return;
 	}
-	m_data->resize(_size, _startPos);
+	m_data->resize2(_size, _startPos);
 }
 
 void egami::Image::resize(const ivec2& _size, const etk::Color<>& _color, const ivec2& _startPos) {
