@@ -101,14 +101,24 @@ namespace egami {
 				// Clean all Data outside old range:
 				// basic element:
 				etk::Color<> tmpBg(0,0,0,0);
-				for (int32_t yyy=oldSize.y(); yyy<m_size.x(); ++yyy) {
+				for (int32_t yyy=oldSize.y(); yyy<m_size.y(); ++yyy) {
 					for (int32_t xxx=0; xxx<m_size.x(); ++xxx) {
 						set(ivec2(xxx,yyy), tmpBg);
 					}
+					if (yyy==oldSize.y()) {
+						for (int32_t xxx=0; xxx<m_size.x(); ++xxx) {
+							set(ivec2(xxx,yyy), etk::Color<>(m_data[(yyy-1)*oldSize.x()+xxx]));
+						}
+					}
 				}
-				for (int32_t yyy=0; yyy<m_size.x(); ++yyy) {
-					for (int32_t xxx=oldSize.x(); xxx<m_size.x(); ++xxx) {
+				for (int32_t xxx=oldSize.x(); xxx<m_size.x(); ++xxx) {
+					for (int32_t yyy=0; yyy<m_size.y(); ++yyy) {
 						set(ivec2(xxx,yyy), tmpBg);
+					}
+					if (xxx==oldSize.x()) {
+						for (int32_t yyy=0; yyy<m_size.y(); ++yyy) {
+							set(ivec2(xxx,yyy), etk::Color<>(m_data[yyy*oldSize.x()+oldSize.x()-1]));
+						}
 					}
 				}
 			}
