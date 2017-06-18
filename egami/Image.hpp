@@ -108,6 +108,7 @@ namespace egami {
 			const ivec2& getSize() const;
 			int32_t getWidth() const;
 			int32_t getHeight() const;
+			ivec2 getGPUSize() const;
 			void clear(const etk::Color<>& _color);
 			void clear(const etk::Color<float>& _color);
 			void clear(const etk::Color<uint16_t, 1>& _color);

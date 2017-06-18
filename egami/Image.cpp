@@ -204,6 +204,38 @@ const ivec2& egami::Image::getSize() const {
 	return m_data->getSize();
 }
 
+/**
+ * @brief get the next power 2 if the input
+ * @param[in] value Value that we want the next power of 2
+ * @return result value
+ */
+static int32_t nextP2(int32_t _value) {
+	int32_t val=1;
+	for (int32_t iii=1; iii<31; iii++) {
+		if (_value <= val) {
+			return val;
+		}
+		val *=2;
+	}
+	EGAMI_CRITICAL("impossible CASE....");
+	return val;
+}
+
+ivec2 egami::Image::getGPUSize() const {
+	if (m_data == nullptr) {
+		EGAMI_DEBUG("No internal data for image (nullptr)");
+		static const ivec2 error(0,0);
+		return error;
+	}
+	#if    defined(__TARGET_OS__Android) \
+	    || defined(__TARGET_OS__IOs)
+		return ivec2(nextP2(m_data->getSize().x()),
+		             nextP2(m_data->getSize().y()));
+	#else
+		return m_data->getSize();
+	#endif
+}
+
 int32_t egami::Image::getWidth() const {
 	if (m_data == nullptr) {
 		EGAMI_DEBUG("No internal data for image (nullptr)");
