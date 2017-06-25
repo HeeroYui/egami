@@ -14,5 +14,11 @@ namespace egami {
 	 * @return Read Image.
 	 */
 	egami::Image loadJPG(const std::string& _fileName);
+	/**
+	 * @breif Load a jpeg file in the image.
+	 * @param[in] _buffer file Buffer
+	 * @return Read Image.
+	 */
+	egami::Image loadJPG(const std::vector<uint8_t>& _buffer);
 }
 

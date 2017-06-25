@@ -40,19 +40,22 @@ void put_scanline_someplace(const uint8_t* _buffer, int32_t _row_stride) {
 
 
 egami::Image egami::loadJPG(const std::string& _inputFile) {
-	egami::Image out;
 	etk::FSNode fileName(_inputFile);
 	if (fileName.exist() == false) {
 		EGAMI_ERROR("File does not existed='" << fileName << "'");
-		return out;
+		return egami::Image();
 	}
 	if(fileName.fileOpenRead() == false) {
 		EGAMI_ERROR("Can not find the file name='" << fileName << "'");
-		return out;
+		return egami::Image();
 	}
 	std::vector<uint8_t> allData = fileName.fileReadAll<uint8_t>();
 	fileName.fileClose();
-	
+	return egami::loadJPG(allData);
+}
+
+egami::Image egami::loadJPG(const std::vector<uint8_t>& _buffer) {
+	egami::Image out;
 	// This struct contains the JPEG decompression parameters and pointers to working space (which is allocated as needed by the JPEG library).
 	struct jpeg_decompress_struct cinfo;
 	// We use our private extension JPEG error handler. Note that this struct must live as long as the main JPEG parameter struct, to avoid dangling-pointer problems.
@@ -76,7 +79,7 @@ egami::Image egami::loadJPG(const std::string& _inputFile) {
 	jpeg_create_decompress(&cinfo);
 	
 	// Step 2: specify data source (eg, a file)
-	jpeg_mem_src(&cinfo, &allData[0], allData.size());
+	jpeg_mem_src(&cinfo, &_buffer[0], _buffer.size());
 	
 	// Step 3: read file parameters with jpeg_read_header()
 	(void)jpeg_read_header(&cinfo, TRUE);

@@ -15,6 +15,12 @@ namespace egami {
 	 */
 	egami::Image loadBMP(const std::string& _fileName);
 	/**
+	 * @breif Load a bmp file in the image.
+	 * @param[in] _buffer file buffer
+	 * @return Generate image or empty image
+	 */
+	egami::Image loadBMP(const std::vector<uint8_t>& _buffer);
+	/**
 	 * @breif Store a bmp file in the image.
 	 * @param[in] _fileName Name of the file.
 	 * @param[in] _inputImage write data.

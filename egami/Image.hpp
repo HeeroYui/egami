@@ -79,6 +79,8 @@ namespace egami {
 			 * @note use @ref configure to set a correct image
 			 */
 			Image();
+			Image(const egami::Image& _image);
+			Image& operator=(const egami::Image& _image);
 			Image(const ivec2& _size,
 			      enum colorType _type = egami::colorType::undefined);
 			~Image();
@@ -142,5 +144,6 @@ namespace egami {
 			void set(const std::vector<etk::Color<float,4>>& _data, const ivec2& _size);
 			void set(const std::vector<etk::Color<uint8_t,4>>& _data, const ivec2& _size);
 	};
+	std::ostream& operator <<(std::ostream& _os, const egami::Image& _obj);
 }
 

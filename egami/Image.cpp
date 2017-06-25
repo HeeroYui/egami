@@ -9,6 +9,11 @@
 #include <egami/ImagePrivate.hpp>
 #include <ememory/memory.hpp>
 
+std::ostream& egami::operator <<(std::ostream& _os, const egami::Image& _obj) {
+	_os << "egami::Image{" << _obj.getSize() << " on GPU: " << _obj.getGPUSize() << " color=" << _obj.getType();
+	return _os;
+}
+
 std::ostream& egami::operator <<(std::ostream& _os, const enum egami::colorType _type) {
 	switch (_type) {
 		case egami::colorType::undefined:
@@ -78,6 +83,16 @@ int32_t egami::getFormatColorSize(enum colorType _type) {
 egami::Image::Image() :
   m_data(nullptr) {
 	
+}
+
+egami::Image::Image(const egami::Image& _image):
+  m_data(_image.m_data) {
+	
+}
+
+egami::Image& egami::Image::operator=(const egami::Image& _image) {
+	m_data = _image.m_data;
+	return *this;
 }
 
 egami::Image::~Image() {
@@ -204,22 +219,25 @@ const ivec2& egami::Image::getSize() const {
 	return m_data->getSize();
 }
 
-/**
- * @brief get the next power 2 if the input
- * @param[in] value Value that we want the next power of 2
- * @return result value
- */
-static int32_t nextP2(int32_t _value) {
-	int32_t val=1;
-	for (int32_t iii=1; iii<31; iii++) {
-		if (_value <= val) {
-			return val;
+#if    defined(__TARGET_OS__Android) \
+    || defined(__TARGET_OS__IOs)
+	/**
+	 * @brief get the next power 2 if the input
+	 * @param[in] value Value that we want the next power of 2
+	 * @return result value
+	 */
+	static int32_t nextP2(int32_t _value) {
+		int32_t val=1;
+		for (int32_t iii=1; iii<31; iii++) {
+			if (_value <= val) {
+				return val;
+			}
+			val *=2;
 		}
-		val *=2;
+		EGAMI_CRITICAL("impossible CASE....");
+		return val;
 	}
-	EGAMI_CRITICAL("impossible CASE....");
-	return val;
-}
+#endif
 
 ivec2 egami::Image::getGPUSize() const {
 	if (m_data == nullptr) {

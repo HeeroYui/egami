@@ -100,6 +100,39 @@ egami::Image egami::load(const std::string& _fileName, const ivec2& _size) {
 	return out;
 }
 
+
+egami::Image egami::load(const std::string& _mineType, const std::vector<uint8_t>& _buffer, const ivec2& _size) {
+	egami::Image out;
+	// select the corect Loader :
+	if (_mineType == "image/bmp") {
+		out = egami::loadBMP(_buffer);
+		if (out.exist() == false) {
+			EGAMI_ERROR("Error to load BMP file '" << _buffer.size() << "'");
+		}
+	}else if (_mineType == "image/png") {
+		#ifdef EGAMI_BUILD_PNG
+			out = egami::loadPNG(_buffer);
+			if (out.exist() == false) {
+				EGAMI_ERROR("Error to load PNG file '" << _buffer.size() << "'");
+			}
+		#else
+			EGAMI_WARNING("egamy not compile with the PNG dependency for file '" << _buffer.size() << "'");
+		#endif
+	} else if (_mineType == "image/jpg") {
+		#ifdef EGAMI_BUILD_JPEG
+			out = egami::loadJPG(_buffer);
+			if (out.exist() == false) {
+				EGAMI_ERROR("Error to load JPG file '" << _buffer.size() << "'");
+			}
+		#else
+			EGAMI_WARNING("egamy not compile with the JPEG dependency for file '" << _buffer.size() << "'");
+		#endif
+	} else {
+		EGAMI_ERROR("Extention not managed '" << _mineType << "' Sopported extention : image/bmp, image/png, image/jpg");
+	}
+	return out;
+}
+
 bool egami::store(const egami::Image& _input, const std::string& _fileName) {
 	std::string tmpName = etk::tolower(_fileName);
 	EGAMI_DEBUG("Store file : " << _fileName);
