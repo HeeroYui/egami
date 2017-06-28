@@ -118,7 +118,7 @@ egami::Image egami::load(const std::string& _mineType, const std::vector<uint8_t
 		#else
 			EGAMI_WARNING("egamy not compile with the PNG dependency for file '" << _buffer.size() << "'");
 		#endif
-	} else if (_mineType == "image/jpg") {
+	} else if (_mineType == "image/jpeg") {
 		#ifdef EGAMI_BUILD_JPEG
 			out = egami::loadJPG(_buffer);
 			if (out.exist() == false) {
