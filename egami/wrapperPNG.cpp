@@ -32,10 +32,10 @@ namespace egami {
 	
 	class ReaderInstanceBuffer : public egami::ReaderInstance {
 		private:
-			const std::vector<uint8_t>& m_data;
+			const etk::Vector<uint8_t>& m_data;
 			int32_t m_offset;
 		public:
-			ReaderInstanceBuffer(const std::vector<uint8_t>& _data, int32_t _offset):
+			ReaderInstanceBuffer(const etk::Vector<uint8_t>& _data, int32_t _offset):
 			  m_data(_data),
 			  m_offset(_offset) {
 				
@@ -247,7 +247,7 @@ static egami::Image genericLoader(png_structp _pngPtr, png_infop _infoPtr) {
 }
 
 
-egami::Image egami::loadPNG(const std::string& _inputFile) {
+egami::Image egami::loadPNG(const etk::String& _inputFile) {
 	egami::Image out;
 	etk::FSNode fileName(_inputFile);
 	if (fileName.exist() == false) {
@@ -312,7 +312,7 @@ egami::Image egami::loadPNG(const std::string& _inputFile) {
 	return out;
 }
 
-egami::Image egami::loadPNG(const std::vector<uint8_t>& _buffer) {
+egami::Image egami::loadPNG(const etk::Vector<uint8_t>& _buffer) {
 	egami::Image out;
 	unsigned char header[8];
 	if (png_sig_cmp(&_buffer[0], 0, 8)) {

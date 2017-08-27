@@ -10,7 +10,7 @@
 #include <egami/wrapperJPG2000.hpp>
 #include <etk/os/FSNode.hpp>
 
-egami::Image egami::loadJPG2000(const std::string& _inputFile) {
+egami::Image egami::loadJPG2000(const etk::String& _inputFile) {
 	egami::Image out;
 	etk::FSNode fileName(_inputFile);
 	if (fileName.exist() == false) {

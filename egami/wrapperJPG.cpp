@@ -39,7 +39,7 @@ void put_scanline_someplace(const uint8_t* _buffer, int32_t _row_stride) {
 }
 
 
-egami::Image egami::loadJPG(const std::string& _inputFile) {
+egami::Image egami::loadJPG(const etk::String& _inputFile) {
 	etk::FSNode fileName(_inputFile);
 	if (fileName.exist() == false) {
 		EGAMI_ERROR("File does not existed='" << fileName << "'");
@@ -49,12 +49,12 @@ egami::Image egami::loadJPG(const std::string& _inputFile) {
 		EGAMI_ERROR("Can not find the file name='" << fileName << "'");
 		return egami::Image();
 	}
-	std::vector<uint8_t> allData = fileName.fileReadAll<uint8_t>();
+	etk::Vector<uint8_t> allData = fileName.fileReadAll<uint8_t>();
 	fileName.fileClose();
 	return egami::loadJPG(allData);
 }
 
-egami::Image egami::loadJPG(const std::vector<uint8_t>& _buffer) {
+egami::Image egami::loadJPG(const etk::Vector<uint8_t>& _buffer) {
 	egami::Image out;
 	// This struct contains the JPEG decompression parameters and pointers to working space (which is allocated as needed by the JPEG library).
 	struct jpeg_decompress_struct cinfo;

@@ -22,13 +22,13 @@ namespace egami {
 	 * @param[in] _fileName Name of the file.
 	 * @return Read Image
 	 */
-	egami::Image loadEDF(const std::string& _fileName);
+	egami::Image loadEDF(const etk::String& _fileName);
 	/**
 	 * @breif Store a edf file in the image.
 	 * @param[in] _fileName Name of the file.
 	 * @param[in] _inputImage write data.
 	 * @return true if all is done correctly, false otherwise.
 	 */
-	bool storeEDF(const std::string& _fileName, const egami::Image& _inputImage);
+	bool storeEDF(const etk::String& _fileName, const egami::Image& _inputImage);
 }
 

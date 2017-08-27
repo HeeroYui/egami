@@ -13,7 +13,7 @@
 //EDF format is a simple format for image in text for distance field image (special case)
 // it is composed of the fist line : description of type (starting with #EDF and some other information, the data start just after the first \n
 
-egami::Image egami::loadEDF(const std::string& _inputFile) {
+egami::Image egami::loadEDF(const etk::String& _inputFile) {
 	egami::Image out;
 	etk::FSNode file(_inputFile);
 	if (false == file.exist()) {
@@ -24,7 +24,7 @@ egami::Image egami::loadEDF(const std::string& _inputFile) {
 		EGAMI_ERROR("Can not find the file name='" << file << "'");
 		return out;
 	}
-	std::string line;
+	etk::String line;
 	file.fileGets(line);
 	if (etk::start_with(line, "#edf", false) == false) {
 		EGAMI_ERROR("This file seams not to be a EDF file ...");
@@ -83,17 +83,17 @@ egami::Image egami::loadEDF(const std::string& _inputFile) {
 	return out;
 }
 
-bool egami::storeEDF(const std::string& _fileName, const egami::Image& _inputImage) {
+bool egami::storeEDF(const etk::String& _fileName, const egami::Image& _inputImage) {
 	bool anErrorEccured = false;
 	etk::FSNode file(_fileName);
 	if (file.fileOpenWrite() == false) {
 		EGAMI_ERROR("Can not find the file name=\"" << file << "\"");
 		return false;
 	}
-	anErrorEccured = file.filePuts(   std::string("#EDF // Generate with EGAMI (")
-	                                + etk::to_string(_inputImage.getSize().x())
+	anErrorEccured = file.filePuts(   etk::String("#EDF // Generate with EGAMI (")
+	                                + etk::toString(_inputImage.getSize().x())
 	                                + ","
-	                                + etk::to_string(_inputImage.getSize().y()) + ")\n");
+	                                + etk::toString(_inputImage.getSize().y()) + ")\n");
 	
 	char tmp[256];
 	for (int32_t yyy = 0; yyy < _inputImage.getSize().y(); ++yyy) {

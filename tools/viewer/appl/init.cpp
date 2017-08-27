@@ -17,12 +17,12 @@
 
 class MainApplication : public ewol::context::Application {
 	private:
-		std::vector<std::string> m_listFiles;
+		etk::Vector<etk::String> m_listFiles;
 	public:
 		virtual void onCreate(ewol::Context& _context) {
 			APPL_INFO(" == > CREATE ... (START) [" << gale::getBoardType() << "] (" << gale::getCompilationMode() << ") (BEGIN)");
 			for( int32_t iii=0 ; iii<_context.getCmd().size(); iii++) {
-				std::string tmpppp = _context.getCmd().get(iii);
+				etk::String tmpppp = _context.getCmd().get(iii);
 				if (    tmpppp == "-h"
 				     || tmpppp == "--help") {
 					APPL_INFO("  -t c-flags-file-name" );
@@ -40,14 +40,14 @@ class MainApplication : public ewol::context::Application {
 				} else {
 					etk::FSNode elem(tmpppp);
 					if (elem.getNodeType() == etk::typeNode_folder) {
-						std::vector<std::string> tmp = elem.folderGetSub(false, true, ".*");
+						etk::Vector<etk::String> tmp = elem.folderGetSub(false, true, ".*");
 						std::sort(tmp.begin(), tmp.end());
 						for (auto &it : tmp) {
-							m_listFiles.push_back(it);
+							m_listFiles.pushBack(it);
 						}
 					} else {
 						// simple file:
-						m_listFiles.push_back(tmpppp);
+						m_listFiles.pushBack(tmpppp);
 					}
 				}
 			}

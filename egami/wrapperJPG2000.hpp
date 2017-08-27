@@ -13,6 +13,6 @@ namespace egami {
 	 * @param[in] _fileName Name of the file.
 	 * @return Read Image.
 	 */
-	egami::Image loadJPG2000(const std::string& _fileName);
+	egami::Image loadJPG2000(const etk::String& _fileName);
 }
 

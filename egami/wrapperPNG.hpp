@@ -13,12 +13,12 @@ namespace egami {
 	 * @param[in] _fileName Name of the file.
 	 * @return Read Image.
 	 */
-	egami::Image loadPNG(const std::string& _fileName);
+	egami::Image loadPNG(const etk::String& _fileName);
 	/**
 	 * @breif Load a png file in the image.
 	 * @param[in] _buffer File buffer.
 	 * @return Read Image.
 	 */
-	egami::Image loadPNG(const std::vector<uint8_t>& _buffer);
+	egami::Image loadPNG(const etk::Vector<uint8_t>& _buffer);
 }
 

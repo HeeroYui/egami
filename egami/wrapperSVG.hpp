@@ -14,6 +14,6 @@ namespace egami {
 	 * @param[in] _size size of the output image.
 	 * @return Generated image
 	 */
-	egami::Image loadSVG(const std::string& _fileName, const ivec2& _size=ivec2(-1,-1));
+	egami::Image loadSVG(const etk::String& _fileName, const ivec2& _size=ivec2(-1,-1));
 }
 

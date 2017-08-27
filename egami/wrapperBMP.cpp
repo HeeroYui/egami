@@ -106,7 +106,7 @@ static void display(struct bitmapFileHeader _header, struct bitmapInfoHeader _in
 	}*/
 }
 
-egami::Image egami::loadBMP(const std::string& _inputFile) {
+egami::Image egami::loadBMP(const etk::String& _inputFile) {
 	etk::FSNode fileName(_inputFile);
 	if (fileName.exist() == false) {
 		EGAMI_ERROR("File does not existed='" << fileName << "'");
@@ -116,12 +116,12 @@ egami::Image egami::loadBMP(const std::string& _inputFile) {
 		EGAMI_ERROR("Can not find the file name='" << fileName << "'");
 		return egami::Image();
 	}
-	std::vector<uint8_t> allData = fileName.fileReadAll<uint8_t>();
+	etk::Vector<uint8_t> allData = fileName.fileReadAll<uint8_t>();
 	fileName.fileClose();
 	return egami::loadBMP(allData);
 }
 
-egami::Image egami::loadBMP(const std::vector<uint8_t>& _buffer) {
+egami::Image egami::loadBMP(const etk::Vector<uint8_t>& _buffer) {
 	egami::Image out;
 	enum modeBitmap m_dataMode = BITS_16_R5G6B5;
 	int32_t m_width = 0;
@@ -297,7 +297,7 @@ egami::Image egami::loadBMP(const std::vector<uint8_t>& _buffer) {
 	return out;
 }
 
-bool egami::storeBMP(const std::string& _fileName, const egami::Image& _inputImage) {
+bool egami::storeBMP(const etk::String& _fileName, const egami::Image& _inputImage) {
 	struct bitmapFileHeader m_FileHeader;
 	struct bitmapInfoHeaderExtended m_InfoHeader;
 	memset(&m_InfoHeader, 0, sizeof(bitmapInfoHeaderExtended));

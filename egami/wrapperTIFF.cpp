@@ -11,7 +11,7 @@
 #include <etk/os/FSNode.hpp>
 
 
-egami::Image egami::loadTIFF(const std::string& _inputFile) {
+egami::Image egami::loadTIFF(const etk::String& _inputFile) {
 	egami::Image out;
 	etk::FSNode fileName(_inputFile);
 	if (fileName.exist() == false) {

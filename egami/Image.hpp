@@ -6,7 +6,7 @@
 #pragma once
 
 #include <etk/types.hpp>
-#include <vector>
+#include <etk/Vector.hpp>
 #include <etk/math/Vector2D.hpp>
 #include <etk/Color.hpp>
 #include <etk/stdTools.hpp>
@@ -25,7 +25,7 @@ namespace egami {
 		float32,
 		float64,
 	};
-	std::ostream& operator <<(std::ostream& _os, const enum egami::colorType _obj);
+	etk::Stream& operator <<(etk::Stream& _os, const enum egami::colorType _obj);
 	/**
 	 * @brief Get the Color size use in octet
 	 * @param[in] type of the color
@@ -65,8 +65,8 @@ namespace egami {
 			virtual void set(const ivec2& _pos, const etk::Color<float, 1>& _newColor) = 0;
 			virtual void set(const ivec2& _pos, const etk::Color<double, 1>& _newColor) = 0;
 			virtual etk::Color<> get(const ivec2& _pos) const = 0;
-			virtual void set(const std::vector<etk::Color<float,4>>& _data, const ivec2& _size) = 0;
-			virtual void set(const std::vector<etk::Color<uint8_t,4>>& _data, const ivec2& _size) = 0;
+			virtual void set(const etk::Vector<etk::Color<float,4>>& _data, const ivec2& _size) = 0;
+			virtual void set(const etk::Vector<etk::Color<uint8_t,4>>& _data, const ivec2& _size) = 0;
 	};
 	
 	class Image {
@@ -141,9 +141,9 @@ namespace egami {
 			 */
 			void scale(const ivec2& _size);
 			
-			void set(const std::vector<etk::Color<float,4>>& _data, const ivec2& _size);
-			void set(const std::vector<etk::Color<uint8_t,4>>& _data, const ivec2& _size);
+			void set(const etk::Vector<etk::Color<float,4>>& _data, const ivec2& _size);
+			void set(const etk::Vector<etk::Color<uint8_t,4>>& _data, const ivec2& _size);
 	};
-	std::ostream& operator <<(std::ostream& _os, const egami::Image& _obj);
+	etk::Stream& operator <<(etk::Stream& _os, const egami::Image& _obj);
 }
 

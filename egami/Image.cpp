@@ -9,12 +9,12 @@
 #include <egami/ImagePrivate.hpp>
 #include <ememory/memory.hpp>
 
-std::ostream& egami::operator <<(std::ostream& _os, const egami::Image& _obj) {
+etk::Stream& egami::operator <<(etk::Stream& _os, const egami::Image& _obj) {
 	_os << "egami::Image{" << _obj.getSize() << " on GPU: " << _obj.getGPUSize() << " color=" << _obj.getType();
 	return _os;
 }
 
-std::ostream& egami::operator <<(std::ostream& _os, const enum egami::colorType _type) {
+etk::Stream& egami::operator <<(etk::Stream& _os, const enum egami::colorType _type) {
 	switch (_type) {
 		case egami::colorType::undefined:
 			_os << "egami::colorType::undefined";
@@ -117,13 +117,13 @@ void egami::Image::configure(const ivec2& _size, enum colorType _type) {
 			break;
 		case egami::colorType::RGBA8:
 			//m_data = ememory::makeShared<egami::ImagePrivate>(new egami::ImageTemplate<etk::Color<uint8_t>>(_size));
-			m_data = ememory::makeShared<egami::ImageTemplate<etk::Color<uint8_t>>>(_size);
+			m_data = ememory::makeShared<egami::ImageTemplate<etk::Color<uint8_t, 4>>>(_size);
 			break;
 		case egami::colorType::RGB8:
 			m_data = ememory::makeShared<egami::ImageTemplate<etk::Color<uint8_t, 3>>>(_size);
 			break;
 		case egami::colorType::RGBAf:
-			m_data = ememory::makeShared<egami::ImageTemplate<etk::Color<float>>>(_size);
+			m_data = ememory::makeShared<egami::ImageTemplate<etk::Color<float, 4>>>(_size);
 			break;
 		case egami::colorType::RGBf:
 			m_data = ememory::makeShared<egami::ImageTemplate<etk::Color<float, 3>>>(_size);
@@ -400,7 +400,7 @@ void egami::Image::set(const ivec2& _pos, const etk::Color<double, 1>& _newColor
 	m_data->set(_pos, _newColor);
 }
 
-void egami::Image::set(const std::vector<etk::Color<float,4>>& _data, const ivec2& _size) {
+void egami::Image::set(const etk::Vector<etk::Color<float,4>>& _data, const ivec2& _size) {
 	if (m_data == nullptr) {
 		EGAMI_DEBUG("No internal data for image (nullptr)");
 		return;
@@ -408,7 +408,7 @@ void egami::Image::set(const std::vector<etk::Color<float,4>>& _data, const ivec
 	m_data->set(_data, _size);
 }
 
-void egami::Image::set(const std::vector<etk::Color<uint8_t,4>>& _data, const ivec2& _size) {
+void egami::Image::set(const etk::Vector<etk::Color<uint8_t,4>>& _data, const ivec2& _size) {
 	if (m_data == nullptr) {
 		EGAMI_DEBUG("No internal data for image (nullptr)");
 		return;

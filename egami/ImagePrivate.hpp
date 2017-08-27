@@ -10,7 +10,7 @@
 #include <etk/Color.hpp>
 #include <egami/debug.hpp>
 
-#include <vector>
+#include <etk/Vector.hpp>
 
 namespace egami {
 	
@@ -18,7 +18,7 @@ namespace egami {
 	class ImageTemplate : public ImagePrivate {
 		private:
 			ivec2 m_size;
-			std::vector<EGAMI_TYPE_COLOR> m_data;
+			etk::Vector<EGAMI_TYPE_COLOR> m_data;
 		public:
 			// constructor :
 			ImageTemplate(const ivec2& _size=ivec2(32,32)) :
@@ -223,8 +223,8 @@ namespace egami {
 				// TODO : Add capabilities ...
 				int32_t stepX = m_size.x() / _size.x();
 				int32_t stepY = m_size.y() / _size.y();
-				stepX = std::max(1, stepX);
-				stepY = std::max(1, stepY);
+				stepX = etk::max(1, stepX);
+				stepY = etk::max(1, stepY);
 				EGAMI_VERBOSE("move : " << stepX << " , " << stepY << " from : " << m_size << " ==> " << _size);
 				for (int32_t yyy = 0; yyy < _size.y(); ++yyy) {
 					for (int32_t xxx = 0; xxx < _size.x(); ++xxx) {
@@ -233,7 +233,7 @@ namespace egami {
 				}
 				resize(_size);
 			}
-			void set(const std::vector<etk::Color<float,4>>& _data, const ivec2& _size) {
+			void set(const etk::Vector<etk::Color<float,4>>& _data, const ivec2& _size) {
 				m_data.clear();
 				m_size = _size;
 				m_data.resize(_data.size());
@@ -241,7 +241,7 @@ namespace egami {
 					m_data[iii] = _data[iii];
 				}
 			}
-			void set(const std::vector<etk::Color<uint8_t,4>>& _data, const ivec2& _size) {
+			void set(const etk::Vector<etk::Color<uint8_t,4>>& _data, const ivec2& _size) {
 				m_data.clear();
 				m_size = _size;
 				m_data.resize(_data.size());

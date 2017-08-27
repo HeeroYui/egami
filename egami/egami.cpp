@@ -27,15 +27,15 @@
 #endif
 #include <edtaa3/edtaa3func.h>
 
-bool egami::scalable(const std::string& _fileName) {
+bool egami::scalable(const etk::String& _fileName) {
 	if (true == etk::end_with(_fileName, ".svg") ) {
 		return true;
 	}
 	return false;
 }
 
-egami::Image egami::load(const std::string& _fileName, const ivec2& _size) {
-	std::string tmpName = etk::tolower(_fileName);
+egami::Image egami::load(const etk::String& _fileName, const ivec2& _size) {
+	etk::String tmpName = etk::tolower(_fileName);
 	egami::Image out;
 	// select the corect Loader :
 	if (etk::end_with(tmpName, ".edf") == true) {
@@ -101,7 +101,7 @@ egami::Image egami::load(const std::string& _fileName, const ivec2& _size) {
 }
 
 
-egami::Image egami::load(const std::string& _mineType, const std::vector<uint8_t>& _buffer, const ivec2& _size) {
+egami::Image egami::load(const etk::String& _mineType, const etk::Vector<uint8_t>& _buffer, const ivec2& _size) {
 	egami::Image out;
 	// select the corect Loader :
 	if (_mineType == "image/bmp") {
@@ -133,8 +133,8 @@ egami::Image egami::load(const std::string& _mineType, const std::vector<uint8_t
 	return out;
 }
 
-bool egami::store(const egami::Image& _input, const std::string& _fileName) {
-	std::string tmpName = etk::tolower(_fileName);
+bool egami::store(const egami::Image& _input, const etk::String& _fileName) {
+	etk::String tmpName = etk::tolower(_fileName);
 	EGAMI_DEBUG("Store file : " << _fileName);
 	// select the corect Loader :
 	if (etk::end_with(tmpName, ".edf") == true) {
@@ -173,13 +173,13 @@ bool egami::store(const egami::Image& _input, const std::string& _fileName) {
 
 static void generateDistanceField(const egami::ImageMono& _input, egami::Image& _output) {
 	int32_t size = _input.getSize().x() * _input.getSize().y();
-	std::vector<short> xdist(size);
-	std::vector<short> ydist(size);
-	std::vector<double> gx(size);
-	std::vector<double> gy(size);
-	std::vector<double> data(size);
-	std::vector<double> outside(size);
-	std::vector<double> inside(size);
+	etk::Vector<short> xdist(size);
+	etk::Vector<short> ydist(size);
+	etk::Vector<double> gx(size);
+	etk::Vector<double> gy(size);
+	etk::Vector<double> data(size);
+	etk::Vector<double> outside(size);
+	etk::Vector<double> inside(size);
 	/*
 	// Convert img into double (data)
 	double img_min = 255, img_max = -255;
@@ -253,7 +253,7 @@ static void generateDistanceField(const egami::ImageMono& _input, egami::Image& 
 }
 
 
-bool egami::generateDistanceFieldFile(const std::string& _input, const std::string& _output) {
+bool egami::generateDistanceFieldFile(const etk::String& _input, const etk::String& _output) {
 	egami::Image data;
 	if (etk::end_with(_input, ".edf") == true) {
 		return false;

@@ -9,13 +9,13 @@
 #include <etk/math/Vector2D.hpp>
 #include <etk/Color.hpp>
 
-#include <vector>
+#include <etk/Vector.hpp>
 
 namespace egami {
 	class ImageMono {
 		private:
 			ivec2 m_size;
-			std::vector<uint8_t> m_data;
+			etk::Vector<uint8_t> m_data;
 		public:
 			// constructor :
 			ImageMono(const ivec2& _size=ivec2(32,32));

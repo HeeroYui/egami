@@ -21,7 +21,7 @@ appl::MainWindows::MainWindows() :
 
 void appl::MainWindows::init() {
 	ewol::widget::Windows::init();
-	m_image = ewol::widget::Image::create("src", std::string("DATA:icon.png"),
+	m_image = ewol::widget::Image::create("src", etk::String("DATA:icon.png"),
 	                                      "expand", bvec2(true,true),
 	                                      "fill", bvec2(true,true));
 	propertyTitle.set("EVI");
@@ -32,7 +32,7 @@ void appl::MainWindows::init() {
 	signalShortcut.connect(sharedFromThis(), &appl::MainWindows::onCallbackShortCut);
 }
 
-void appl::MainWindows::onCallbackShortCut(const std::string& _value) {
+void appl::MainWindows::onCallbackShortCut(const etk::String& _value) {
 	APPL_WARNING("Event from ShortCut : " << _value);
 	if (_value == "menu:reloade-shader") {
 		ewol::getContext().getResourcesManager().reLoadResources();
@@ -42,7 +42,7 @@ void appl::MainWindows::onCallbackShortCut(const std::string& _value) {
 	}
 }
 
-void appl::MainWindows::setListOfFiles(std::vector<std::string> _listImages) {
+void appl::MainWindows::setListOfFiles(etk::Vector<etk::String> _listImages) {
 	m_listImages = _listImages;
 	if (m_listImages.size() == 0) {
 		m_idDisplayed = -1;
@@ -74,7 +74,7 @@ bool appl::MainWindows::onEventEntry(const ewol::event::Entry& _event) {
 				return true;
 			}
 			m_image->propertySource.set(m_listImages[m_idDisplayed]);
-			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::to_string(m_idDisplayed+1) + "/" + etk::to_string(m_listImages.size()));
+			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::toString(m_idDisplayed+1) + "/" + etk::to_string(m_listImages.size()));
 			return true;
 		}
 		if (_event.getType() == gale::key::keyboard::left) {
@@ -84,7 +84,7 @@ bool appl::MainWindows::onEventEntry(const ewol::event::Entry& _event) {
 				return true;
 			}
 			m_image->propertySource.set(m_listImages[m_idDisplayed]);
-			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::to_string(m_idDisplayed+1) + "/" + etk::to_string(m_listImages.size()));
+			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::toString(m_idDisplayed+1) + "/" + etk::to_string(m_listImages.size()));
 			return true;
 		}
 		if (_event.getType() == gale::key::keyboard::down) {
@@ -93,7 +93,7 @@ bool appl::MainWindows::onEventEntry(const ewol::event::Entry& _event) {
 				m_idDisplayed = m_listImages.size()-1;
 			}
 			m_image->propertySource.set(m_listImages[m_idDisplayed]);
-			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::to_string(m_idDisplayed+1) + "/" + etk::to_string(m_listImages.size()));
+			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::toString(m_idDisplayed+1) + "/" + etk::to_string(m_listImages.size()));
 			return true;
 		}
 		if (_event.getType() == gale::key::keyboard::up) {
@@ -102,19 +102,19 @@ bool appl::MainWindows::onEventEntry(const ewol::event::Entry& _event) {
 				m_idDisplayed = 0;
 			}
 			m_image->propertySource.set(m_listImages[m_idDisplayed]);
-			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::to_string(m_idDisplayed+1) + "/" + etk::to_string(m_listImages.size()));
+			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::toString(m_idDisplayed+1) + "/" + etk::to_string(m_listImages.size()));
 			return true;
 		}
 		if (_event.getType() == gale::key::keyboard::pageDown) {
 			m_idDisplayed = m_listImages.size()-1;
 			m_image->propertySource.set(m_listImages[m_idDisplayed]);
-			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::to_string(m_idDisplayed+1) + "/" + etk::to_string(m_listImages.size()));
+			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::toString(m_idDisplayed+1) + "/" + etk::to_string(m_listImages.size()));
 			return true;
 		}
 		if (_event.getType() == gale::key::keyboard::pageUp) {
 			m_idDisplayed = 0;
 			m_image->propertySource.set(m_listImages[m_idDisplayed]);
-			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::to_string(m_idDisplayed+1) + "/" + etk::to_string(m_listImages.size()));
+			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::toString(m_idDisplayed+1) + "/" + etk::to_string(m_listImages.size()));
 			return true;
 		}
 	}
