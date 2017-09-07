@@ -27,7 +27,7 @@ def get_maintainer():
 def configure(target, my_module):
 	my_module.add_depend([
 	    'egami',
-	    'gtest',
+	    'etest',
 	    'test-debug',
 	    'algue',
 	    ])

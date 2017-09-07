@@ -6,7 +6,7 @@
 
 #include <test-debug/debug.hpp>
 #include <etk/etk.hpp>
-#include <gtest/gtest.h>
+#include <etest/etest.hpp>
 #include <egami/egami.hpp>
 #include <algue/sha512.hpp>
 
@@ -16,7 +16,7 @@ int main(int argc, const char *argv[]) {
 	::testing::InitGoogleTest(&argc, const_cast<char **>(argv));
 	// init etk log system and file interface:
 	etk::init(argc, argv);
-	// Run all test with gtest
+	// Run all test with etest
 	return RUN_ALL_TESTS();
 }
 
