@@ -12,10 +12,7 @@
 
 
 int main(int argc, const char *argv[]) {
-	// init Google test :
-	::testing::InitGoogleTest(&argc, const_cast<char **>(argv));
-	// init etk log system and file interface:
-	etk::init(argc, argv);
+	etest::init(argc, argv);
 	// Run all test with etest
 	return RUN_ALL_TESTS();
 }
