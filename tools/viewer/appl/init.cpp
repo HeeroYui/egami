@@ -41,7 +41,7 @@ class MainApplication : public ewol::context::Application {
 					etk::FSNode elem(tmpppp);
 					if (elem.getNodeType() == etk::typeNode_folder) {
 						etk::Vector<etk::String> tmp = elem.folderGetSub(false, true, ".*");
-						std::sort(tmp.begin(), tmp.end());
+						tmp.sort(0, tmp.size(), [](const etk::String& _left, const etk::String& _right) { return _left < _right;});
 						for (auto &it : tmp) {
 							m_listFiles.pushBack(it);
 						}

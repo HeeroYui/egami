@@ -6,8 +6,9 @@
 #pragma once
 
 #include <elog/log.hpp>
-#include <cassert>
-
+extern "C" {
+	#include <assert.h>
+}
 namespace appl {
 	/**
 	 * @brief Get local id of the library
