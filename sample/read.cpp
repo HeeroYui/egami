@@ -41,7 +41,7 @@ static void readSVG() {
 
 static void readPNG() {
 	//! [egami_sample_read_file_png]
-	egami::Image image = egami::load("DATA:read.png");
+	egami::Image image = egami::load("DATA:read_128x128.png");
 	//! [egami_sample_read_file_png]
 	TEST_INFO("image exist (PNG): " << image.exist());
 }

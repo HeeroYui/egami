@@ -156,12 +156,12 @@ enum egami::colorType egami::Image::getType() const {
 	return m_data->getType();
 }
 
-void* egami::Image::getTextureDataPointer() {
+void* egami::Image::getTextureDataPointer() const{
 	if (m_data == nullptr) {
 		EGAMI_DEBUG("No internal data for image (nullptr)");
 		return nullptr;
 	}
-	return m_data->getTextureDataPointer();
+	return (void*)m_data->getTextureDataPointer();
 }
 
 void egami::Image::resize(const ivec2& _size, const ivec2& _startPos) {

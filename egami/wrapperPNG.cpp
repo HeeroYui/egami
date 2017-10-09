@@ -14,7 +14,9 @@ namespace egami {
 	class ReaderInstance {
 		public:
 			virtual ~ReaderInstance() = default;
-			virtual void read(png_bytep data, png_size_t length) = 0;
+			virtual void read(png_bytep _data, png_size_t _length) = 0;
+			virtual void write(png_bytep _data, png_size_t _length) = 0;
+			virtual void flush() = 0;
 	};
 	
 	class ReaderInstanceFSNode : public egami::ReaderInstance {
@@ -25,57 +27,75 @@ namespace egami {
 			  m_data(_data) {
 				
 			}
-			void read(png_bytep data, png_size_t length) override {
-				m_data.fileRead(data, 1, length);
+			void read(png_bytep _data, png_size_t _length) override {
+				m_data.fileRead(_data, 1, _length);
+			}
+			void write(png_bytep _data, png_size_t _length) override {
+				m_data.fileWrite(_data, 1, _length);
+			}
+			void flush() override {
+				m_data.fileFlush();
 			}
 	};
 	
 	class ReaderInstanceBuffer : public egami::ReaderInstance {
 		private:
-			const etk::Vector<uint8_t>& m_data;
+			etk::Vector<uint8_t>& m_data;
 			int32_t m_offset;
 		public:
 			ReaderInstanceBuffer(const etk::Vector<uint8_t>& _data, int32_t _offset):
-			  m_data(_data),
+			  m_data(const_cast<etk::Vector<uint8_t>&>(_data)),
 			  m_offset(_offset) {
+				
+			}
+			ReaderInstanceBuffer(etk::Vector<uint8_t>& _data):
+			  m_data(_data),
+			  m_offset(0) {
 				
 			}
 			void read(png_bytep data, png_size_t length) override {
 				memcpy(data, &m_data[m_offset], length);
 				m_offset += length;
 			}
+			void write(png_bytep _data, png_size_t _length) override {
+				for (uint32_t iii=0; iii<_length; ++iii) {
+					m_data.pushBack(_data[iii]);
+					m_offset++;
+				}
+			}
+			void flush() override {
+				// nothing to do ...
+			}
 	};
 }
 // we must change the access of the IO of the png lib :
-static void local_ReadData(png_structp png_ptr, png_bytep data, png_size_t length) {
-	egami::ReaderInstance* instance = static_cast<egami::ReaderInstance*>(png_get_io_ptr(png_ptr));
+static void local_ReadData(png_structp _pngPtr, png_bytep _data, png_size_t _length) {
+	egami::ReaderInstance* instance = static_cast<egami::ReaderInstance*>(png_get_io_ptr(_pngPtr));
 	if (instance != nullptr) {
-		instance->read(data, length);
-	}
-}
-/*
-static void LocalWriteData(png_structp png_ptr, png_bytep data, png_size_t length)
-{
-	etk::FSNode* fileNode = static_cast<etk::FSNode*>(png_get_io_ptr(png_ptr));
-	if (NULL!=fileNode) {
-		fileNode->FileWrite(data, 1, length);
+		instance->read(_data, _length);
 	}
 }
 
-static void localFlushData(png_structp png_ptr)
-{
-	etk::FSNode* fileNode = static_cast<etk::FSNode*>(png_get_io_ptr(png_ptr));
-	if (NULL!=fileNode) {
-		fileNode->FileFlush();
+static void Local_WriteData(png_structp _pngPtr, png_bytep _data, png_size_t _length) {
+	egami::ReaderInstance* instance = static_cast<egami::ReaderInstance*>(png_get_io_ptr(_pngPtr));
+	if (instance != nullptr) {
+		instance->write(_data, _length);
 	}
 }
-*/
 
-void user_error_fn(png_structp _pngPtr, png_const_charp _errorMsg) {
+static void local_FlushData(png_structp _pngPtr) {
+	egami::ReaderInstance* instance = static_cast<egami::ReaderInstance*>(png_get_io_ptr(_pngPtr));
+	if (instance != nullptr) {
+		instance->flush();
+	}
+}
+
+
+void userErrorFunction(png_structp _pngPtr, png_const_charp _errorMsg) {
 	EGAMI_ERROR("libpng error: '" << _errorMsg << "'");
 }
 
-void user_warning_fn(png_structp _pngPtr, png_const_charp _warningMsg) {
+void userWarningFunction(png_structp _pngPtr, png_const_charp _warningMsg) {
 	EGAMI_WARNING("libpng warning: '" << _warningMsg << "'");
 }
 
@@ -92,7 +112,7 @@ static egami::Image genericLoader(png_structp _pngPtr, png_infop _infoPtr) {
 	int interlace_type = 0;
 	png_get_IHDR(_pngPtr, _infoPtr, &width, &height, &bit_depth, &colorType, &interlace_type, nullptr, nullptr);
 	// reallocate the image 
-	EGAMI_VERBOSE("Load PNG image : (" << width << "," << height << ")" );
+	EGAMI_ERROR("Load PNG image : (" << width << "," << height << ") bitDepth=" << bit_depth << " colorType=" << colorType);
 	switch (colorType) {
 		case PNG_COLOR_TYPE_RGBA:
 			out.configure(ivec2(width,height), egami::colorType::RGBA8);
@@ -271,7 +291,7 @@ egami::Image egami::loadPNG(const etk::String& _inputFile) {
 	}
 	
 	// PNG read setup
-	png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, user_error_fn, user_warning_fn);
+	png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, userErrorFunction, userWarningFunction);
 	if (png_ptr == nullptr) {
 		EGAMI_ERROR("Can not Allocate PNG structure");
 		fileName.fileClose();
@@ -297,16 +317,10 @@ egami::Image egami::loadPNG(const etk::String& _inputFile) {
 	
 	ReaderInstance* tmpPoiter = &tmpNode;
 	
-	// overwrite the read and write function :
+	// overwrite the read function:
 	png_set_read_fn(png_ptr,
 	                tmpPoiter,
 	                &local_ReadData);
-	/*
-	png_set_write_fn(png_ptr,
-	                 &fileName,
-	                 &LocalWriteData,
-	                 &localFlushData);
-	*/
 	out = genericLoader(png_ptr, info_ptr);
 	fileName.fileClose();
 	return out;
@@ -314,14 +328,13 @@ egami::Image egami::loadPNG(const etk::String& _inputFile) {
 
 egami::Image egami::loadPNG(const etk::Vector<uint8_t>& _buffer) {
 	egami::Image out;
-	unsigned char header[8];
 	if (png_sig_cmp(&_buffer[0], 0, 8)) {
 		EGAMI_ERROR("Invalid start buffer:");
 		return out;
 	}
 	
 	// PNG read setup
-	png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, user_error_fn, user_warning_fn);
+	png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, userErrorFunction, userWarningFunction);
 	if (png_ptr == nullptr) {
 		EGAMI_ERROR("Can not Allocate PNG structure");
 		return out;
@@ -336,10 +349,118 @@ egami::Image egami::loadPNG(const etk::Vector<uint8_t>& _buffer) {
 	
 	egami::ReaderInstance* tmpPoiter = &tmpNode;
 	
-	// overwrite the read and write function :
+	// Overwrite the read function:
 	png_set_read_fn(png_ptr,
 	                tmpPoiter,
 	                &local_ReadData);
 	out = genericLoader(png_ptr, info_ptr);
 	return out;
+}
+
+bool egami::storePNG(const etk::String& _fileName, const egami::Image& _inputImage) {
+	/* create file */
+	/*FILE *fp = fopen(file_name, "wb");
+	if (!fp) {
+		abort_("[write_png_file] File %s could not be opened for writing", file_name);
+	}
+	*/
+	etk::FSNode fileName(_fileName);
+	if(fileName.fileOpenWrite() == false) {
+		EGAMI_ERROR("Can not find the file name='" << fileName << "'");
+		return false;
+	}
+	png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, userErrorFunction, userWarningFunction);
+	if (png_ptr == nullptr) {
+		EGAMI_ERROR("Can not Allocate PNG structure");
+		return false;
+	}
+	png_infop info_ptr = png_create_info_struct(png_ptr);
+	if (info_ptr == nullptr) {
+		EGAMI_ERROR("Can not Allocate PNG info structure");
+		png_destroy_write_struct(&png_ptr, nullptr);
+		fileName.fileClose();
+		return false;
+	}
+	if (setjmp(png_jmpbuf(png_ptr))) {
+		EGAMI_ERROR("Error during init_io");
+		png_destroy_write_struct(&png_ptr, &info_ptr);
+		fileName.fileClose();
+		return false;
+	}
+	ReaderInstanceFSNode tmpNode(fileName);
+	
+	ReaderInstance* tmpPoiter = &tmpNode;
+	
+	// overwrite the write functions:
+	png_set_write_fn(png_ptr,
+	                 tmpPoiter,
+	                 &Local_WriteData,
+	                 &local_FlushData);
+	/*
+	TODO:
+	out = genericWriter(png_ptr, info_ptr);
+	
+	fileName.fileClose();
+	*/
+	
+	//png_init_io(png_ptr, fp);
+	/* write header */
+	if (setjmp(png_jmpbuf(png_ptr))) {
+		EGAMI_ERROR("Error jump setting");
+		png_destroy_write_struct(&png_ptr, &info_ptr);
+		fileName.fileClose();
+		return false;
+	}
+	png_byte bitDepth = 8;
+	png_byte colorType = 0;
+	switch(_inputImage.getType()) {
+		case egami::colorType::RGBA8:
+			colorType = PNG_COLOR_TYPE_RGB_ALPHA;
+			//bitDepth = 4;
+			break;
+		case egami::colorType::RGB8:
+			colorType = PNG_COLOR_TYPE_RGB;
+			//bitDepth = 3;
+			break;
+		default:
+			EGAMI_ERROR("PNG can not export an image with other type than RGB and RGBA request:" << _inputImage.getType());
+			png_destroy_write_struct(&png_ptr, &info_ptr);
+			fileName.fileClose();
+			return false;
+	}
+	png_set_IHDR(png_ptr,
+	             info_ptr,
+	             _inputImage.getSize().x(),
+	             _inputImage.getSize().y(),
+	             bitDepth,
+	             colorType,
+	             PNG_INTERLACE_NONE,
+	             PNG_COMPRESSION_TYPE_BASE,
+	             PNG_FILTER_TYPE_BASE);
+	png_write_info(png_ptr, info_ptr);
+	/* write bytes */
+	if (setjmp(png_jmpbuf(png_ptr))) {
+		EGAMI_ERROR("Error while writing byte");
+		png_destroy_write_struct(&png_ptr, &info_ptr);
+		fileName.fileClose();
+		return false;
+	}
+	etk::Vector<png_bytep> rowPointers;
+	rowPointers.resize(_inputImage.getSize().y(), NULL);
+	uint8_t* imageData = (uint8_t*)_inputImage.getTextureDataPointer();
+	for (size_t iii=0; iii<rowPointers.size(); ++iii) {
+		rowPointers[iii] = &imageData[_inputImage.getSize().x()*getFormatColorSize(_inputImage.getType())*iii];
+	}
+	png_write_image(png_ptr, &rowPointers[0]);
+	/* end write */
+	if (setjmp(png_jmpbuf(png_ptr))) {
+		EGAMI_ERROR("Error while writing byte");
+		png_destroy_write_struct(&png_ptr, &info_ptr);
+		fileName.fileClose();
+		return false;
+	}
+	png_write_end(png_ptr, NULL);
+	png_destroy_write_struct(&png_ptr, &info_ptr);
+	fileName.fileClose();
+	return true;
 }

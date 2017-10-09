@@ -151,8 +151,10 @@ bool egami::store(const egami::Image& _input, const etk::String& _fileName) {
 		EGAMI_ERROR("Can not store in SVG file '" << _fileName << "'");
 		return false;
 	} else if (etk::end_with(tmpName, ".png") == true) {
-		EGAMI_ERROR("Can not store in PNG file '" << _fileName << "'");
-		return false;
+		if (egami::storePNG(_fileName, _input) == false) {
+			EGAMI_ERROR("Error to store PNG file '" << _fileName << "'");
+			return false;
+		}
 	} else if (etk::end_with(tmpName, ".jpg") == true) {
 		EGAMI_ERROR("Can not store in JPEG file '" << _fileName << "'");
 		return false;
@@ -168,7 +170,10 @@ bool egami::store(const egami::Image& _input, const etk::String& _fileName) {
 	}
 	return true;
 }
-
+bool egami::store(const egami::Image& _input, etk::Vector<uint8_t>& _buffer, const etk::String& _mineType) {
+	
+	return false;
+}
 
 
 static void generateDistanceField(const egami::ImageMono& _input, egami::Image& _output) {

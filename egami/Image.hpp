@@ -37,7 +37,7 @@ namespace egami {
 		public:
 			ImagePrivate() {};
 			virtual ~ImagePrivate() {};
-			virtual void* getTextureDataPointer() {
+			virtual void* getTextureDataPointer() const {
 				return nullptr;
 			};
 			virtual const ivec2& getSize() const = 0;
@@ -89,7 +89,7 @@ namespace egami {
 		public:
 			void configure(const ivec2& _size=ivec2(32,32),
 			               enum colorType _type=egami::colorType::RGBA8);
-			void* getTextureDataPointer();
+			void* getTextureDataPointer() const;
 			enum colorType getType() const;
 			bool exist() {
 				return m_data != nullptr;

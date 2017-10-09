@@ -23,8 +23,8 @@ namespace egami {
 			~ImageMono() { };
 		// EWOL internal API for Texture system :
 		public:
-			void* getTextureDataPointer() {
-				return &m_data[0];
+			void* getTextureDataPointer() const {
+				return (void*)&m_data[0];
 			};
 			/*
 			enum colorType getType() {

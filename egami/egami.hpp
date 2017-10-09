@@ -37,9 +37,10 @@ namespace egami {
 	 * @brief Save an image in a memory buffer.
 	 * @param[in] _input Data of the image.
 	 * @param[out] _buffer Store file in this buffer.
+	 * @param[in] _mineType mineType of the output buffer.
 	 * @return true if the file is corectly Stored, false otherwise
 	 */
-	bool store(const egami::Image& _input, etk::Vector<uint8_t>& _buffer);
+	bool store(const egami::Image& _input, etk::Vector<uint8_t>& _buffer, const etk::String& _mineType);
 	/**
 	 * @brief know if a file can have multiple size definition.
 	 * @param[in] _fileName Name of the file.
