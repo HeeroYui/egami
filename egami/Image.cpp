@@ -99,9 +99,14 @@ egami::Image::~Image() {
 	
 }
 
-egami::Image::Image(const ivec2& _size, enum colorType _type) :
+egami::Image::Image(const ivec2& _size,
+                    enum colorType _type,
+                    const void* _dataToCopy) :
   m_data(nullptr) {
 	configure(_size, _type);
+	if (_dataToCopy != nullptr) {
+		memcpy(getTextureDataPointer(), _dataToCopy, getSize().x()*getSize().y()*egami::getFormatColorSize(getType()));
+	}
 }
 
 void egami::Image::swap(egami::Image& _obj) {

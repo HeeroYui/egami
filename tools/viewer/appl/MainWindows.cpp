@@ -74,7 +74,7 @@ bool appl::MainWindows::onEventEntry(const ewol::event::Entry& _event) {
 				return true;
 			}
 			m_image->propertySource.set(m_listImages[m_idDisplayed]);
-			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::toString(m_idDisplayed+1) + "/" + etk::to_string(m_listImages.size()));
+			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::toString(m_idDisplayed+1) + "/" + etk::toString(m_listImages.size()));
 			return true;
 		}
 		if (_event.getType() == gale::key::keyboard::left) {
@@ -84,7 +84,7 @@ bool appl::MainWindows::onEventEntry(const ewol::event::Entry& _event) {
 				return true;
 			}
 			m_image->propertySource.set(m_listImages[m_idDisplayed]);
-			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::toString(m_idDisplayed+1) + "/" + etk::to_string(m_listImages.size()));
+			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::toString(m_idDisplayed+1) + "/" + etk::toString(m_listImages.size()));
 			return true;
 		}
 		if (_event.getType() == gale::key::keyboard::down) {
@@ -93,7 +93,7 @@ bool appl::MainWindows::onEventEntry(const ewol::event::Entry& _event) {
 				m_idDisplayed = m_listImages.size()-1;
 			}
 			m_image->propertySource.set(m_listImages[m_idDisplayed]);
-			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::toString(m_idDisplayed+1) + "/" + etk::to_string(m_listImages.size()));
+			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::toString(m_idDisplayed+1) + "/" + etk::toString(m_listImages.size()));
 			return true;
 		}
 		if (_event.getType() == gale::key::keyboard::up) {
@@ -102,19 +102,19 @@ bool appl::MainWindows::onEventEntry(const ewol::event::Entry& _event) {
 				m_idDisplayed = 0;
 			}
 			m_image->propertySource.set(m_listImages[m_idDisplayed]);
-			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::toString(m_idDisplayed+1) + "/" + etk::to_string(m_listImages.size()));
+			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::toString(m_idDisplayed+1) + "/" + etk::toString(m_listImages.size()));
 			return true;
 		}
 		if (_event.getType() == gale::key::keyboard::pageDown) {
 			m_idDisplayed = m_listImages.size()-1;
 			m_image->propertySource.set(m_listImages[m_idDisplayed]);
-			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::toString(m_idDisplayed+1) + "/" + etk::to_string(m_listImages.size()));
+			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::toString(m_idDisplayed+1) + "/" + etk::toString(m_listImages.size()));
 			return true;
 		}
 		if (_event.getType() == gale::key::keyboard::pageUp) {
 			m_idDisplayed = 0;
 			m_image->propertySource.set(m_listImages[m_idDisplayed]);
-			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::toString(m_idDisplayed+1) + "/" + etk::to_string(m_listImages.size()));
+			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::toString(m_idDisplayed+1) + "/" + etk::toString(m_listImages.size()));
 			return true;
 		}
 	}

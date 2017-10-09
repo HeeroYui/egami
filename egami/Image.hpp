@@ -82,7 +82,8 @@ namespace egami {
 			Image(const egami::Image& _image);
 			Image& operator=(const egami::Image& _image);
 			Image(const ivec2& _size,
-			      enum colorType _type = egami::colorType::undefined);
+			      enum colorType _type = egami::colorType::undefined,
+			      const void* _dataToCopy = nullptr);
 			~Image();
 			// TODO : IMplement move operator ... and copy operator...
 		public:
