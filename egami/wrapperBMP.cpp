@@ -306,6 +306,25 @@ egami::Image egami::loadBMP(const etk::Vector<uint8_t>& _buffer) {
 #if 1
 	// Extended mode
 bool egami::storeBMP(const etk::String& _fileName, const egami::Image& _inputImage) {
+	etk::FSNode fileName(_fileName);
+	EGAMI_VERBOSE("File='" << _fileName << "' ==> " << fileName << " ==> " << fileName.getFileSystemName());
+	if(fileName.fileOpenWrite() == false) {
+		EGAMI_ERROR("Can not crete the output file name='" << fileName << "'");
+		return false;
+	}
+	etk::Vector<uint8_t> allData;
+	bool ret = storeBMP(allData, _inputImage);
+	fileName.fileWriteAll(allData);
+	fileName.fileClose();
+	return ret;
+}
+
+bool egami::storeBMP(etk::Vector<uint8_t>& _buffer, const egami::Image& _inputImage) {	
+	_buffer.clear();
+	_buffer.reserve(   _inputImage.getSize().x()*_inputImage.getSize().y()*getFormatColorSize(_inputImage.getType())
+	                 + sizeof(struct bitmapInfoHeaderExtended)
+	                 + sizeof(struct bitmapFileHeader));
+	
 	struct bitmapFileHeader m_FileHeader;
 	struct bitmapInfoHeaderExtended m_InfoHeaderExtended;
 	memset(&m_InfoHeaderExtended, 0, sizeof(bitmapInfoHeaderExtended));
@@ -350,22 +369,9 @@ bool egami::storeBMP(const etk::String& _fileName, const egami::Image& _inputIma
 	m_InfoHeaderExtended.biBitMaskBlue  = 0xFF000000;
 	m_InfoHeaderExtended.biBitMaskAlpha = 0x000000FF;
 	
-	etk::FSNode fileName(_fileName);
-	if(false == fileName.fileOpenWrite() ) {
-		EGAMI_ERROR("Can not find the file name=\"" << fileName << "\"");
-		return false;
-	}
-	// Write header:
-	if (fileName.fileWrite(&m_FileHeader,sizeof(struct bitmapFileHeader),1) != 1) {
-		EGAMI_ERROR("error loading file header");
-		fileName.fileClose();
-		return false;
-	}
-	if (fileName.fileWrite(&m_InfoHeaderExtended,sizeof(struct bitmapInfoHeaderExtended),1) != 1) {
-		EGAMI_ERROR("error loading file header");
-		fileName.fileClose();
-		return false;
-	}
+	
+	_buffer.pushBack((uint8_t*)&m_FileHeader, sizeof(struct bitmapFileHeader));
+	_buffer.pushBack((uint8_t*)&m_InfoHeaderExtended, sizeof(struct bitmapInfoHeaderExtended));
 	
 	/* TODO: Avec ca, ca ne fonctionne pas ... ==> check
 	if(fileName.fileSeek(m_FileHeader.bfOffBits, etk::FSN_SEEK_START) == false) {
@@ -384,7 +390,7 @@ bool egami::storeBMP(const etk::String& _fileName, const egami::Image& _inputIma
 				*pointer++ = tmpColor.g();
 				*pointer++ = tmpColor.b();
 				*pointer++ = tmpColor.a();
-				fileName.fileWrite(data,4,1);
+				_buffer.pushBack(data, 4);
 			}
 		}
 	} else {
@@ -396,7 +402,7 @@ bool egami::storeBMP(const etk::String& _fileName, const egami::Image& _inputIma
 				*pointer++ = tmpColor.b();
 				*pointer++ = tmpColor.g();
 				*pointer++ = tmpColor.r();
-				fileName.fileWrite(data,3,1);
+				_buffer.pushBack(data, 3);
 			}
 			if (offset != 0) {
 				uint8_t pointer[4];
@@ -404,11 +410,10 @@ bool egami::storeBMP(const etk::String& _fileName, const egami::Image& _inputIma
 				pointer[1] = 0;
 				pointer[2] = 0;
 				pointer[3] = 0;
-				fileName.fileWrite(pointer,1,offset);
+				_buffer.pushBack(pointer, offset);
 			}
 		}
 	}
-	fileName.fileClose();
 	return true;
 }
 #else

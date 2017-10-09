@@ -357,13 +357,94 @@ egami::Image egami::loadPNG(const etk::Vector<uint8_t>& _buffer) {
 	return out;
 }
 
-bool egami::storePNG(const etk::String& _fileName, const egami::Image& _inputImage) {
-	/* create file */
-	/*FILE *fp = fopen(file_name, "wb");
-	if (!fp) {
-		abort_("[write_png_file] File %s could not be opened for writing", file_name);
+bool genericWriter(png_structp png_ptr, png_infop info_ptr, const egami::Image& _inputImage) {
+	//png_init_io(png_ptr, fp);
+	/* write header */
+	if (setjmp(png_jmpbuf(png_ptr))) {
+		EGAMI_ERROR("Error jump setting");
+		png_destroy_write_struct(&png_ptr, &info_ptr);
+		return false;
 	}
-	*/
+	png_byte bitDepth = 8;
+	png_byte colorType = 0;
+	switch(_inputImage.getType()) {
+		case egami::colorType::RGBA8:
+			colorType = PNG_COLOR_TYPE_RGB_ALPHA;
+			//bitDepth = 4;
+			break;
+		case egami::colorType::RGB8:
+			colorType = PNG_COLOR_TYPE_RGB;
+			//bitDepth = 3;
+			break;
+		default:
+			EGAMI_ERROR("PNG can not export an image with other type than RGB and RGBA request:" << _inputImage.getType());
+			png_destroy_write_struct(&png_ptr, &info_ptr);
+			return false;
+	}
+	png_set_IHDR(png_ptr,
+	             info_ptr,
+	             _inputImage.getSize().x(),
+	             _inputImage.getSize().y(),
+	             bitDepth,
+	             colorType,
+	             PNG_INTERLACE_NONE,
+	             PNG_COMPRESSION_TYPE_BASE,
+	             PNG_FILTER_TYPE_BASE);
+	png_write_info(png_ptr, info_ptr);
+	/* write bytes */
+	if (setjmp(png_jmpbuf(png_ptr))) {
+		EGAMI_ERROR("Error while writing byte");
+		png_destroy_write_struct(&png_ptr, &info_ptr);
+		return false;
+	}
+	etk::Vector<png_bytep> rowPointers;
+	rowPointers.resize(_inputImage.getSize().y(), NULL);
+	uint8_t* imageData = (uint8_t*)_inputImage.getTextureDataPointer();
+	for (size_t iii=0; iii<rowPointers.size(); ++iii) {
+		rowPointers[iii] = &imageData[_inputImage.getSize().x()*getFormatColorSize(_inputImage.getType())*iii];
+	}
+	png_write_image(png_ptr, &rowPointers[0]);
+	/* end write */
+	if (setjmp(png_jmpbuf(png_ptr))) {
+		EGAMI_ERROR("Error while writing byte");
+		png_destroy_write_struct(&png_ptr, &info_ptr);
+		return false;
+	}
+	png_write_end(png_ptr, NULL);
+	png_destroy_write_struct(&png_ptr, &info_ptr);
+	return true;
+}
+
+bool egami::storePNG(etk::Vector<uint8_t>& _buffer, const egami::Image& _inputImage) {
+	png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, userErrorFunction, userWarningFunction);
+	if (png_ptr == nullptr) {
+		EGAMI_ERROR("Can not Allocate PNG structure");
+		return false;
+	}
+	png_infop info_ptr = png_create_info_struct(png_ptr);
+	if (info_ptr == nullptr) {
+		EGAMI_ERROR("Can not Allocate PNG info structure");
+		png_destroy_write_struct(&png_ptr, nullptr);
+		return false;
+	}
+	if (setjmp(png_jmpbuf(png_ptr))) {
+		EGAMI_ERROR("Error during init_io");
+		png_destroy_write_struct(&png_ptr, &info_ptr);
+		return false;
+	}
+	egami::ReaderInstanceBuffer tmpNode(_buffer);
+	
+	egami::ReaderInstance* tmpPointer = &tmpNode;
+	
+	// overwrite the write functions:
+	png_set_write_fn(png_ptr,
+	                 tmpPointer,
+	                 &Local_WriteData,
+	                 &local_FlushData);
+	return genericWriter(png_ptr, info_ptr, _inputImage);
+}
+
+bool egami::storePNG(const etk::String& _fileName, const egami::Image& _inputImage) {
 	etk::FSNode fileName(_fileName);
 	if(fileName.fileOpenWrite() == false) {
 		EGAMI_ERROR("Can not find the file name='" << fileName << "'");
@@ -396,71 +477,8 @@ bool egami::storePNG(const etk::String& _fileName, const egami::Image& _inputIma
 	                 tmpPoiter,
 	                 &Local_WriteData,
 	                 &local_FlushData);
-	/*
-	TODO:
-	out = genericWriter(png_ptr, info_ptr);
+	bool out = genericWriter(png_ptr, info_ptr, _inputImage);
 	
 	fileName.fileClose();
-	*/
-	
-	//png_init_io(png_ptr, fp);
-	/* write header */
-	if (setjmp(png_jmpbuf(png_ptr))) {
-		EGAMI_ERROR("Error jump setting");
-		png_destroy_write_struct(&png_ptr, &info_ptr);
-		fileName.fileClose();
-		return false;
-	}
-	png_byte bitDepth = 8;
-	png_byte colorType = 0;
-	switch(_inputImage.getType()) {
-		case egami::colorType::RGBA8:
-			colorType = PNG_COLOR_TYPE_RGB_ALPHA;
-			//bitDepth = 4;
-			break;
-		case egami::colorType::RGB8:
-			colorType = PNG_COLOR_TYPE_RGB;
-			//bitDepth = 3;
-			break;
-		default:
-			EGAMI_ERROR("PNG can not export an image with other type than RGB and RGBA request:" << _inputImage.getType());
-			png_destroy_write_struct(&png_ptr, &info_ptr);
-			fileName.fileClose();
-			return false;
-	}
-	png_set_IHDR(png_ptr,
-	             info_ptr,
-	             _inputImage.getSize().x(),
-	             _inputImage.getSize().y(),
-	             bitDepth,
-	             colorType,
-	             PNG_INTERLACE_NONE,
-	             PNG_COMPRESSION_TYPE_BASE,
-	             PNG_FILTER_TYPE_BASE);
-	png_write_info(png_ptr, info_ptr);
-	/* write bytes */
-	if (setjmp(png_jmpbuf(png_ptr))) {
-		EGAMI_ERROR("Error while writing byte");
-		png_destroy_write_struct(&png_ptr, &info_ptr);
-		fileName.fileClose();
-		return false;
-	}
-	etk::Vector<png_bytep> rowPointers;
-	rowPointers.resize(_inputImage.getSize().y(), NULL);
-	uint8_t* imageData = (uint8_t*)_inputImage.getTextureDataPointer();
-	for (size_t iii=0; iii<rowPointers.size(); ++iii) {
-		rowPointers[iii] = &imageData[_inputImage.getSize().x()*getFormatColorSize(_inputImage.getType())*iii];
-	}
-	png_write_image(png_ptr, &rowPointers[0]);
-	/* end write */
-	if (setjmp(png_jmpbuf(png_ptr))) {
-		EGAMI_ERROR("Error while writing byte");
-		png_destroy_write_struct(&png_ptr, &info_ptr);
-		fileName.fileClose();
-		return false;
-	}
-	png_write_end(png_ptr, NULL);
-	png_destroy_write_struct(&png_ptr, &info_ptr);
-	fileName.fileClose();
-	return true;
+	return out;
 }

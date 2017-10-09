@@ -27,5 +27,12 @@ namespace egami {
 	 * @return true if all is done correctly, false otherwise.
 	 */
 	bool storePNG(const etk::String& _fileName, const egami::Image& _inputImage);
+	/**
+	 * @breif Store a PNG file in the image.
+	 * @param[out] _buffer output file buffer.
+	 * @param[in] _inputImage write data.
+	 * @return true if all is done correctly, false otherwise.
+	 */
+	bool storePNG(etk::Vector<uint8_t>& _buffer, const egami::Image& _inputImage);
 }
 
