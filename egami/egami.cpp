@@ -161,7 +161,15 @@ bool egami::store(const egami::Image& _input, const etk::String& _fileName) {
 			return false;
 		#endif
 	} else if (etk::end_with(tmpName, ".jpg") == true) {
-		EGAMI_ERROR("Can not store in JPEG file '" << _fileName << "'");
+		#ifdef EGAMI_BUILD_JPEG
+			if (egami::storeJPG(_fileName, _input) == false) {
+				EGAMI_ERROR("Error to store JPEG file '" << _fileName << "'");
+				return false;
+			}
+		#else
+			EGAMI_WARNING("egami not compile with the JPEG dependency for file '" << _fileName << "'");
+			return false;
+		#endif
 		return false;
 	} else if (etk::end_with(tmpName, ".j2k") == true) {
 		EGAMI_ERROR("Can not store in JPEG 2000 file '" << _fileName << "'");
@@ -195,7 +203,15 @@ bool egami::store(const egami::Image& _input, etk::Vector<uint8_t>& _buffer, con
 			return false;
 		#endif
 	} else if (_mineType == "image/jpeg") {
-		EGAMI_ERROR("Can not store in JPEG for Raw output");
+		#ifdef EGAMI_BUILD_JPEG
+			if (egami::storeJPG(_buffer, _input) == false) {
+				EGAMI_ERROR("Error to store JPG for Raw output");
+				return false;
+			}
+		#else
+			EGAMI_WARNING("egami not compile with the JPG dependency for Raw output");
+			return false;
+		#endif
 		return false;
 	} else {
 		EGAMI_ERROR("Extention not managed  for Raw output Sopported extention: .bmp / .png / .jpg");

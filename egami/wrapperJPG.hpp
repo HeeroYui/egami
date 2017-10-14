@@ -20,5 +20,19 @@ namespace egami {
 	 * @return Read Image.
 	 */
 	egami::Image loadJPG(const etk::Vector<uint8_t>& _buffer);
+	/**
+	 * @breif Store a jpg file in the image.
+	 * @param[in] _fileName Name of the file.
+	 * @param[in] _inputImage write data.
+	 * @return true if all is done correctly, false otherwise.
+	 */
+	bool storeJPG(const etk::String& _fileName, const egami::Image& _inputImage);
+	/**
+	 * @breif Store a jpg file in the image.
+	 * @param[out] _buffer output file buffer.
+	 * @param[in] _inputImage write data.
+	 * @return true if all is done correctly, false otherwise.
+	 */
+	bool storeJPG(etk::Vector<uint8_t>& _buffer, const egami::Image& _inputImage);
 }
 

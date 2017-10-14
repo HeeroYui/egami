@@ -132,4 +132,166 @@ egami::Image egami::loadJPG(const etk::Vector<uint8_t>& _buffer) {
 	return out;
 }
 
+static etk::Vector<JOCTET> myBuffer;
+#define BLOCK_SIZE 16384
 
+void myInitDestination(j_compress_ptr _cinfo) {
+		myBuffer.resize(BLOCK_SIZE);
+		_cinfo->dest->next_output_byte = &myBuffer[0];
+		_cinfo->dest->free_in_buffer = myBuffer.size();
+}
+
+boolean myEmptyOutputBuffer(j_compress_ptr _cinfo) {
+		size_t oldsize = myBuffer.size();
+		myBuffer.resize(oldsize + BLOCK_SIZE);
+		_cinfo->dest->next_output_byte = &myBuffer[oldsize];
+		_cinfo->dest->free_in_buffer = myBuffer.size() - oldsize;
+		return TRUE;
+}
+
+void myTermDestination(j_compress_ptr _cinfo) {
+		myBuffer.resize(myBuffer.size() - _cinfo->dest->free_in_buffer);
+}
+
+bool egami::storeJPG(const etk::String& _fileName, const egami::Image& _inputImage) {
+	etk::FSNode fileName(_fileName);
+	EGAMI_VERBOSE("File='" << _fileName << "' ==> " << fileName << " ==> " << fileName.getFileSystemName());
+	if(fileName.fileOpenWrite() == false) {
+		EGAMI_ERROR("Can not crete the output file name='" << fileName << "'");
+		return false;
+	}
+	etk::Vector<uint8_t> allData;
+	bool ret = storeJPG(allData, _inputImage);
+	fileName.fileWriteAll(allData);
+	fileName.fileClose();
+	return ret;
+}
+
+/*
+ * IMAGE DATA FORMATS:
+ *
+ * The standard input image format is a rectangular array of pixels, with
+ * each pixel having the same number of "component" values (color channels).
+ * Each pixel row is an array of JSAMPLEs (which typically are unsigned chars).
+ * If you are working with color data, then the color values for each pixel
+ * must be adjacent in the row; for example, R,G,B,R,G,B,R,G,B,... for 24-bit
+ * RGB color.
+ *
+ * For this example, we'll assume that this data structure matches the way
+ * our application has stored the image in memory, so we can just pass a
+ * pointer to our image buffer.	In particular, let's say that the image is
+ * RGB color and is described by:
+ */
+
+int quality = 250;
+
+bool egami::storeJPG(etk::Vector<uint8_t>& _buffer, const egami::Image& _inputImage) {
+	_buffer.clear();
+	/* This struct contains the JPEG compression parameters and pointers to
+	 * working space (which is allocated as needed by the JPEG library).
+	 * It is possible to have several such structures, representing multiple
+	 * compression/decompression processes, in existence at once.	We refer
+	 * to any one struct (and its associated working data) as a "JPEG object".
+	 */
+	struct jpeg_compress_struct cinfo;
+	// We use our private extension JPEG error handler. Note that this struct must live as long as the main JPEG parameter struct, to avoid dangling-pointer problems.
+	struct my_error_mgr jerr;
+	/* More stuff */
+	int row_stride; /* physical row width in image buffer */
+
+	/* Step 1: allocate and initialize JPEG compression object */
+
+	// We set up the normal JPEG error routines, then override error_exit.
+	cinfo.err = jpeg_std_error(&jerr.pub);
+	jerr.pub.error_exit = my_error_exit;
+	/* Now we can initialize the JPEG compression object. */
+	jpeg_create_compress(&cinfo);
+
+	/* Step 2: specify data destination (eg, a file) */
+	/* Note: steps 2 and 3 can be done in either order. */
+
+	/* Here we use the library-supplied code to send compressed data to a
+	 * stdio stream.	You can also write your own code to do something else.
+	 * VERY IMPORTANT: use "b" option to fopen() if you are on a machine that
+	 * requires it in order to write binary files.
+	 */
+	#if 0
+		FILE * outfile; /* target file */
+		if ((outfile = fopen(filename, "wb")) == NULL) {
+			fprintf(stderr, "can't open %s\n", filename);
+			exit(1);
+		}
+		jpeg_stdio_dest(&cinfo, outfile);
+	#else
+		/*
+		uint8_t* rgba = nullptr;
+		unsigned long size = 0;
+		etk::Vector<uint8_t> buffer.
+		jpeg_mem_dest(jpegdata, &rgba, &size);
+		if(size > 0) {
+			buffer.resize(size);
+			for(ii=0; iii<size; ++iii) {
+				buffer[iii] = rgba[iii];
+			}
+			free(rgba);
+			rgba = nullptr;
+		}
+		*/
+		jpeg_stdio_dest(&cinfo, nullptr);
+		if (cinfo.dest == nullptr) {
+			EGAMI_ERROR("Can not write the destination property callback");
+			return false;
+		}
+		cinfo.dest->init_destination = &myInitDestination;
+		cinfo.dest->empty_output_buffer = &myEmptyOutputBuffer;
+		cinfo.dest->term_destination = &myTermDestination;
+	#endif
+
+	// Step 3: set parameters for compression
+	// First we supply a description of the input image. Four fields of the cinfo struct must be filled in:
+	cinfo.image_width = _inputImage.getSize().x();
+	cinfo.image_height = _inputImage.getSize().y();
+	// # of color components per pixel
+	cinfo.input_components = getFormatColorSize(_inputImage.getType());
+	// colorspace of input image
+	cinfo.in_color_space = JCS_RGB;
+	/* Now use the library's routine to set default compression parameters.
+	 * (You must set at least cinfo.in_color_space before calling this,
+	 * since the defaults depend on the source color space.)
+	 */
+	jpeg_set_defaults(&cinfo);
+	/* Now you can set any non-default parameters you wish to.
+	 * Here we just illustrate the use of quality (quantization table) scaling:
+	 */
+	jpeg_set_quality(&cinfo, quality, TRUE /* limit to baseline-JPEG values */);
+
+	/* Step 4: Start compressor */
+
+	/* TRUE ensures that we will write a complete interchange-JPEG file.
+	 * Pass TRUE unless you are very sure of what you're doing.
+	 */
+	jpeg_start_compress(&cinfo, TRUE);
+
+	/* Step 5: while (scan lines remain to be written) */
+	/*					 jpeg_write_scanlines(...); */
+	uint8_t * dataPointer = (uint8_t*)_inputImage.getTextureDataPointer();
+	while (cinfo.next_scanline < cinfo.image_height) {
+		/* jpeg_write_scanlines expects an array of pointers to scanlines.
+		 * Here the array is only one element long, but you could pass
+		 * more than one scanline at a time if that's more convenient.
+		 */
+		JSAMPROW tmp[1];
+		tmp[0] = &dataPointer[cinfo.next_scanline * cinfo.image_width * getFormatColorSize(_inputImage.getType())];
+		(void) jpeg_write_scanlines(&cinfo, tmp, 1);
+	}
+
+	/* Step 6: Finish compression */
+
+	jpeg_finish_compress(&cinfo);
+	/* Step 7: release JPEG compression object */
+
+	/* This is an important step since it will release a good deal of memory. */
+	jpeg_destroy_compress(&cinfo);
+	etk::swap(_buffer, myBuffer);
+	return true;
+}

@@ -43,7 +43,7 @@ static void writePNG() {
 }
 static void writeJPG() {
 	// create an empty Image (no type and no inside data)
-	egami::Image image(ivec2(25,25), egami::colorType::RGBA8);
+	egami::Image image(ivec2(25,25), egami::colorType::RGB8);
 	image.set(ivec2(5,5), etk::Color<>(0x88, 0xFF, 0x00, 0xFF));
 	image.set(ivec2(12,15), etk::Color<>(0x88, 0xFF, 0x00, 0xFF));
 	image.set(ivec2(4,9), etk::Color<>(0x88, 0xFF, 0x00, 0xFF));
