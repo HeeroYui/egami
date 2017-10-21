@@ -121,7 +121,6 @@ void egami::Image::configure(const ivec2& _size, enum colorType _type) {
 			m_data = nullptr;
 			break;
 		case egami::colorType::RGBA8:
-			//m_data = ememory::makeShared<egami::ImagePrivate>(new egami::ImageTemplate<etk::Color<uint8_t>>(_size));
 			m_data = ememory::makeShared<egami::ImageTemplate<etk::Color<uint8_t, 4>>>(_size);
 			break;
 		case egami::colorType::RGB8:
