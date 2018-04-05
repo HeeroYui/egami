@@ -35,7 +35,7 @@ bool egami::scalable(const etk::String& _fileName) {
 }
 
 egami::Image egami::load(const etk::String& _fileName, const ivec2& _size) {
-	etk::String tmpName = etk::tolower(_fileName);
+	etk::String tmpName = etk::toLower(_fileName);
 	egami::Image out;
 	// select the corect Loader :
 	if (etk::end_with(tmpName, ".edf") == true) {
@@ -134,7 +134,7 @@ egami::Image egami::load(const etk::String& _mineType, const etk::Vector<uint8_t
 }
 
 bool egami::store(const egami::Image& _input, const etk::String& _fileName) {
-	etk::String tmpName = etk::tolower(_fileName);
+	etk::String tmpName = etk::toLower(_fileName);
 	EGAMI_DEBUG("Store file : " << _fileName);
 	// select the corect Loader :
 	if (etk::end_with(tmpName, ".edf") == true) {
