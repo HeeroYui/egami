@@ -71,21 +71,21 @@ namespace egami {
 // we must change the access of the IO of the png lib :
 static void local_ReadData(png_structp _pngPtr, png_bytep _data, png_size_t _length) {
 	egami::ReaderInstance* instance = static_cast<egami::ReaderInstance*>(png_get_io_ptr(_pngPtr));
-	if (instance != nullptr) {
+	if (instance != null) {
 		instance->read(_data, _length);
 	}
 }
 
 static void Local_WriteData(png_structp _pngPtr, png_bytep _data, png_size_t _length) {
 	egami::ReaderInstance* instance = static_cast<egami::ReaderInstance*>(png_get_io_ptr(_pngPtr));
-	if (instance != nullptr) {
+	if (instance != null) {
 		instance->write(_data, _length);
 	}
 }
 
 static void local_FlushData(png_structp _pngPtr) {
 	egami::ReaderInstance* instance = static_cast<egami::ReaderInstance*>(png_get_io_ptr(_pngPtr));
-	if (instance != nullptr) {
+	if (instance != null) {
 		instance->flush();
 	}
 }
@@ -110,7 +110,7 @@ static egami::Image genericLoader(png_structp _pngPtr, png_infop _infoPtr) {
 	int bit_depth = 0;
 	int colorType = 0;
 	int interlace_type = 0;
-	png_get_IHDR(_pngPtr, _infoPtr, &width, &height, &bit_depth, &colorType, &interlace_type, nullptr, nullptr);
+	png_get_IHDR(_pngPtr, _infoPtr, &width, &height, &bit_depth, &colorType, &interlace_type, null, null);
 	// reallocate the image 
 	EGAMI_ERROR("Load PNG image : (" << width << "," << height << ") bitDepth=" << bit_depth << " colorType=" << colorType);
 	switch (colorType) {
@@ -187,7 +187,7 @@ static egami::Image genericLoader(png_structp _pngPtr, png_infop _infoPtr) {
 	png_bytep row_pointers[height];
 	/* Clear the pointer array */
 	for (png_uint_32 row = 0; row < height; row++) {
-		row_pointers[row] = nullptr;
+		row_pointers[row] = null;
 	}
 	for (png_uint_32 row = 0; row < height; row++) {
 		row_pointers[row] = (png_bytep)png_malloc(_pngPtr, png_get_rowbytes(_pngPtr, _infoPtr));
@@ -262,7 +262,7 @@ static egami::Image genericLoader(png_structp _pngPtr, png_infop _infoPtr) {
 			return egami::Image();
 	}
 	// Clean up after the read, and free any memory allocated - REQUIRED
-	png_destroy_read_struct(&_pngPtr, &_infoPtr, nullptr);
+	png_destroy_read_struct(&_pngPtr, &_infoPtr, null);
 	return out;
 }
 
@@ -292,15 +292,15 @@ egami::Image egami::loadPNG(const etk::String& _inputFile) {
 	
 	// PNG read setup
 	png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, userErrorFunction, userWarningFunction);
-	if (png_ptr == nullptr) {
+	if (png_ptr == null) {
 		EGAMI_ERROR("Can not Allocate PNG structure");
 		fileName.fileClose();
 		return out;
 	}
 	png_infop info_ptr = png_create_info_struct(png_ptr);
-	if (info_ptr == nullptr) {
+	if (info_ptr == null) {
 		EGAMI_ERROR("Can not Allocate PNG info structure");
-		png_destroy_read_struct(&png_ptr, nullptr, nullptr);
+		png_destroy_read_struct(&png_ptr, null, null);
 		fileName.fileClose();
 		return out;
 	}
@@ -308,7 +308,7 @@ egami::Image egami::loadPNG(const etk::String& _inputFile) {
 	if (setjmp(png_jmpbuf(png_ptr))) {
 		EGAMI_ERROR(" Can not set the JUMP buffer adresses");
 		// Free all of the memory associated with the png_ptr and info_ptr
-		png_destroy_read_struct(&png_ptr, &info_ptr, nullptr);
+		png_destroy_read_struct(&png_ptr, &info_ptr, null);
 		fileName.fileClose();
 		return false;
 	}
@@ -334,15 +334,15 @@ egami::Image egami::loadPNG(const etk::Vector<uint8_t>& _buffer) {
 	}
 	
 	// PNG read setup
-	png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, userErrorFunction, userWarningFunction);
-	if (png_ptr == nullptr) {
+	png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, null, userErrorFunction, userWarningFunction);
+	if (png_ptr == null) {
 		EGAMI_ERROR("Can not Allocate PNG structure");
 		return out;
 	}
 	png_infop info_ptr = png_create_info_struct(png_ptr);
-	if (info_ptr == nullptr) {
+	if (info_ptr == null) {
 		EGAMI_ERROR("Can not Allocate PNG info structure");
-		png_destroy_read_struct(&png_ptr, nullptr, nullptr);
+		png_destroy_read_struct(&png_ptr, null, null);
 		return out;
 	}
 	egami::ReaderInstanceBuffer tmpNode(_buffer, 8);
@@ -417,14 +417,14 @@ bool genericWriter(png_structp png_ptr, png_infop info_ptr, const egami::Image& 
 
 bool egami::storePNG(etk::Vector<uint8_t>& _buffer, const egami::Image& _inputImage) {
 	png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, userErrorFunction, userWarningFunction);
-	if (png_ptr == nullptr) {
+	if (png_ptr == null) {
 		EGAMI_ERROR("Can not Allocate PNG structure");
 		return false;
 	}
 	png_infop info_ptr = png_create_info_struct(png_ptr);
-	if (info_ptr == nullptr) {
+	if (info_ptr == null) {
 		EGAMI_ERROR("Can not Allocate PNG info structure");
-		png_destroy_write_struct(&png_ptr, nullptr);
+		png_destroy_write_struct(&png_ptr, null);
 		return false;
 	}
 	if (setjmp(png_jmpbuf(png_ptr))) {
@@ -451,14 +451,14 @@ bool egami::storePNG(const etk::String& _fileName, const egami::Image& _inputIma
 		return false;
 	}
 	png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, userErrorFunction, userWarningFunction);
-	if (png_ptr == nullptr) {
+	if (png_ptr == null) {
 		EGAMI_ERROR("Can not Allocate PNG structure");
 		return false;
 	}
 	png_infop info_ptr = png_create_info_struct(png_ptr);
-	if (info_ptr == nullptr) {
+	if (info_ptr == null) {
 		EGAMI_ERROR("Can not Allocate PNG info structure");
-		png_destroy_write_struct(&png_ptr, nullptr);
+		png_destroy_write_struct(&png_ptr, null);
 		fileName.fileClose();
 		return false;
 	}

@@ -81,7 +81,7 @@ int32_t egami::getFormatColorSize(enum colorType _type) {
 }
 
 egami::Image::Image() :
-  m_data(nullptr) {
+  m_data(null) {
 	
 }
 
@@ -102,9 +102,9 @@ egami::Image::~Image() {
 egami::Image::Image(const ivec2& _size,
                     enum colorType _type,
                     const void* _dataToCopy) :
-  m_data(nullptr) {
+  m_data(null) {
 	configure(_size, _type);
-	if (_dataToCopy != nullptr) {
+	if (_dataToCopy != null) {
 		memcpy(getTextureDataPointer(), _dataToCopy, getSize().x()*getSize().y()*egami::getFormatColorSize(getType()));
 	}
 }
@@ -118,7 +118,7 @@ void egami::Image::swap(egami::Image& _obj) {
 void egami::Image::configure(const ivec2& _size, enum colorType _type) {
 	switch (_type) {
 		case egami::colorType::undefined:
-			m_data = nullptr;
+			m_data = null;
 			break;
 		case egami::colorType::RGBA8:
 			m_data = ememory::makeShared<egami::ImageTemplate<etk::Color<uint8_t, 4>>>(_size);
@@ -148,75 +148,75 @@ void egami::Image::configure(const ivec2& _size, enum colorType _type) {
 }
 
 enum egami::colorType egami::Image::getType() const {
-	if (m_data == nullptr) {
-		EGAMI_DEBUG("No internal data for image (nullptr)");
+	if (m_data == null) {
+		EGAMI_DEBUG("No internal data for image (null)");
 		return egami::colorType::undefined;
 	}
 	return m_data->getType();
 }
 
 void* egami::Image::getTextureDataPointer() const{
-	if (m_data == nullptr) {
-		EGAMI_DEBUG("No internal data for image (nullptr)");
-		return nullptr;
+	if (m_data == null) {
+		EGAMI_DEBUG("No internal data for image (null)");
+		return null;
 	}
 	return (void*)m_data->getTextureDataPointer();
 }
 
 void egami::Image::resize(const ivec2& _size, const ivec2& _startPos) {
-	if (m_data == nullptr) {
-		EGAMI_DEBUG("No internal data for image (nullptr)");
+	if (m_data == null) {
+		EGAMI_DEBUG("No internal data for image (null)");
 		return;
 	}
 	m_data->resize2(_size, _startPos);
 }
 
 void egami::Image::resize(const ivec2& _size, const etk::Color<>& _color, const ivec2& _startPos) {
-	if (m_data == nullptr) {
-		EGAMI_DEBUG("No internal data for image (nullptr)");
+	if (m_data == null) {
+		EGAMI_DEBUG("No internal data for image (null)");
 		return;
 	}
 	m_data->resize(_size, _color, _startPos);
 }
 void egami::Image::resize(const ivec2& _size, const etk::Color<float>& _color, const ivec2& _startPos) {
-	if (m_data == nullptr) {
-		EGAMI_DEBUG("No internal data for image (nullptr)");
+	if (m_data == null) {
+		EGAMI_DEBUG("No internal data for image (null)");
 		return;
 	}
 	m_data->resize(_size, _color, _startPos);
 }
 void egami::Image::resize(const ivec2& _size, const etk::Color<uint16_t, 1>& _color, const ivec2& _startPos) {
-	if (m_data == nullptr) {
-		EGAMI_DEBUG("No internal data for image (nullptr)");
+	if (m_data == null) {
+		EGAMI_DEBUG("No internal data for image (null)");
 		return;
 	}
 	m_data->resize(_size, _color, _startPos);
 }
 void egami::Image::resize(const ivec2& _size, const etk::Color<uint32_t, 1>& _color, const ivec2& _startPos) {
-	if (m_data == nullptr) {
-		EGAMI_DEBUG("No internal data for image (nullptr)");
+	if (m_data == null) {
+		EGAMI_DEBUG("No internal data for image (null)");
 		return;
 	}
 	m_data->resize(_size, _color, _startPos);
 }
 void egami::Image::resize(const ivec2& _size, const etk::Color<float, 1>& _color, const ivec2& _startPos) {
-	if (m_data == nullptr) {
-		EGAMI_DEBUG("No internal data for image (nullptr)");
+	if (m_data == null) {
+		EGAMI_DEBUG("No internal data for image (null)");
 		return;
 	}
 	m_data->resize(_size, _color, _startPos);
 }
 void egami::Image::resize(const ivec2& _size, const etk::Color<double, 1>& _color, const ivec2& _startPos) {
-	if (m_data == nullptr) {
-		EGAMI_DEBUG("No internal data for image (nullptr)");
+	if (m_data == null) {
+		EGAMI_DEBUG("No internal data for image (null)");
 		return;
 	}
 	m_data->resize(_size, _color, _startPos);
 }
 
 const ivec2& egami::Image::getSize() const {
-	if (m_data == nullptr) {
-		EGAMI_DEBUG("No internal data for image (nullptr)");
+	if (m_data == null) {
+		EGAMI_DEBUG("No internal data for image (null)");
 		static const ivec2 error(0,0);
 		return error;
 	}
@@ -244,8 +244,8 @@ const ivec2& egami::Image::getSize() const {
 #endif
 
 ivec2 egami::Image::getGPUSize() const {
-	if (m_data == nullptr) {
-		EGAMI_DEBUG("No internal data for image (nullptr)");
+	if (m_data == null) {
+		EGAMI_DEBUG("No internal data for image (null)");
 		static const ivec2 error(0,0);
 		return error;
 	}
@@ -259,16 +259,16 @@ ivec2 egami::Image::getGPUSize() const {
 }
 
 int32_t egami::Image::getWidth() const {
-	if (m_data == nullptr) {
-		EGAMI_DEBUG("No internal data for image (nullptr)");
+	if (m_data == null) {
+		EGAMI_DEBUG("No internal data for image (null)");
 		return 0;
 	}
 	return m_data->getWidth();
 }
 
 int32_t egami::Image::getHeight() const {
-	if (m_data == nullptr) {
-		EGAMI_DEBUG("No internal data for image (nullptr)");
+	if (m_data == null) {
+		EGAMI_DEBUG("No internal data for image (null)");
 		return 0;
 	}
 	return m_data->getHeight();
@@ -276,70 +276,70 @@ int32_t egami::Image::getHeight() const {
 
 
 void egami::Image::scale(const ivec2& _size) {
-	if (m_data == nullptr) {
-		EGAMI_DEBUG("No internal data for image (nullptr)");
+	if (m_data == null) {
+		EGAMI_DEBUG("No internal data for image (null)");
 		return;
 	}
 	resize(_size);
 }
 
 void egami::Image::clear(const etk::Color<>& _color) {
-	if (m_data == nullptr) {
-		EGAMI_DEBUG("No internal data for image (nullptr)");
+	if (m_data == null) {
+		EGAMI_DEBUG("No internal data for image (null)");
 		return;
 	}
 	m_data->clear();
 };
 void egami::Image::clear(const etk::Color<float>& _color) {
-	if (m_data == nullptr) {
-		EGAMI_DEBUG("No internal data for image (nullptr)");
+	if (m_data == null) {
+		EGAMI_DEBUG("No internal data for image (null)");
 		return;
 	}
 	m_data->clear();
 };
 void egami::Image::clear(const etk::Color<uint16_t, 1>& _color) {
-	if (m_data == nullptr) {
-		EGAMI_DEBUG("No internal data for image (nullptr)");
+	if (m_data == null) {
+		EGAMI_DEBUG("No internal data for image (null)");
 		return;
 	}
 	m_data->clear();
 };
 void egami::Image::clear(const etk::Color<uint32_t, 1>& _color) {
-	if (m_data == nullptr) {
-		EGAMI_DEBUG("No internal data for image (nullptr)");
+	if (m_data == null) {
+		EGAMI_DEBUG("No internal data for image (null)");
 		return;
 	}
 	m_data->clear();
 };
 void egami::Image::clear(const etk::Color<float, 1>& _color) {
-	if (m_data == nullptr) {
-		EGAMI_DEBUG("No internal data for image (nullptr)");
+	if (m_data == null) {
+		EGAMI_DEBUG("No internal data for image (null)");
 		return;
 	}
 	m_data->clear();
 };
 void egami::Image::clear(const etk::Color<double, 1>& _color) {
-	if (m_data == nullptr) {
-		EGAMI_DEBUG("No internal data for image (nullptr)");
+	if (m_data == null) {
+		EGAMI_DEBUG("No internal data for image (null)");
 		return;
 	}
 	m_data->clear();
 };
 
 etk::Color<> egami::Image::get(const ivec2& _pos) const {
-	if (m_data == nullptr) {
+	if (m_data == null) {
 		return etk::Color<>(0,0,0,0);
 	}
 	return m_data->get(_pos);;
 }
 
 void egami::Image::insert(const ivec2& _pos, const egami::Image& _input) {
-	if (m_data == nullptr) {
-		EGAMI_DEBUG("No internal data for image (nullptr)");
+	if (m_data == null) {
+		EGAMI_DEBUG("No internal data for image (null)");
 		return;
 	}
-	if (_input.m_data == nullptr) {
-		EGAMI_DEBUG("No input data for image (nullptr)");
+	if (_input.m_data == null) {
+		EGAMI_DEBUG("No input data for image (null)");
 		return;
 	}
 	enum colorType destType = m_data->getType();
@@ -357,64 +357,64 @@ void egami::Image::insert(const ivec2& _pos, const egami::Image& _input) {
 }
 
 void egami::Image::set(const ivec2& _pos, const etk::Color<>& _newColor) {
-	if (m_data == nullptr) {
-		EGAMI_WARNING("No internal data for image (nullptr)");
+	if (m_data == null) {
+		EGAMI_WARNING("No internal data for image (null)");
 		return;
 	}
 	m_data->set(_pos, _newColor);
 }
 
 void egami::Image::set(const ivec2& _pos, const etk::Color<float>& _newColor) {
-	if (m_data == nullptr) {
-		EGAMI_DEBUG("No internal data for image (nullptr)");
+	if (m_data == null) {
+		EGAMI_DEBUG("No internal data for image (null)");
 		return;
 	}
 	m_data->set(_pos, _newColor);
 }
 
 void egami::Image::set(const ivec2& _pos, const etk::Color<uint16_t, 1>& _newColor) {
-	if (m_data == nullptr) {
-		EGAMI_DEBUG("No internal data for image (nullptr)");
+	if (m_data == null) {
+		EGAMI_DEBUG("No internal data for image (null)");
 		return;
 	}
 	m_data->set(_pos, _newColor);
 }
 
 void egami::Image::set(const ivec2& _pos, const etk::Color<uint32_t, 1>& _newColor) {
-	if (m_data == nullptr) {
-		EGAMI_DEBUG("No internal data for image (nullptr)");
+	if (m_data == null) {
+		EGAMI_DEBUG("No internal data for image (null)");
 		return;
 	}
 	m_data->set(_pos, _newColor);
 }
 
 void egami::Image::set(const ivec2& _pos, const etk::Color<float, 1>& _newColor) {
-	if (m_data == nullptr) {
-		EGAMI_DEBUG("No internal data for image (nullptr)");
+	if (m_data == null) {
+		EGAMI_DEBUG("No internal data for image (null)");
 		return;
 	}
 	m_data->set(_pos, _newColor);
 }
 
 void egami::Image::set(const ivec2& _pos, const etk::Color<double, 1>& _newColor) {
-	if (m_data == nullptr) {
-		EGAMI_DEBUG("No internal data for image (nullptr)");
+	if (m_data == null) {
+		EGAMI_DEBUG("No internal data for image (null)");
 		return;
 	}
 	m_data->set(_pos, _newColor);
 }
 
 void egami::Image::set(const etk::Vector<etk::Color<float,4>>& _data, const ivec2& _size) {
-	if (m_data == nullptr) {
-		EGAMI_DEBUG("No internal data for image (nullptr)");
+	if (m_data == null) {
+		EGAMI_DEBUG("No internal data for image (null)");
 		return;
 	}
 	m_data->set(_data, _size);
 }
 
 void egami::Image::set(const etk::Vector<etk::Color<uint8_t,4>>& _data, const ivec2& _size) {
-	if (m_data == nullptr) {
-		EGAMI_DEBUG("No internal data for image (nullptr)");
+	if (m_data == null) {
+		EGAMI_DEBUG("No internal data for image (null)");
 		return;
 	}
 	m_data->set(_data, _size);

@@ -224,7 +224,7 @@ bool egami::storeJPG(etk::Vector<uint8_t>& _buffer, const egami::Image& _inputIm
 		jpeg_stdio_dest(&cinfo, outfile);
 	#else
 		/*
-		uint8_t* rgba = nullptr;
+		uint8_t* rgba = null;
 		unsigned long size = 0;
 		etk::Vector<uint8_t> buffer.
 		jpeg_mem_dest(jpegdata, &rgba, &size);
@@ -234,11 +234,11 @@ bool egami::storeJPG(etk::Vector<uint8_t>& _buffer, const egami::Image& _inputIm
 				buffer[iii] = rgba[iii];
 			}
 			free(rgba);
-			rgba = nullptr;
+			rgba = null;
 		}
 		*/
-		jpeg_stdio_dest(&cinfo, nullptr);
-		if (cinfo.dest == nullptr) {
+		jpeg_stdio_dest(&cinfo, null);
+		if (cinfo.dest == null) {
 			EGAMI_ERROR("Can not write the destination property callback");
 			return false;
 		}

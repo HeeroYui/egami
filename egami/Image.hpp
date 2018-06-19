@@ -38,7 +38,7 @@ namespace egami {
 			ImagePrivate() {};
 			virtual ~ImagePrivate() {};
 			virtual void* getTextureDataPointer() const {
-				return nullptr;
+				return null;
 			};
 			virtual const ivec2& getSize() const = 0;
 			virtual int32_t getWidth() const {
@@ -83,7 +83,7 @@ namespace egami {
 			Image& operator=(const egami::Image& _image);
 			Image(const ivec2& _size,
 			      enum colorType _type = egami::colorType::undefined,
-			      const void* _dataToCopy = nullptr);
+			      const void* _dataToCopy = null);
 			~Image();
 			// TODO : IMplement move operator ... and copy operator...
 		public:
@@ -92,7 +92,7 @@ namespace egami {
 			void* getTextureDataPointer() const;
 			enum colorType getType() const;
 			bool exist() {
-				return m_data != nullptr;
+				return m_data != null;
 			}
 			void swap(egami::Image& _obj);
 		// -----------------------------------------------
