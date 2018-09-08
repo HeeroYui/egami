@@ -96,9 +96,10 @@ namespace egami {
 			}
 			void swap(egami::Image& _obj);
 		// -----------------------------------------------
-		// -- basic tools :
+		// -- basic tools:
 		// -----------------------------------------------
 		public :
+			void move(const ivec2& _offset);
 			void resize(const ivec2& _size, const ivec2& _startPos=ivec2(0,0));
 			// TODO : Create a template function ...
 			void resize(const ivec2& _size, const etk::Color<>& _color, const ivec2& _startPos=ivec2(0,0));

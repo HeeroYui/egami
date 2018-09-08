@@ -183,7 +183,8 @@ bool egami::storeJPG(const etk::String& _fileName, const egami::Image& _inputIma
  * RGB color and is described by:
  */
 
-int quality = 250;
+//int quality = 250;
+int quality = 200;
 
 bool egami::storeJPG(etk::Vector<uint8_t>& _buffer, const egami::Image& _inputImage) {
 	_buffer.clear();

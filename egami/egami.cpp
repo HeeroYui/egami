@@ -170,7 +170,6 @@ bool egami::store(const egami::Image& _input, const etk::String& _fileName) {
 			EGAMI_WARNING("egami not compile with the JPEG dependency for file '" << _fileName << "'");
 			return false;
 		#endif
-		return false;
 	} else if (etk::end_with(tmpName, ".j2k") == true) {
 		EGAMI_ERROR("Can not store in JPEG 2000 file '" << _fileName << "'");
 		return false;

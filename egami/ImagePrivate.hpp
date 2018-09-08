@@ -49,6 +49,7 @@ namespace egami {
 		// -----------------------------------------------
 		public :
 			void resize2__(const ivec2& _size, const ivec2& _startPos=ivec2(0,0)) {
+				move(-_startPos);
 				if (_size == m_size) {
 					// same size  == > nothing to do ...
 					return;
@@ -125,6 +126,13 @@ namespace egami {
 			void resize__(const ivec2& _size, const EGAMI_TYPE_COLOR& _color) {
 				m_size=_size;
 				m_data.resize(m_size.x()*m_size.y(), _color);
+			}
+			void move(const ivec2& _offset) {
+				for (int32_t xxx=0; xxx<m_size.x(); ++xxx) {
+					for (int32_t yyy=0; yyy<m_size.y(); ++yyy) {
+						set(ivec2(xxx,yyy), get(ivec2(xxx-_offset.x(),yyy-_offset.y())));
+					}
+				}
 			}
 			
 			void resize(const ivec2& _size, const etk::Color<uint8_t, 4>& _color, const ivec2& _startPos) {
