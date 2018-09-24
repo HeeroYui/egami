@@ -8,7 +8,7 @@
 #include <egami/debug.hpp>
 #include <egami/Image.hpp>
 #include <egami/wrapperPNG.hpp>
-#include <etk/os/FSNode.hpp>
+#include <etk/uri/uri.hpp>
 #include <png/png.h>
 namespace egami {
 	class ReaderInstance {
@@ -19,22 +19,22 @@ namespace egami {
 			virtual void flush() = 0;
 	};
 	
-	class ReaderInstanceFSNode : public egami::ReaderInstance {
+	class ReaderInstancIOInterface : public egami::ReaderInstance {
 		private:
-			etk::FSNode& m_data;
+			ememory::SharedPtr<etk::io::Interface> m_data;
 		public:
-			ReaderInstanceFSNode(etk::FSNode& _data):
+			ReaderInstancIOInterface(const ememory::SharedPtr<etk::io::Interface>& _data):
 			  m_data(_data) {
 				
 			}
 			void read(png_bytep _data, png_size_t _length) override {
-				m_data.fileRead(_data, 1, _length);
+				m_data->read(_data, 1, _length);
 			}
 			void write(png_bytep _data, png_size_t _length) override {
-				m_data.fileWrite(_data, 1, _length);
+				m_data->write(_data, 1, _length);
 			}
 			void flush() override {
-				m_data.fileFlush();
+				m_data->flush();
 			}
 	};
 	
@@ -267,26 +267,26 @@ static egami::Image genericLoader(png_structp _pngPtr, png_infop _infoPtr) {
 }
 
 
-egami::Image egami::loadPNG(const etk::String& _inputFile) {
+egami::Image egami::loadPNG(const etk::Uri& _uri) {
 	egami::Image out;
-	etk::FSNode fileName(_inputFile);
-	if (fileName.exist() == false) {
-		EGAMI_ERROR("File does not existed='" << fileName << "'");
+	auto fileIo = etk::uri::get(_uri);
+	if (fileIo == null) {
+		EGAMI_ERROR("Can not create the uri: " << _uri);
 		return out;
 	}
-	if(fileName.fileOpenRead() == false) {
-		EGAMI_ERROR("Can not find the file name='" << fileName << "'");
+	if (fileIo->open(etk::io::OpenMode::Read) == false) {
+		EGAMI_ERROR("Can not open (r) the file : " << _uri);
 		return out;
 	}
 	unsigned char header[8];
 	
-	if (fileName.fileRead(header,1,8) != 8) {
+	if (fileIo->read(header,1,8) != 8) {
 		EGAMI_ERROR("error loading file header");
-		fileName.fileClose();
+		fileIo->close();
 		return out;
 	}
 	if (png_sig_cmp(header, 0, 8)) {
-		EGAMI_ERROR("Invalid file :" << fileName);
+		EGAMI_ERROR("Invalid file :" << _uri);
 		return out;
 	}
 	
@@ -294,14 +294,14 @@ egami::Image egami::loadPNG(const etk::String& _inputFile) {
 	png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, userErrorFunction, userWarningFunction);
 	if (png_ptr == null) {
 		EGAMI_ERROR("Can not Allocate PNG structure");
-		fileName.fileClose();
+		fileIo->close();
 		return out;
 	}
 	png_infop info_ptr = png_create_info_struct(png_ptr);
 	if (info_ptr == null) {
 		EGAMI_ERROR("Can not Allocate PNG info structure");
 		png_destroy_read_struct(&png_ptr, null, null);
-		fileName.fileClose();
+		fileIo->close();
 		return out;
 	}
 	/*
@@ -309,11 +309,11 @@ egami::Image egami::loadPNG(const etk::String& _inputFile) {
 		EGAMI_ERROR(" Can not set the JUMP buffer adresses");
 		// Free all of the memory associated with the png_ptr and info_ptr
 		png_destroy_read_struct(&png_ptr, &info_ptr, null);
-		fileName.fileClose();
+		fileIo->close();
 		return false;
 	}
 	*/
-	ReaderInstanceFSNode tmpNode(fileName);
+	ReaderInstancIOInterface tmpNode(fileIo);
 	
 	ReaderInstance* tmpPoiter = &tmpNode;
 	
@@ -322,7 +322,7 @@ egami::Image egami::loadPNG(const etk::String& _inputFile) {
 	                tmpPoiter,
 	                &local_ReadData);
 	out = genericLoader(png_ptr, info_ptr);
-	fileName.fileClose();
+	fileIo->close();
 	return out;
 }
 
@@ -444,31 +444,36 @@ bool egami::storePNG(etk::Vector<uint8_t>& _buffer, const egami::Image& _inputIm
 	return genericWriter(png_ptr, info_ptr, _inputImage);
 }
 
-bool egami::storePNG(const etk::String& _fileName, const egami::Image& _inputImage) {
-	etk::FSNode fileName(_fileName);
-	if(fileName.fileOpenWrite() == false) {
-		EGAMI_ERROR("Can not find the file name='" << fileName << "'");
+bool egami::storePNG(const etk::Uri& _uri, const egami::Image& _inputImage) {
+	auto fileIo = etk::uri::get(_uri);
+	if (fileIo == null) {
+		EGAMI_ERROR("Can not create the uri: " << _uri);
+		return false;
+	}
+	if (fileIo->open(etk::io::OpenMode::Write) == false) {
+		EGAMI_ERROR("Can not open (w) the file : " << _uri);
 		return false;
 	}
 	png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, userErrorFunction, userWarningFunction);
 	if (png_ptr == null) {
 		EGAMI_ERROR("Can not Allocate PNG structure");
+		fileIo->close();
 		return false;
 	}
 	png_infop info_ptr = png_create_info_struct(png_ptr);
 	if (info_ptr == null) {
 		EGAMI_ERROR("Can not Allocate PNG info structure");
 		png_destroy_write_struct(&png_ptr, null);
-		fileName.fileClose();
+		fileIo->close();
 		return false;
 	}
 	if (setjmp(png_jmpbuf(png_ptr))) {
 		EGAMI_ERROR("Error during init_io");
 		png_destroy_write_struct(&png_ptr, &info_ptr);
-		fileName.fileClose();
+		fileIo->close();
 		return false;
 	}
-	ReaderInstanceFSNode tmpNode(fileName);
+	ReaderInstancIOInterface tmpNode(fileIo);
 	
 	ReaderInstance* tmpPoiter = &tmpNode;
 	
@@ -479,6 +484,6 @@ bool egami::storePNG(const etk::String& _fileName, const egami::Image& _inputIma
 	                 &local_FlushData);
 	bool out = genericWriter(png_ptr, info_ptr, _inputImage);
 	
-	fileName.fileClose();
+	fileIo->close();
 	return out;
 }

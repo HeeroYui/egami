@@ -10,9 +10,9 @@
 namespace egami {
 	/**
 	 * @breif Load a jpeg 2000 file in the image.
-	 * @param[in] _fileName Name of the file.
+	 * @param[in] _uri Uri of the file.
 	 * @return Read Image.
 	 */
-	egami::Image loadJPG2000(const etk::String& _fileName);
+	egami::Image loadJPG2000(const etk::Uri& _uri);
 }
 

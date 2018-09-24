@@ -10,10 +10,10 @@
 namespace egami {
 	/**
 	 * @brief Load a svg file in the image.
-	 * @param[in] _fileName Name of the file.
+	 * @param[in] _uri Uri of the file.
 	 * @param[in] _size size of the output image.
 	 * @return Generated image
 	 */
-	egami::Image loadSVG(const etk::String& _fileName, const ivec2& _size=ivec2(-1,-1));
+	egami::Image loadSVG(const etk::Uri& _uri, const ivec2& _size=ivec2(-1,-1));
 }
 

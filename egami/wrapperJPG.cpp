@@ -8,7 +8,7 @@
 #include <egami/debug.hpp>
 #include <egami/Image.hpp>
 #include <egami/wrapperJPG.hpp>
-#include <etk/os/FSNode.hpp>
+#include <etk/uri/uri.hpp>
 extern "C" {
 	#include "jpeglib.h"
 }
@@ -39,18 +39,18 @@ void put_scanline_someplace(const uint8_t* _buffer, int32_t _row_stride) {
 }
 
 
-egami::Image egami::loadJPG(const etk::String& _inputFile) {
-	etk::FSNode fileName(_inputFile);
-	if (fileName.exist() == false) {
-		EGAMI_ERROR("File does not existed='" << fileName << "'");
+egami::Image egami::loadJPG(const etk::Uri& _uri) {
+	auto fileIo = etk::uri::get(_uri);
+	if (fileIo == null) {
+		EGAMI_ERROR("Can not create the uri: " << _uri);
 		return egami::Image();
 	}
-	if(fileName.fileOpenRead() == false) {
-		EGAMI_ERROR("Can not find the file name='" << fileName << "'");
+	if (fileIo->open(etk::io::OpenMode::Read) == false) {
+		EGAMI_ERROR("Can not open (r) the file : " << _uri);
 		return egami::Image();
 	}
-	etk::Vector<uint8_t> allData = fileName.fileReadAll<uint8_t>();
-	fileName.fileClose();
+	etk::Vector<uint8_t> allData = fileIo->readAll<uint8_t>();
+	fileIo->close();
 	return egami::loadJPG(allData);
 }
 
@@ -153,17 +153,20 @@ void myTermDestination(j_compress_ptr _cinfo) {
 		myBuffer.resize(myBuffer.size() - _cinfo->dest->free_in_buffer);
 }
 
-bool egami::storeJPG(const etk::String& _fileName, const egami::Image& _inputImage) {
-	etk::FSNode fileName(_fileName);
-	EGAMI_VERBOSE("File='" << _fileName << "' ==> " << fileName << " ==> " << fileName.getFileSystemName());
-	if(fileName.fileOpenWrite() == false) {
-		EGAMI_ERROR("Can not crete the output file name='" << fileName << "'");
+bool egami::storeJPG(const etk::Uri& _uri, const egami::Image& _inputImage) {
+	auto fileIo = etk::uri::get(_uri);
+	if (fileIo == null) {
+		EGAMI_ERROR("Can not create the uri: " << _uri);
+		return false;
+	}
+	if (fileIo->open(etk::io::OpenMode::Write) == false) {
+		EGAMI_ERROR("Can not open (w) the file : " << _uri);
 		return false;
 	}
 	etk::Vector<uint8_t> allData;
 	bool ret = storeJPG(allData, _inputImage);
-	fileName.fileWriteAll(allData);
-	fileName.fileClose();
+	fileIo->writeAll(allData);
+	fileIo->close();
 	return ret;
 }
 

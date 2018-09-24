@@ -8,15 +8,15 @@
 #include <egami/debug.hpp>
 #include <egami/Image.hpp>
 #include <egami/wrapperSVG.hpp>
-#include <etk/os/FSNode.hpp>
+#include <etk/uri/uri.hpp>
 #include <esvg/esvg.hpp>
 
 
-egami::Image egami::loadSVG(const etk::String& _fileName, const ivec2& _size) {
+egami::Image egami::loadSVG(const etk::Uri& _uri, const ivec2& _size) {
 	egami::Image out;
 	esvg::Document svgDocument;
-	if (svgDocument.load(_fileName) == false) {
-		EGAMI_ERROR("Error to load SVG file " << _fileName );
+	if (svgDocument.load(_uri) == false) {
+		EGAMI_ERROR("Error to load SVG file " << _uri );
 		return out;
 	}
 	ivec2 imageSize = _size;

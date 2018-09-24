@@ -8,32 +8,32 @@
 #include <egami/debug.hpp>
 #include <egami/Image.hpp>
 #include <egami/wrapperEDF.hpp>
-#include <etk/os/FSNode.hpp>
+#include <etk/uri/uri.hpp>
 
 //EDF format is a simple format for image in text for distance field image (special case)
 // it is composed of the fist line : description of type (starting with #EDF and some other information, the data start just after the first \n
 
-egami::Image egami::loadEDF(const etk::String& _inputFile) {
+egami::Image egami::loadEDF(const etk::Uri& _uri) {
 	egami::Image out;
-	etk::FSNode file(_inputFile);
-	if (false == file.exist()) {
-		EGAMI_ERROR("File does not existed='" << file << "'");
+	auto fileIo = etk::uri::get(_uri);
+	if (fileIo == null) {
+		EGAMI_ERROR("Can not create the uri: " << _uri);
 		return out;
 	}
-	if(false == file.fileOpenRead() ) {
-		EGAMI_ERROR("Can not find the file name='" << file << "'");
+	if (fileIo->open(etk::io::OpenMode::Read) == false) {
+		EGAMI_ERROR("Can not open (r) the file : " << _uri);
 		return out;
 	}
 	etk::String line;
-	file.fileGets(line);
+	fileIo->gets(line);
 	if (etk::start_with(line, "#edf", false) == false) {
 		EGAMI_ERROR("This file seams not to be a EDF file ...");
-		file.fileClose();
+		fileIo->close();
 		return out;
 	}
 	// count number of colomn max an number of line max:
 	ivec2 size(0,0);
-	while (file.fileGets(line) == true) {
+	while (fileIo->gets(line) == true) {
 		if (line.size()/2 > (size_t)size.x()) {
 			size.setValue(line.size()/2, size.y()+1);
 		} else {
@@ -45,19 +45,17 @@ egami::Image egami::loadEDF(const etk::String& _inputFile) {
 	} else {
 		size += ivec2(0,1);
 	}
-	EGAMI_DEBUG("'" << file << "' ==> size=" << size);
+	EGAMI_DEBUG("'" << _uri << "' ==> size=" << size);
 	// jup to the start of the file
-	file.fileSeek(0, etk::seekNode_start);
+	fileIo->seek(0, etk::io::SeekMode::Start);
 	// drop the first line
-	file.fileGets(line);
-	
-	
+	fileIo->gets(line);
 	// resize output:
 	out.configure(size, egami::colorType::RGB8); // TODO : Do it better
 	int32_t currentLineId = 0;
 	char tmp[3];
 	tmp[2] = '\0';
-	while (file.fileGets(line) == true) {
+	while (fileIo->gets(line) == true) {
 		if (line.size() <= 0) {
 			continue;
 		}
@@ -79,26 +77,30 @@ egami::Image egami::loadEDF(const etk::String& _inputFile) {
 			out.set(ivec2(xxx/2, currentLineId), etk::Color<>((uint8_t)val, (uint8_t)val, (uint8_t)val, (uint8_t)val));
 		}
 	}
-	file.fileClose();
+	fileIo->close();
 	return out;
 }
 
-bool egami::storeEDF(const etk::String& _fileName, const egami::Image& _inputImage) {
+bool egami::storeEDF(const etk::Uri& _uri, const egami::Image& _inputImage) {
 	bool anErrorEccured = false;
-	etk::FSNode file(_fileName);
-	if (file.fileOpenWrite() == false) {
-		EGAMI_ERROR("Can not find the file name=\"" << file << "\"");
+	auto fileIo = etk::uri::get(_uri);
+	if (fileIo == null) {
+		EGAMI_ERROR("Can not create the uri: " << _uri);
 		return false;
 	}
-	anErrorEccured = file.filePuts(   etk::String("#EDF // Generate with EGAMI (")
-	                                + etk::toString(_inputImage.getSize().x())
-	                                + ","
-	                                + etk::toString(_inputImage.getSize().y()) + ")\n");
+	if (fileIo->open(etk::io::OpenMode::Write) == false) {
+		EGAMI_ERROR("Can not open (w) the file : " << _uri);
+		return false;
+	}
+	anErrorEccured = fileIo->puts(   etk::String("#EDF // Generate with EGAMI (")
+	                               + etk::toString(_inputImage.getSize().x())
+	                               + ","
+	                               + etk::toString(_inputImage.getSize().y()) + ")\n");
 	
 	char tmp[256];
 	for (int32_t yyy = 0; yyy < _inputImage.getSize().y(); ++yyy) {
 		if (yyy != 0) {
-			if (file.filePut('\n') == false) {
+			if (fileIo->put('\n') == false) {
 				anErrorEccured = false;
 			}
 		}
@@ -109,12 +111,11 @@ bool egami::storeEDF(const etk::String& _fileName, const egami::Image& _inputIma
 				EGAMI_DEBUG(" set : " << _inputImage.get(ivec2(xxx, yyy)) << " : '" << tmp << "'");
 			}
 			*/
-			if (file.filePuts(tmp) == false) {
+			if (fileIo->puts(tmp) == false) {
 				anErrorEccured = false;
 			}
 		}
 	}
-	
-	file.fileClose();
+	fileIo->close();
 	return anErrorEccured;
 }

@@ -19,16 +19,16 @@ namespace egami {
 	 *  * * 
 	 *   *  
 	 * [PRE]
-	 * @param[in] _fileName Name of the file.
+	 * @param[in] _uri Uri of the file.
 	 * @return Read Image
 	 */
-	egami::Image loadEDF(const etk::String& _fileName);
+	egami::Image loadEDF(const etk::Uri& _uri);
 	/**
 	 * @breif Store a edf file in the image.
-	 * @param[in] _fileName Name of the file.
+	 * @param[in] _uri Uri of the file.
 	 * @param[in] _inputImage write data.
 	 * @return true if all is done correctly, false otherwise.
 	 */
-	bool storeEDF(const etk::String& _fileName, const egami::Image& _inputImage);
+	bool storeEDF(const etk::Uri& _uri, const egami::Image& _inputImage);
 }
 

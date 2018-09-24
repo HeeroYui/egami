@@ -8,7 +8,7 @@
 #include <egami/debug.hpp>
 #include <egami/Image.hpp>
 #include <egami/wrapperBMP.hpp>
-#include <etk/os/FSNode.hpp>
+#include <etk/uri/uri.hpp>
 extern "C" {
 	#pragma pack(push,1)
 	struct bitmapFileHeader {
@@ -106,19 +106,18 @@ static void display(struct bitmapFileHeader _header, struct bitmapInfoHeader _in
 	}*/
 }
 
-egami::Image egami::loadBMP(const etk::String& _inputFile) {
-	etk::FSNode fileName(_inputFile);
-	EGAMI_VERBOSE("File='" << _inputFile << "' ==> " << fileName << " ==> " << fileName.getFileSystemName());
-	if (fileName.exist() == false) {
-		EGAMI_ERROR("File does not existed='" << fileName << "'");
+egami::Image egami::loadBMP(const etk::Uri& _uri) {
+	auto fileIo = etk::uri::get(_uri);
+	if (fileIo == null) {
+		EGAMI_ERROR("Can not create the uri: " << _uri);
 		return egami::Image();
 	}
-	if(fileName.fileOpenRead() == false) {
-		EGAMI_ERROR("Can not find the file name='" << fileName << "'");
+	if (fileIo->open(etk::io::OpenMode::Read) == false) {
+		EGAMI_ERROR("Can not open (r) the file : " << _uri);
 		return egami::Image();
 	}
-	etk::Vector<uint8_t> allData = fileName.fileReadAll<uint8_t>();
-	fileName.fileClose();
+	etk::Vector<uint8_t> allData = fileIo->readAll<uint8_t>();
+	fileIo->close();
 	return egami::loadBMP(allData);
 }
 
@@ -305,17 +304,20 @@ egami::Image egami::loadBMP(const etk::Vector<uint8_t>& _buffer) {
 
 #if 1
 	// Extended mode
-bool egami::storeBMP(const etk::String& _fileName, const egami::Image& _inputImage) {
-	etk::FSNode fileName(_fileName);
-	EGAMI_VERBOSE("File='" << _fileName << "' ==> " << fileName << " ==> " << fileName.getFileSystemName());
-	if(fileName.fileOpenWrite() == false) {
-		EGAMI_ERROR("Can not crete the output file name='" << fileName << "'");
+bool egami::storeBMP(const etk::Uri& _uri, const egami::Image& _inputImage) {
+	auto fileIo = etk::uri::get(_uri);
+	if (fileIo == null) {
+		EGAMI_ERROR("Can not create the uri: " << _uri);
+		return false;
+	}
+	if (fileIo->open(etk::io::OpenMode::Write) == false) {
+		EGAMI_ERROR("Can not open (w) the file : " << _uri);
 		return false;
 	}
 	etk::Vector<uint8_t> allData;
 	bool ret = storeBMP(allData, _inputImage);
-	fileName.fileWriteAll(allData);
-	fileName.fileClose();
+	fileIo->writeAll(allData);
+	fileIo->close();
 	return ret;
 }
 
@@ -418,7 +420,7 @@ bool egami::storeBMP(etk::Vector<uint8_t>& _buffer, const egami::Image& _inputIm
 }
 #else
 // old mode:
-bool egami::storeBMP(const etk::String& _fileName, const egami::Image& _inputImage) {
+bool egami::storeBMP(const etk::Uri& _uri, const egami::Image& _inputImage) {
 	struct bitmapFileHeader m_FileHeader;
 	struct bitmapInfoHeader m_InfoHeader;
 	memset(&m_InfoHeader, 0, sizeof(bitmapInfoHeader));
@@ -456,20 +458,24 @@ bool egami::storeBMP(const etk::String& _fileName, const egami::Image& _inputIma
 	//m_InfoHeader.biClrImportant = 0;
 	
 	
-	etk::FSNode fileName(_fileName);
-	if(false == fileName.fileOpenWrite() ) {
-		EGAMI_ERROR("Can not find the file name=\"" << fileName << "\"");
+	auto fileIo = etk::uri::get(_uri);
+	if (fileIo == null) {
+		EGAMI_ERROR("Can not create the uri: " << _uri);
+		return false;
+	}
+	if (fileIo->open(etk::io::OpenMode::Write) == false) {
+		EGAMI_ERROR("Can not open (w) the file : " << _uri);
 		return false;
 	}
 	// Write header:
-	if (fileName.fileWrite(&m_FileHeader,sizeof(struct bitmapFileHeader),1) != 1) {
+	if (fileIo->write(&m_FileHeader,sizeof(struct bitmapFileHeader),1) != 1) {
 		EGAMI_ERROR("error loading file header");
-		fileName.fileClose();
+		fileIo->close();
 		return false;
 	}
-	if (fileName.fileWrite(&m_InfoHeader,sizeof(struct bitmapInfoHeader),1) != 1) {
+	if (fileIo->write(&m_InfoHeader,sizeof(struct bitmapInfoHeader),1) != 1) {
 		EGAMI_ERROR("error loading file header");
-		fileName.fileClose();
+		fileIo->close();
 		return false;
 	}
 	EGAMI_ERROR("header size = " << sizeof(struct bitmapFileHeader) << " + " << sizeof(struct bitmapInfoHeader) << " = " << (sizeof(struct bitmapFileHeader)+sizeof(struct bitmapInfoHeader)) );
@@ -491,7 +497,7 @@ bool egami::storeBMP(const etk::String& _fileName, const egami::Image& _inputIma
 				*pointer++ = tmpColor.g();
 				*pointer++ = tmpColor.b();
 				*pointer++ = tmpColor.a();
-				fileName.fileWrite(data,4,1);
+				fileIo->write(data,4,1);
 			}
 		}
 	} else {
@@ -503,7 +509,7 @@ bool egami::storeBMP(const etk::String& _fileName, const egami::Image& _inputIma
 				*pointer++ = tmpColor.b();
 				*pointer++ = tmpColor.g();
 				*pointer++ = tmpColor.r();
-				fileName.fileWrite(data,3,1);
+				fileIo->write(data,3,1);
 			}
 			if (offset != 0) {
 				uint8_t pointer[4];
@@ -511,11 +517,11 @@ bool egami::storeBMP(const etk::String& _fileName, const egami::Image& _inputIma
 				pointer[1] = 0;
 				pointer[2] = 0;
 				pointer[3] = 0;
-				fileName.fileWrite(pointer,1,offset);
+				fileIo->write(pointer,1,offset);
 			}
 		}
 	}
-	fileName.fileClose();
+	fileIo->close();
 	return true;
 }
 #endif

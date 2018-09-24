@@ -10,9 +10,9 @@
 namespace egami {
 	/**
 	 * @breif Load a tiff file in the image.
-	 * @param[in] _fileName Name of the file.
+	 * @param[in] _uri Uri of the file.
 	 * @return Read Image.
 	 */
-	egami::Image loadTIFF(const etk::String& _fileName);
+	egami::Image loadTIFF(const etk::Uri& _uri);
 }
 

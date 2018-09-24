@@ -27,75 +27,75 @@
 #endif
 #include <edtaa3/edtaa3func.h>
 
-bool egami::scalable(const etk::String& _fileName) {
-	if (true == etk::end_with(_fileName, ".svg") ) {
+bool egami::scalable(const etk::Uri& _uri) {
+	if (etk::toLower(_uri.getPath().getExtention()) == "svg") {
 		return true;
 	}
 	return false;
 }
 
-egami::Image egami::load(const etk::String& _fileName, const ivec2& _size) {
-	etk::String tmpName = etk::toLower(_fileName);
+egami::Image egami::load(const etk::Uri& _uri, const ivec2& _size) {
+	etk::String extention = etk::toLower(_uri.getPath().getExtention());
 	egami::Image out;
 	// select the corect Loader :
-	if (etk::end_with(tmpName, ".edf") == true) {
+	if (extention == "edf") {
 		// internal format for ewol distance field ==> simple sistance field image
-		out = egami::loadEDF(_fileName);
+		out = egami::loadEDF(_uri);
 		if (out.exist() == false) {
-			EGAMI_ERROR("Error to load EDF file '" << _fileName << "'");
+			EGAMI_ERROR("Error to load EDF file '" << _uri << "'");
 		}
-	} else if (etk::end_with(tmpName, ".bmp") == true) {
-		out = egami::loadBMP(_fileName);
+	} else if (extention == "bmp") {
+		out = egami::loadBMP(_uri);
 		if (out.exist() == false) {
-			EGAMI_ERROR("Error to load BMP file '" << _fileName << "'");
+			EGAMI_ERROR("Error to load BMP file '" << _uri << "'");
 		}
-	} else if (etk::end_with(tmpName, ".svg") == true) {
+	} else if (extention == "svg") {
 		#ifdef EGAMI_BUILD_ESVG
-			out = egami::loadSVG(_fileName, _size);
+			out = egami::loadSVG(_uri, _size);
 			if (out.exist() == false) {
-				EGAMI_ERROR("Error to load SVG file '" << _fileName << "'");
+				EGAMI_ERROR("Error to load SVG file '" << _uri << "'");
 			}
 		#else
-			EGAMI_WARNING("egami not compile with the ESVG dependency for file '" << _fileName << "'");
+			EGAMI_WARNING("egami not compile with the ESVG dependency for file '" << _uri << "'");
 		#endif
-	} else if (etk::end_with(tmpName, ".png") == true) {
+	} else if (extention == "png") {
 		#ifdef EGAMI_BUILD_PNG
-			out = egami::loadPNG(_fileName);
+			out = egami::loadPNG(_uri);
 			if (out.exist() == false) {
-				EGAMI_ERROR("Error to load PNG file '" << _fileName << "'");
+				EGAMI_ERROR("Error to load PNG file '" << _uri << "'");
 			}
 		#else
-			EGAMI_WARNING("egami not compile with the PNG dependency for file '" << _fileName << "'");
+			EGAMI_WARNING("egami not compile with the PNG dependency for file '" << _uri << "'");
 		#endif
-	} else if (etk::end_with(tmpName, ".jpg") == true) {
+	} else if (extention == "jpg") {
 		#ifdef EGAMI_BUILD_JPEG
-			out = egami::loadJPG(_fileName);
+			out = egami::loadJPG(_uri);
 			if (out.exist() == false) {
-				EGAMI_ERROR("Error to load JPG file '" << _fileName << "'");
+				EGAMI_ERROR("Error to load JPG file '" << _uri << "'");
 			}
 		#else
-			EGAMI_WARNING("egami not compile with the JPEG dependency for file '" << _fileName << "'");
+			EGAMI_WARNING("egami not compile with the JPEG dependency for file '" << _uri << "'");
 		#endif
-	} else if (etk::end_with(tmpName, ".j2k") == true) {
+	} else if (extention == "j2k") {
 		#ifdef EGAMI_BUILD_JPEG2000
-			out = egami::loadJPG2000(_fileName);
+			out = egami::loadJPG2000(_uri);
 			if (out.exist() == false) {
-				EGAMI_ERROR("Error to load JPEG2000 file '" << _fileName << "'");
+				EGAMI_ERROR("Error to load JPEG2000 file '" << _uri << "'");
 			}
 		#else
-			EGAMI_WARNING("egami not compile with the JPEG 2000 (openjpeg) dependency for file '" << _fileName << "'");
+			EGAMI_WARNING("egami not compile with the JPEG 2000 (openjpeg) dependency for file '" << _uri << "'");
 		#endif
-	} else if (etk::end_with(tmpName, ".tif") == true) {
+	} else if (extention == "tif") {
 		#ifdef EGAMI_BUILD_TIFF
-			out = egami::loadTIFF(_fileName);
+			out = egami::loadTIFF(_uri);
 			if (out.exist() == false) {
-				EGAMI_ERROR("Error to load TIFF file '" << _fileName << "'");
+				EGAMI_ERROR("Error to load TIFF file '" << _uri << "'");
 			}
 		#else
-			EGAMI_WARNING("egami not compile with the TIFF dependency for file '" << _fileName << "'");
+			EGAMI_WARNING("egami not compile with the TIFF dependency for file '" << _uri << "'");
 		#endif
 	} else {
-		EGAMI_ERROR("Extention not managed '" << _fileName << "' Sopported extention : .edf / .bmp / .svg / .png / .jpg / .j2k / .tif");
+		EGAMI_ERROR("Extention not managed '" << _uri << "' Sopported extention : .edf / .bmp / .svg / .png / .jpg / .j2k / .tif");
 	}
 	return out;
 }
@@ -133,51 +133,51 @@ egami::Image egami::load(const etk::String& _mineType, const etk::Vector<uint8_t
 	return out;
 }
 
-bool egami::store(const egami::Image& _input, const etk::String& _fileName) {
-	etk::String tmpName = etk::toLower(_fileName);
-	EGAMI_DEBUG("Store file : " << _fileName);
+bool egami::store(const egami::Image& _input, const etk::Uri& _uri) {
+	etk::String extention = etk::toLower(_uri.getPath().getExtention());
+	EGAMI_DEBUG("Store file : " << _uri);
 	// select the corect Loader :
-	if (etk::end_with(tmpName, ".edf") == true) {
-		if (egami::storeEDF(_fileName, _input) == false) {
-			EGAMI_ERROR("Error to store EDF file '" << _fileName << "'");
+	if (extention == "edf") {
+		if (egami::storeEDF(_uri, _input) == false) {
+			EGAMI_ERROR("Error to store EDF file '" << _uri << "'");
 			return false;
 		}
-	} else if (etk::end_with(tmpName, ".bmp") == true) {
-		if (egami::storeBMP(_fileName, _input) == false) {
-			EGAMI_ERROR("Error to store BMP file '" << _fileName << "'");
+	} else if (extention == "bmp") {
+		if (egami::storeBMP(_uri, _input) == false) {
+			EGAMI_ERROR("Error to store BMP file '" << _uri << "'");
 			return false;
 		}
-	} else if (etk::end_with(tmpName, ".svg") == true) {
-		EGAMI_ERROR("Can not store in SVG file '" << _fileName << "'");
+	} else if (extention == "svg") {
+		EGAMI_ERROR("Can not store in SVG file '" << _uri << "'");
 		return false;
-	} else if (etk::end_with(tmpName, ".png") == true) {
+	} else if (extention == "png") {
 		#ifdef EGAMI_BUILD_PNG
-			if (egami::storePNG(_fileName, _input) == false) {
-				EGAMI_ERROR("Error to store PNG file '" << _fileName << "'");
+			if (egami::storePNG(_uri, _input) == false) {
+				EGAMI_ERROR("Error to store PNG file '" << _uri << "'");
 				return false;
 			}
 		#else
-			EGAMI_WARNING("egami not compile with the PNG dependency for file '" << _fileName << "'");
+			EGAMI_WARNING("egami not compile with the PNG dependency for file '" << _uri << "'");
 			return false;
 		#endif
-	} else if (etk::end_with(tmpName, ".jpg") == true) {
+	} else if (extention == "jpg") {
 		#ifdef EGAMI_BUILD_JPEG
-			if (egami::storeJPG(_fileName, _input) == false) {
-				EGAMI_ERROR("Error to store JPEG file '" << _fileName << "'");
+			if (egami::storeJPG(_uri, _input) == false) {
+				EGAMI_ERROR("Error to store JPEG file '" << _uri << "'");
 				return false;
 			}
 		#else
-			EGAMI_WARNING("egami not compile with the JPEG dependency for file '" << _fileName << "'");
+			EGAMI_WARNING("egami not compile with the JPEG dependency for file '" << _uri << "'");
 			return false;
 		#endif
-	} else if (etk::end_with(tmpName, ".j2k") == true) {
-		EGAMI_ERROR("Can not store in JPEG 2000 file '" << _fileName << "'");
+	} else if (extention == "j2k") {
+		EGAMI_ERROR("Can not store in JPEG 2000 file '" << _uri << "'");
 		return false;
-	} else if (etk::end_with(tmpName, ".tif") == true) {
-		EGAMI_ERROR("Can not store in TIFF file '" << _fileName << "'");
+	} else if (extention == "tif") {
+		EGAMI_ERROR("Can not store in TIFF file '" << _uri << "'");
 		return false;
 	} else {
-		EGAMI_ERROR("Extention not managed '" << _fileName << "' Sopported extention: .edf / .bmp / .svg / .png / .jpg / .j2k / .tif");
+		EGAMI_ERROR("Extention not managed '" << _uri << "' Sopported extention: .edf / .bmp / .svg / .png / .jpg / .j2k / .tif");
 		return false;
 	}
 	return true;
@@ -302,9 +302,10 @@ static void generateDistanceField(const egami::ImageMono& _input, egami::Image& 
 }
 
 
-bool egami::generateDistanceFieldFile(const etk::String& _input, const etk::String& _output) {
+bool egami::generateDistanceFieldFile(const etk::Uri& _input, const etk::Uri& _output) {
 	egami::Image data;
-	if (etk::end_with(_input, ".edf") == true) {
+	etk::String extention = etk::toLower(_input.getPath().getExtention());
+	if (extention == "edf") {
 		return false;
 	}
 	EGAMI_ERROR("Generate distance field : '" << _input << "' ==> '" << _output << "'");

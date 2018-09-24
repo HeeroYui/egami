@@ -10,10 +10,10 @@
 namespace egami {
 	/**
 	 * @breif Load a bmp file in the image.
-	 * @param[in] _fileName Name of the file.
+	 * @param[in] _uri Uri of the file.
 	 * @return Generate image or empty image
 	 */
-	egami::Image loadBMP(const etk::String& _fileName);
+	egami::Image loadBMP(const etk::Uri& _uri);
 	/**
 	 * @breif Load a bmp file in the image.
 	 * @param[in] _buffer file buffer
@@ -22,11 +22,11 @@ namespace egami {
 	egami::Image loadBMP(const etk::Vector<uint8_t>& _buffer);
 	/**
 	 * @breif Store a bmp file in the image.
-	 * @param[in] _fileName Name of the file.
+	 * @param[in] _uri Uri of the file.
 	 * @param[in] _inputImage write data.
 	 * @return true if all is done correctly, false otherwise.
 	 */
-	bool storeBMP(const etk::String& _fileName, const egami::Image& _inputImage);
+	bool storeBMP(const etk::Uri& _uri, const egami::Image& _inputImage);
 	/**
 	 * @breif Store a bmp file in the image.
 	 * @param[out] _buffer output file buffer.
