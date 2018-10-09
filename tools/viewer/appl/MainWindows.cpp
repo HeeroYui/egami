@@ -21,7 +21,7 @@ appl::MainWindows::MainWindows() :
 
 void appl::MainWindows::init() {
 	ewol::widget::Windows::init();
-	m_image = ewol::widget::Image::create("src", etk::String("DATA:icon.png"),
+	m_image = ewol::widget::Image::create("src", etk::String("DATA:///icon.png"),
 	                                      "expand", bvec2(true,true),
 	                                      "fill", bvec2(true,true));
 	propertyTitle.set("EVI");
@@ -46,7 +46,7 @@ void appl::MainWindows::setListOfFiles(etk::Vector<etk::String> _listImages) {
 	m_listImages = _listImages;
 	if (m_listImages.size() == 0) {
 		m_idDisplayed = -1;
-		m_image->propertySource.set("DATA:icon.png");
+		m_image->propertySource.set("DATA:///icon.png");
 		propertyTitle.set("EVI");
 	} else {
 		m_idDisplayed = 0;

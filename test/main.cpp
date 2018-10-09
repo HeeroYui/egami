@@ -18,7 +18,7 @@ int main(int argc, const char *argv[]) {
 }
 
 TEST(TestBMP, read_227x149) {
-	egami::Image image = egami::load("DATA:read_227x149.bmp");
+	egami::Image image = egami::load("DATA:///read_227x149.bmp");
 	egami::store(image, "out/read_227x149.bmp.bmp");
 	// Check if image is loaded
 	EXPECT_EQ(true, image.exist());
@@ -32,7 +32,7 @@ TEST(TestBMP, read_227x149) {
 }
 
 TEST(TestBMP, read_128x128) {
-	egami::Image image = egami::load("DATA:read_128x128.bmp");
+	egami::Image image = egami::load("DATA:///read_128x128.bmp");
 	egami::store(image, "out/read_128x128.bmp.bmp");
 	// Check if image is loaded
 	EXPECT_EQ(true, image.exist());
@@ -47,7 +47,7 @@ TEST(TestBMP, read_128x128) {
 
 
 TEST(TestPNG, read_227x149) {
-	egami::Image image = egami::load("DATA:read_227x149.png");
+	egami::Image image = egami::load("DATA:///read_227x149.png");
 	egami::store(image, "out/read.png_227x149.bmp");
 	// Check if image is loaded
 	EXPECT_EQ(true, image.exist());
@@ -61,7 +61,7 @@ TEST(TestPNG, read_227x149) {
 }
 
 TEST(TestPNG, read_128x128) {
-	egami::Image image = egami::load("DATA:read_128x128.png");
+	egami::Image image = egami::load("DATA:///read_128x128.png");
 	egami::store(image, "out/read_128x128.png.bmp");
 	// Check if image is loaded
 	EXPECT_EQ(true, image.exist());
@@ -75,7 +75,7 @@ TEST(TestPNG, read_128x128) {
 }
 
 TEST(TestSVG, read) {
-	egami::Image image = egami::load("DATA:read.svg");
+	egami::Image image = egami::load("DATA:///read.svg");
 	egami::store(image, "out/read.svg.bmp");
 	// Check if image is loaded
 	EXPECT_EQ(true, image.exist());
@@ -90,7 +90,7 @@ TEST(TestSVG, read) {
 
 
 TEST(TestJPG, read_227x149) {
-	egami::Image image = egami::load("DATA:read_227x149.jpg");
+	egami::Image image = egami::load("DATA:///read_227x149.jpg");
 	egami::store(image, "out/read_227x149.jpg.bmp");
 	// Check if image is loaded
 	EXPECT_EQ(true, image.exist());
@@ -105,7 +105,7 @@ TEST(TestJPG, read_227x149) {
 
 
 TEST(TestJPG, read_128x128) {
-	egami::Image image = egami::load("DATA:read_128x128.jpg");
+	egami::Image image = egami::load("DATA:///read_128x128.jpg");
 	egami::store(image, "out/read_128x128.jpg.bmp");
 	// Check if image is loaded
 	EXPECT_EQ(true, image.exist());
