@@ -10,7 +10,6 @@
 
 #include <ewol/widget/Image.hpp>
 #include <ewol/context/Context.hpp>
-#include <etk/os/FSNode.hpp>
 #include <eproperty/Value.hpp>
 
 appl::MainWindows::MainWindows() :
@@ -42,7 +41,7 @@ void appl::MainWindows::onCallbackShortCut(const etk::String& _value) {
 	}
 }
 
-void appl::MainWindows::setListOfFiles(etk::Vector<etk::String> _listImages) {
+void appl::MainWindows::setListOfFiles(etk::Vector<etk::Path> _listImages) {
 	m_listImages = _listImages;
 	if (m_listImages.size() == 0) {
 		m_idDisplayed = -1;
@@ -51,7 +50,7 @@ void appl::MainWindows::setListOfFiles(etk::Vector<etk::String> _listImages) {
 	} else {
 		m_idDisplayed = 0;
 		m_image->propertySource.set(m_listImages[0]);
-		propertyTitle.set("EVI:" + m_listImages[0]);
+		propertyTitle.set("EVI:" + m_listImages[0].getString());
 	}
 }
 
@@ -74,7 +73,7 @@ bool appl::MainWindows::onEventEntry(const ewol::event::Entry& _event) {
 				return true;
 			}
 			m_image->propertySource.set(m_listImages[m_idDisplayed]);
-			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::toString(m_idDisplayed+1) + "/" + etk::toString(m_listImages.size()));
+			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed].getString() + " " + etk::toString(m_idDisplayed+1) + "/" + etk::toString(m_listImages.size()));
 			return true;
 		}
 		if (_event.getType() == gale::key::keyboard::left) {
@@ -84,7 +83,7 @@ bool appl::MainWindows::onEventEntry(const ewol::event::Entry& _event) {
 				return true;
 			}
 			m_image->propertySource.set(m_listImages[m_idDisplayed]);
-			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::toString(m_idDisplayed+1) + "/" + etk::toString(m_listImages.size()));
+			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed].getString() + " " + etk::toString(m_idDisplayed+1) + "/" + etk::toString(m_listImages.size()));
 			return true;
 		}
 		if (_event.getType() == gale::key::keyboard::down) {
@@ -93,7 +92,7 @@ bool appl::MainWindows::onEventEntry(const ewol::event::Entry& _event) {
 				m_idDisplayed = m_listImages.size()-1;
 			}
 			m_image->propertySource.set(m_listImages[m_idDisplayed]);
-			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::toString(m_idDisplayed+1) + "/" + etk::toString(m_listImages.size()));
+			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed].getString() + " " + etk::toString(m_idDisplayed+1) + "/" + etk::toString(m_listImages.size()));
 			return true;
 		}
 		if (_event.getType() == gale::key::keyboard::up) {
@@ -102,19 +101,19 @@ bool appl::MainWindows::onEventEntry(const ewol::event::Entry& _event) {
 				m_idDisplayed = 0;
 			}
 			m_image->propertySource.set(m_listImages[m_idDisplayed]);
-			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::toString(m_idDisplayed+1) + "/" + etk::toString(m_listImages.size()));
+			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed].getString() + " " + etk::toString(m_idDisplayed+1) + "/" + etk::toString(m_listImages.size()));
 			return true;
 		}
 		if (_event.getType() == gale::key::keyboard::pageDown) {
 			m_idDisplayed = m_listImages.size()-1;
 			m_image->propertySource.set(m_listImages[m_idDisplayed]);
-			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::toString(m_idDisplayed+1) + "/" + etk::toString(m_listImages.size()));
+			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed].getString() + " " + etk::toString(m_idDisplayed+1) + "/" + etk::toString(m_listImages.size()));
 			return true;
 		}
 		if (_event.getType() == gale::key::keyboard::pageUp) {
 			m_idDisplayed = 0;
 			m_image->propertySource.set(m_listImages[m_idDisplayed]);
-			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed] + " " + etk::toString(m_idDisplayed+1) + "/" + etk::toString(m_listImages.size()));
+			propertyTitle.set("EVI:" + m_listImages[m_idDisplayed].getString() + " " + etk::toString(m_idDisplayed+1) + "/" + etk::toString(m_listImages.size()));
 			return true;
 		}
 	}

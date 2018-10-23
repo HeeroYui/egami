@@ -6,7 +6,8 @@
 
 #include <etk/types.hpp>
 #include <etk/types.hpp>
-#include <etk/os/FSNode.hpp>
+#include <etk/theme/theme.hpp>
+#include <etk/path/fileSystem.hpp>
 #include <ewol/ewol.hpp>
 #include <ewol/object/Object.hpp>
 #include <ewol/context/Context.hpp>
@@ -17,7 +18,7 @@
 namespace appl {
 	class MainApplication : public ewol::context::Application {
 		private:
-			etk::Vector<etk::String> m_listFiles;
+			etk::Vector<etk::Path> m_listFiles;
 		public:
 			virtual void onCreate(ewol::Context& _context) {
 				APPL_INFO(" == > CREATE ... (START) [" << gale::getBoardType() << "] (" << gale::getCompilationMode() << ") (BEGIN)");
@@ -35,19 +36,16 @@ namespace appl {
 						continue;
 					}
 					// TODO : Check if it is a path ...
-					if (etk::FSNodeExist(tmpppp) == false) {
+					if (etk::path::exist(tmpppp) == false) {
 						APPL_ERROR("element does not exist: '" << tmpppp << "' ==> rejected");
 					} else {
-						etk::FSNode elem(tmpppp);
-						if (elem.getNodeType() == etk::typeNode_folder) {
-							etk::Vector<etk::String> tmp = elem.folderGetSub(false, true, ".*");
-							tmp.sort(0, tmp.size(), [](const etk::String& _left, const etk::String& _right) { return _left < _right;});
-							for (auto &it : tmp) {
+						if (etk::path::isFile(tmpppp) == true) {
+							m_listFiles.pushBack(tmpppp);
+						} else {
+							etk::Vector<etk::Path> list = etk::path::list(tmpppp, etk::path::LIST_FILE);
+							for (auto &it : list) {
 								m_listFiles.pushBack(it);
 							}
-						} else {
-							// simple file:
-							m_listFiles.pushBack(tmpppp);
 						}
 					}
 				}

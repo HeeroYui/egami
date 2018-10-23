@@ -13,7 +13,7 @@ namespace appl {
 	class MainWindows : public ewol::widget::Windows {
 		private:
 			ewol::widget::ImageShared m_image;
-			etk::Vector<etk::String> m_listImages;
+			etk::Vector<etk::Path> m_listImages;
 			int64_t m_idDisplayed;
 		public:
 			// Constructeur
@@ -22,7 +22,7 @@ namespace appl {
 		public:
 			DECLARE_FACTORY(MainWindows);
 			~MainWindows() {};
-			void setListOfFiles(etk::Vector<etk::String> _listImages);
+			void setListOfFiles(etk::Vector<etk::Path> _listImages);
 		protected:
 			void onCallbackShortCut(const etk::String& _value);
 			bool onEventInput(const ewol::event::Input& _event) override;
