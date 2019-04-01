@@ -22,8 +22,8 @@ static void usage(int _retValue = 0) {
 int main(int argc, const char *argv[]) {
 	// the only one init for etk:
 	etk::init(argc, argv);
-	etk::String input;
-	etk::String output;
+	etk::Path input;
+	etk::Path output;
 	for (int32_t iii=0; iii<argc ; ++iii) {
 		etk::String data = argv[iii];
 		if (    data == "-h"

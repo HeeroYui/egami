@@ -38,6 +38,7 @@ egami::Image egami::load(const etk::Uri& _uri, const ivec2& _size) {
 	etk::String extention = etk::toLower(_uri.getPath().getExtention());
 	egami::Image out;
 	// select the corect Loader :
+	EGAMI_ERROR("parse file '" << _uri << "' extention=" << extention);
 	if (extention == "edf") {
 		// internal format for ewol distance field ==> simple sistance field image
 		out = egami::loadEDF(_uri);
